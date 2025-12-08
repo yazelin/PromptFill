@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Copy, Plus, X, Settings, Check, Edit3, Eye, Trash2, FileText, Pencil, Copy as CopyIcon, Globe, ChevronDown, ChevronUp, GripVertical, Download, Image as ImageIcon, List } from 'lucide-react';
+import { Copy, Plus, X, Settings, Check, Edit3, Eye, Trash2, FileText, Pencil, Copy as CopyIcon, Globe, ChevronDown, ChevronUp, ChevronRight, GripVertical, Download, Image as ImageIcon, List, Undo, Redo, Maximize2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
+import { INITIAL_TEMPLATES_CONFIG } from './data/templates';
 
 // --- 翻译配置 (Translations) ---
 const TRANSLATIONS = {
@@ -117,6 +118,21 @@ const INITIAL_CATEGORIES = {
   location: { id: "location", label: "地点 (LOCATION)", color: "emerald" },
   visual: { id: "visual", label: "画面 (VISUALS)", color: "violet" },
   other: { id: "other", label: "其他 (OTHER)", color: "slate" }
+};
+
+const PREMIUM_STYLES = {
+  blue: { from: "#93C5FD", to: "#3B82F6", shadowColor: "rgba(59, 130, 246, 0.4)", glowColor: "rgba(59, 130, 246, 0.6)" },
+  amber: { from: "#FCD34D", to: "#F59E0B", shadowColor: "rgba(245, 158, 11, 0.4)", glowColor: "rgba(245, 158, 11, 0.6)" },
+  rose: { from: "#F472B6", to: "#DB2777", shadowColor: "rgba(219, 39, 119, 0.4)", glowColor: "rgba(219, 39, 119, 0.6)" }, // Changed from light pink/red to Pink/Fuchsia
+  emerald: { from: "#6EE7B7", to: "#10B981", shadowColor: "rgba(16, 185, 129, 0.4)", glowColor: "rgba(16, 185, 129, 0.6)" },
+  violet: { from: "#BEB3FF", to: "#8C79FF", shadowColor: "rgba(139, 92, 246, 0.4)", glowColor: "rgba(139, 92, 246, 0.6)" },
+  slate: { from: "#CBD5E1", to: "#64748B", shadowColor: "rgba(100, 116, 139, 0.4)", glowColor: "rgba(100, 116, 139, 0.6)" },
+  orange: { from: "#FDBA74", to: "#F97316", shadowColor: "rgba(249, 115, 22, 0.4)", glowColor: "rgba(249, 115, 22, 0.6)" },
+  cyan: { from: "#67E8F9", to: "#06B6D4", shadowColor: "rgba(6, 182, 212, 0.4)", glowColor: "rgba(6, 182, 212, 0.6)" },
+  lime: { from: "#BEF264", to: "#84CC16", shadowColor: "rgba(132, 204, 22, 0.4)", glowColor: "rgba(132, 204, 22, 0.6)" },
+  pink: { from: "#F9A8D4", to: "#EC4899", shadowColor: "rgba(236, 72, 153, 0.4)", glowColor: "rgba(236, 72, 153, 0.6)" },
+  indigo: { from: "#A5B4FC", to: "#6366F1", shadowColor: "rgba(99, 102, 241, 0.4)", glowColor: "rgba(99, 102, 241, 0.6)" },
+  teal: { from: "#5EEAD4", to: "#14B8A6", shadowColor: "rgba(20, 184, 166, 0.4)", glowColor: "rgba(20, 184, 166, 0.6)" }
 };
 
 const CATEGORY_STYLES = {
@@ -243,26 +259,20 @@ const INITIAL_BANKS = {
     category: "visual",
     options: ["全身立绘", "半身肖像", "动态战斗姿势", "背影回眸"]
   },
-  grid_pose: { label: "动作", category: "action", options: ["前景手指虚化", "目光锁定镜头", "单色下巴托手", "透过模糊肩带拍摄", "正面特写阴影", "斜角拍摄", "双手置于锁骨", "坐姿半身侧面", "侧面微距水滴", "闭眼仰头享受", "用手遮挡阳光", "回眸一笑", "吹泡泡糖特写"] },
-  grid_pose_1: { label: "九宫格-动作1 (眼神)", category: "action", options: ["目光锁定镜头，眼神专注而自然，轻微微笑", "正面直视镜头，表情平静，眼神清澈", "凝视镜头，嘴角微微上扬，展现自信", "专注地看着镜头，表情柔和，眼神温和"] },
-  grid_pose_2: { label: "九宫格-动作2 (回眸)", category: "action", options: ["回眸一笑，侧身转头看向镜头，笑容甜美", "侧身回望，眼神温柔，嘴角上扬", "转身回眸，长发飘逸，笑容自然", "回眸瞬间，眼神灵动，表情生动"] },
-  grid_pose_3: { label: "九宫格-动作3 (手部)", category: "action", options: ["单手托住下巴，表情沉思，眼神深邃", "手轻抚下巴，表情优雅，眼神柔和", "单手支撑下巴，表情自然，眼神专注", "手托下巴，表情恬静，眼神温柔"] },
-  grid_pose_4: { label: "九宫格-动作4 (前景)", category: "action", options: ["透过模糊的肩带拍摄，前景虚化，焦点在面部", "肩带作为前景虚化元素，突出面部表情", "利用肩带营造景深，焦点清晰在眼睛", "前景肩带模糊，背景清晰，层次分明"] },
-  grid_pose_5: { label: "九宫格-动作5 (特写)", category: "action", options: ["吹泡泡糖特写，表情俏皮，眼神灵动", "正在吹泡泡糖，表情可爱，眼神专注", "泡泡糖特写，表情生动，眼神明亮", "吹泡泡糖瞬间，表情自然，眼神活泼"] },
-  grid_pose_6: { label: "九宫格-动作6 (虚化)", category: "action", options: ["前景手指虚化，手指作为前景元素，焦点在面部", "手指在镜头前虚化，营造景深效果", "前景手指模糊，突出清晰的面部表情", "手指作为前景，虚化处理，焦点在眼睛"] },
-  grid_pose_7: { label: "九宫格-动作7 (姿态)", category: "action", options: ["闭眼仰头享受，表情放松，姿态优雅", "闭目仰头，表情恬静，姿态自然", "仰头闭眼，表情安详，姿态优美", "闭眼仰头，表情舒适，姿态舒展"] },
-  grid_pose_8: { label: "九宫格-动作8 (光影)", category: "action", options: ["用手遮挡阳光，表情自然，眼神明亮", "手遮阳光，表情轻松，眼神清澈", "遮挡阳光的手势，表情生动，眼神专注", "手遮阳光，表情自然，眼神柔和"] },
-  grid_pose_9: { label: "九宫格-动作9 (微距)", category: "action", options: ["侧面微距特写，突出面部轮廓和细节", "侧面角度，微距拍摄，展现细腻质感", "侧脸微距，焦点在眼睛和鼻梁", "侧面微距，突出面部线条和肌肤质感"] },
-  
-  lens_param_1: { label: "九宫格-镜头1", category: "visual", options: ["85mm, f/1.8", "85mm, f/2.0", "50mm, f/1.8", "50mm, f/2.2"] },
-  lens_param_2: { label: "九宫格-镜头2", category: "visual", options: ["85mm, f/2.0", "50mm, f/2.2", "85mm, f/1.9", "50mm, f/2.5"] },
-  lens_param_3: { label: "九宫格-镜头3", category: "visual", options: ["50mm, f/2.2", "85mm, f/2.2", "50mm, f/2.5", "85mm, f/2.0"] },
-  lens_param_4: { label: "九宫格-镜头4", category: "visual", options: ["85mm, f/1.8", "50mm, f/2.0", "85mm, f/2.0", "50mm, f/2.2"] },
-  lens_param_5: { label: "九宫格-镜头5", category: "visual", options: ["50mm, f/2.5", "85mm, f/2.2", "50mm, f/2.2", "85mm, f/1.9"] },
-  lens_param_6: { label: "九宫格-镜头6", category: "visual", options: ["85mm, f/2.0", "50mm, f/2.5", "85mm, f/1.8", "50mm, f/2.2"] },
-  lens_param_7: { label: "九宫格-镜头7", category: "visual", options: ["50mm, f/2.2", "85mm, f/2.0", "50mm, f/2.0", "85mm, f/1.8"] },
-  lens_param_8: { label: "九宫格-镜头8", category: "visual", options: ["85mm, f/1.9", "50mm, f/2.2", "85mm, f/2.0", "50mm, f/2.5"] },
-  lens_param_9: { label: "九宫格-镜头9", category: "visual", options: ["50mm, f/2.0", "85mm, f/2.2", "50mm, f/2.2", "85mm, f/1.8"] },
+  grid_pose: { 
+    label: "九宫格动作", 
+    category: "action", 
+    options: [
+      "前景手指虚化", "目光锁定镜头", "单色下巴托手", "透过模糊肩带拍摄", 
+      "正面特写阴影", "斜角拍摄", "双手置于锁骨", "坐姿半身侧面", 
+      "侧面微距水滴", "闭眼仰头享受", "用手遮挡阳光", "回眸一笑", "吹泡泡糖特写",
+      "正面直视镜头，表情平静，眼神清澈", "凝视镜头，嘴角微微上扬，展现自信", 
+      "专注地看着镜头，表情柔和，眼神温和", "侧身回望，眼神温柔，嘴角上扬", 
+      "转身回眸，长发飘逸，笑容自然", "手轻抚下巴，表情优雅，眼神柔和", 
+      "单手支撑下巴，表情自然，眼神专注", "利用肩带营造景深，焦点清晰在眼睛", 
+      "正在吹泡泡糖，表情可爱，眼神专注", "侧面微距特写，突出面部轮廓和细节"
+    ] 
+  },
   
   camera_angle: {
     label: "拍摄角度",
@@ -278,6 +288,21 @@ const INITIAL_BANKS = {
     label: "私密内着拆解",
     category: "item",
     options: ["成套的蕾丝内衣裤", "运动风格纯棉内衣", "极简主义丝绸内衣", "哥特风格绑带内衣"]
+  },
+  clothing: {
+    label: "人物服饰",
+    category: "item",
+    options: ["炭灰色无袖连衣裙", "白色丝绸衬衫", "黑色修身西装", "战术机能风外套", "复古碎花连衣裙"]
+  },
+  clothing_male: {
+    label: "男性服饰",
+    category: "item",
+    options: ["剪裁合体的深蓝西装", "复古棕色皮夹克", "战术背心与工装裤", "宽松的灰色卫衣", "白色亚麻衬衫", "黑色高领毛衣"]
+  },
+  clothing_female: {
+    label: "女性服饰",
+    category: "item",
+    options: ["炭灰色无袖连衣裙", "丝绸吊带晚礼服", "机车皮衣与短裙", "白色蕾丝衬衫", "黑色紧身连体衣", "优雅的香奈儿风套装"]
   },
   expressions: {
     label: "表情集",
@@ -338,9 +363,9 @@ const INITIAL_BANKS = {
   
   // Old ones preserved for compatibility or other templates
   lens_param: {
-    label: "镜头参数",
+    label: "九宫格镜头",
     category: "visual",
-    options: ["85mm, f/1.8", "85mm, f/2.0", "50mm, f/2.2", "50mm, f/2.5", "50mm, f/3.2", "35mm, f/4.5", "85mm, f/1.9"]
+    options: ["85mm, f/1.8", "85mm, f/2.0", "50mm, f/2.2", "50mm, f/2.5", "50mm, f/3.2", "35mm, f/4.5", "85mm, f/1.9", "50mm, f/1.8", "85mm, f/2.2", "50mm, f/2.0"]
   },
   lighting: {
     label: "灯光布置",
@@ -377,6 +402,9 @@ const INITIAL_DEFAULTS = {
   camera_angle: "脸颊和颈部特写",
   connectors: "手绘箭头或引导线",
   underwear_style: "成套的蕾丝内衣裤",
+  clothing: "炭灰色无袖连衣裙",
+  clothing_male: "剪裁合体的深蓝西装",
+  clothing_female: "炭灰色无袖连衣裙",
   expressions: "疯狂、病娇、狂喜",
   texture_zoom: "凌乱感与私处汗渍",
   action_detail: "带着项圈的爬行",
@@ -391,25 +419,7 @@ const INITIAL_DEFAULTS = {
   
   // Grid defaults
   grid_pose: "前景手指虚化",
-  grid_pose_1: "目光锁定镜头，眼神专注而自然，轻微微笑",
-  grid_pose_2: "回眸一笑，侧身转头看向镜头，笑容甜美",
-  grid_pose_3: "单手托住下巴，表情沉思，眼神深邃",
-  grid_pose_4: "透过模糊的肩带拍摄，前景虚化，焦点在面部",
-  grid_pose_5: "吹泡泡糖特写，表情俏皮，眼神灵动",
-  grid_pose_6: "前景手指虚化，手指作为前景元素，焦点在面部",
-  grid_pose_7: "闭眼仰头享受，表情放松，姿态优雅",
-  grid_pose_8: "用手遮挡阳光，表情自然，眼神明亮",
-  grid_pose_9: "侧面微距特写，突出面部轮廓和细节",
-  lens_param_1: "85mm, f/1.8",
-  lens_param_2: "85mm, f/2.0",
-  lens_param_3: "50mm, f/2.2",
-  lens_param_4: "85mm, f/1.8",
-  lens_param_5: "50mm, f/2.5",
-  lens_param_6: "85mm, f/2.0",
-  lens_param_7: "50mm, f/2.2",
-  lens_param_8: "85mm, f/1.9",
-  lens_param_9: "50mm, f/2.0",
-
+  
   // Legacy defaults
   lens_param: "85mm, f/1.8",
   lighting: "大型顶置柔光箱，轻微侧向反射光",
@@ -418,111 +428,6 @@ const INITIAL_DEFAULTS = {
   action_pose: "用手指在男人脑后比划'兔耳朵'",
   background_scene: "俯瞰纽约市的复仇者大厦楼顶"
 };
-
-const DEFAULT_TEMPLATE_CONTENT = `### Role (角色设定)
-你是一位顶尖的 {{role}}，擅长制作详尽的角色设定图（Character Sheet）。你具备“像素级拆解”的能力，能够透视角色的穿着层级、捕捉微表情变化，并将与其相关的物品进行具象化还原。你特别擅长通过 {{subject}} 的私密物品、随身物件和生活细节来侧面丰满人物性格与背景故事。
-
-### Task (任务目标)
-根据用户上传或描述的主体形象，生成一张**“全景式角色深度概念分解图”**。该图片必须包含 {{layout_focus}}，并在其周围环绕展示该人物的服装分层、不同表情、核心道具、材质特写，以及极具生活气息的私密与随身物品展示。
-
-### Visual Guidelines (视觉规范)
-**1. 构图布局 (Layout):**
-- **中心位 (Center):** 放置角色的 {{layout_focus}}，作为视觉锚点。
-- **环绕位 (Surroundings):** 在中心人物四周空白处，有序排列拆解后的元素。
-- **视觉引导 (Connectors):** 使用{{connectors}}，将周边的拆解物品与中心人物的对应部位或所属区域连接起来。
-
-**2. 拆解内容 (Deconstruction Details):**
-- **服装分层 (Clothing Layers):** 将角色的服装拆分为单品展示
-- **私密内着拆解:** 独立展示角色的内层衣物，重点突出设计感与材质。例如： {{underwear_style}} （展示细节与剪裁）。
-- **表情集 (Expression Sheet):** 在角落绘制 3-4 个不同的头部特写，展示不同的情绪，如： {{expressions}} 。
-- **材质特写 (Texture & Zoom):** 选取关键部位进行放大特写。例如： {{texture_zoom}} ，增加对小物件材质的描绘。
-- **动作:** 绘制特殊的动作和表情，例如：{{action_detail}}，增加动作的深度刻画。
-- **特殊视角:** 绘制从某种特殊场景下拍摄的特殊视角，例如：{{special_view}}
-
-- **关联物品 (Related Items):**
- - **随身包袋与内容物:** 绘制 {{bag_content}}，并将其“打开”，展示散落在旁的物品。
- - **美妆与护理:** 展示 {{cosmetics}}。
- - **私密生活物件:** 具象化角色隐藏面的物品。根据角色性格可能包括： {{private_items}}，需以一种设计图的客观视角呈现。
-
-**3. 风格与注释 (Style & Annotations):**
-- **画风:** {{art_style}}，线条干净利落。
-- **背景:** {{background_style}}，营造设计手稿的氛围。
-- **文字说明:** 在每个拆解元素旁模拟手写注释，简要说明材质或品牌/型号暗示。
-
-### Workflow (执行逻辑)
-1. 分析主体的核心特征、穿着风格及潜在性格。
-2. 提取可拆解的一级元素（外套、鞋子、大表情）。
-3. 脑补并设计二级深度元素（她内衣穿什么风格？包里装什么？独处时用什么？）。
-4. 生成一张包含所有这些元素的组合图，确保透视准确，光影统一，注释清晰。
-5. 使用中文，高清输出。`;
-
-const TEMPLATE_PHOTO_GRID = `### Photo Grid Composition (九宫格摄影)
-
-**编辑场景:** 3x3网格布局，采用冷灰色无缝背景。人物（面部特征与上传图片完全一致）身穿炭灰色无袖连衣裙，确保每张照片中人物形象保持一致。
-
-**灯光设置:** {{lighting}}，营造统一而富有层次的光影效果。
-
-**照片细节包括 (Grid Details)：**
-1. {{grid_pose_1}}，画面风格统一，镜头参数为 {{lens_param_1}}；
-2. {{grid_pose_2}}，镜头参数为 {{lens_param_2}}，展现不同的拍摄角度和表情；
-3. {{grid_pose_3}}，镜头参数为 {{lens_param_3}}，捕捉细腻的情感表达；
-4. {{grid_pose_4}}，镜头参数为 {{lens_param_4}}，利用景深营造层次感；
-5. {{grid_pose_5}}，镜头参数为 {{lens_param_5}}，突出动态瞬间的生动性；
-6. {{grid_pose_6}}，镜头参数为 {{lens_param_6}}，通过前景虚化增强视觉焦点；
-7. {{grid_pose_7}}，镜头参数为 {{lens_param_7}}，展现优雅的姿态和放松的状态；
-8. {{grid_pose_8}}，镜头参数为 {{lens_param_8}}，捕捉自然光线下的表情变化；
-9. {{grid_pose_9}}，镜头参数为 {{lens_param_9}}，微距特写展现面部细节和质感。
-
-**后期处理:** 保持原始素材的真实感，平滑对比度，适度应用柔化效果，确保整体色调统一且富有质感。`;
-
-const TEMPLATE_FASHION_MOODBOARD = `### Fashion Illustration Moodboard (时尚插画情绪板)
-一张9:16竖屏的高级时尚插画情绪板，模拟平板扫描效果。
-
-**背景:** 纯手绘的奶油色水彩晕染纸张，带有淡淡的粉色网格。
-**视觉核心:** 数张具有明显白色模切宽边和柔和投影的亮面乙烯基贴纸。
-
-**贴纸内容:**
-- **中央:** {{sticker_core}}，光线明亮。
-- **左侧:** {{fashion_deconstruct}}。
-- **右下角:** 关键的隐藏层贴纸：一套折叠整齐的内衣，展现细腻纹理。
-- **互动元素:** 一只穿着粉色系、与用户服装呼应的 {{toy_companion}} 正趴在一个手绘对话框上。
-
-**装饰细节:** 周围装饰着蜡笔质感的 {{sticker_decor}} 和潦草的中文书法标注OOTD。
-**注意:** 画面中绝无任何人手、笔或物理桌面背景，纯粹的平面艺术插画。`;
-
-const TEMPLATE_CHARACTER_SELFIE = `### Character Selfie (人物趣味合影)
-让 {{character_companion}} 站在男人旁边，{{action_pose}}，同时对着镜头露出调皮的表情。
-
-**背景:** 以 {{background_scene}} 为背景。
-
-**要求:** 保持自拍构图不变，让两个角色自然地融入画面，光影统一，互动自然。`;
-
-const INITIAL_TEMPLATES = [
-  {
-    id: "tpl_default",
-    name: "角色概念分解图",
-    content: DEFAULT_TEMPLATE_CONTENT,
-    selections: {}
-  },
-  {
-    id: "tpl_photo_grid",
-    name: "3x3 摄影网格",
-    content: TEMPLATE_PHOTO_GRID,
-    selections: {}
-  },
-  {
-    id: "tpl_fashion",
-    name: "时尚情绪板插画",
-    content: TEMPLATE_FASHION_MOODBOARD,
-    selections: {}
-  },
-  {
-    id: "tpl_character_selfie",
-    name: "人物趣味合影",
-    content: TEMPLATE_CHARACTER_SELFIE,
-    selections: {}
-  }
-];
 
 // --- 持久化存储 Hook ---
 const useStickyState = (defaultValue, key) => {
@@ -543,11 +448,13 @@ const useStickyState = (defaultValue, key) => {
 const Variable = ({ id, index, config, currentVal, isOpen, onToggle, onSelect, onAddCustom, popoverRef, categories, t }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [customVal, setCustomVal] = useState("");
+  const [isHovered, setIsHovered] = useState(false);
 
   // Determine styles based on category
   const categoryId = config?.category || 'other';
   const colorKey = categories[categoryId]?.color || 'slate';
   const style = CATEGORY_STYLES[colorKey] || CATEGORY_STYLES.slate;
+  const premium = PREMIUM_STYLES[colorKey] || PREMIUM_STYLES.slate;
 
   // Reset state when popover closes
   useEffect(() => {
@@ -557,7 +464,7 @@ const Variable = ({ id, index, config, currentVal, isOpen, onToggle, onSelect, o
     }
   }, [isOpen]);
 
-  if (!config) return <span className="text-red-400 bg-red-50 px-1 rounded border border-red-200 text-xs" title={`${t('undefined_var')}: ${id}`}>[{id}?]</span>;
+  if (!config) return <span className="text-gray-400 bg-gray-50 px-1 rounded border border-gray-200 text-xs" title={`${t('undefined_var')}: ${id}`}>[{id}?]</span>;
 
   const handleAddSubmit = () => {
       if (customVal.trim()) {
@@ -568,54 +475,73 @@ const Variable = ({ id, index, config, currentVal, isOpen, onToggle, onSelect, o
   };
 
   return (
-    <div className="relative inline-block mx-1 align-baseline group text-base">
+    <div className="relative inline-block mx-1.5 align-baseline group text-base">
       <span 
         onClick={onToggle}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={`
-          cursor-pointer px-2 py-0.5 rounded-md border transition-all duration-200 select-none font-medium
-          ${style.text} ${style.bg} ${style.border}
-          ${style.hoverBg} ${style.hoverBorder}
-          ${isOpen ? `ring-2 ${style.ring} ${style.bgActive}` : ''}
+          cursor-pointer px-3 py-1 rounded-full transition-all duration-300 select-none font-medium text-white
+          ${isOpen ? `ring-2 ring-offset-2 ${style.ring}` : ''}
+          hover:scale-105 active:scale-95
         `}
+        style={{
+            background: `linear-gradient(135deg, ${premium.from} 0%, ${premium.to} 100%)`,
+            boxShadow: isHovered 
+                ? `inset 0px 2px 4px 0px rgba(255, 255, 255, 0.2), 0 4px 12px ${premium.glowColor}`
+                : `inset 0px 2px 4px 0px rgba(0, 0, 0, 0.1), 0 2px 5px ${premium.shadowColor}`,
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+        }}
       >
-        {currentVal || <span className={`${style.text} opacity-50 italic`}>{t('please_select')}</span>}
+        {currentVal || <span className="opacity-70 italic">{t('please_select')}</span>}
       </span>
       
       {/* Popover - 词库选择器 */}
       {isOpen && (
         <div 
           ref={popoverRef}
-          className="absolute left-0 top-full mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden flex flex-col text-left"
-          style={{ minWidth: '280px' }}
+          className="absolute left-0 top-full mt-2 w-72 rounded-xl shadow-2xl z-50 overflow-hidden flex flex-col text-left animate-in fade-in zoom-in-95 duration-200 origin-top-left"
+          style={{ 
+              minWidth: '280px',
+              backdropFilter: 'blur(20px)',
+              backgroundColor: 'rgba(255, 255, 255, 0.85)',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+              boxShadow: `0 10px 40px -10px ${premium.shadowColor}, 0 0 0 1px rgba(0,0,0,0.05)`
+          }}
         >
-          <div className="bg-gray-50 px-3 py-2 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider flex justify-between items-center">
-            <span>{t('select')} {config.label} ({index + 1})</span>
-             <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${style.badgeBg} ${style.badgeText} font-medium`}>
+          <div className="px-4 py-3 border-b border-gray-100/50 flex justify-between items-center bg-white/50 backdrop-blur-sm">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">{t('select')} {config.label}</span>
+             <span 
+                className="text-[10px] px-2 py-0.5 rounded-full font-bold text-white shadow-sm"
+                style={{ background: `linear-gradient(135deg, ${premium.from}, ${premium.to})` }}
+             >
                 {categories[categoryId]?.label || categoryId}
             </span>
           </div>
-          <div className="max-h-60 overflow-y-auto p-2 space-y-1">
+          <div className="max-h-64 overflow-y-auto p-2 space-y-1 custom-scrollbar">
             {config.options.length > 0 ? config.options.map((opt, idx) => (
               <button
                 key={idx}
                 onClick={() => onSelect(opt)}
-                className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
-                  currentVal === opt 
-                    ? `${style.bgActive} ${style.text} font-medium` 
-                    : 'hover:bg-gray-50 text-gray-700'
-                }`}
+                className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 group flex items-center justify-between
+                  ${currentVal === opt 
+                    ? 'bg-white shadow-md ring-1 ring-black/5 font-bold' 
+                    : 'hover:bg-white/60 hover:shadow-sm text-gray-600 hover:text-gray-900'}`}
+                style={currentVal === opt ? { color: premium.to } : {}}
               >
-                {opt}
+                <span>{opt}</span>
+                {currentVal === opt && <Check size={14} style={{ color: premium.to }} />}
               </button>
             )) : (
-              <div className="px-3 py-4 text-center text-gray-400 text-sm">
+              <div className="px-3 py-8 text-center text-gray-400 text-sm italic">
                 {t('no_options')}
               </div>
             )}
           </div>
           
            {/* Add Custom Option Footer */}
-           <div className="p-2 border-t border-gray-100 bg-gray-50">
+           <div className="p-2 border-t border-gray-100/50 bg-white/50 backdrop-blur-sm">
              {isAdding ? (
                  <div className="flex gap-2">
                      <input 
@@ -624,13 +550,13 @@ const Variable = ({ id, index, config, currentVal, isOpen, onToggle, onSelect, o
                         value={customVal}
                         onChange={(e) => setCustomVal(e.target.value)}
                         placeholder={t('add_option_placeholder')}
-                        className={`flex-1 min-w-0 px-2 py-1 text-sm border border-gray-300 rounded ${style.inputBorder} outline-none`}
+                        className="flex-1 min-w-0 px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white/80"
                         onKeyDown={(e) => e.key === 'Enter' && handleAddSubmit()}
                      />
                      <button 
                         onClick={handleAddSubmit}
                         disabled={!customVal.trim()}
-                        className={`px-2 py-1 ${style.btnBg} text-white rounded text-xs font-medium hover:opacity-90 disabled:opacity-50`}
+                        className="px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-medium hover:bg-gray-800 disabled:opacity-50 transition-colors shadow-sm"
                      >
                         {t('confirm')}
                      </button>
@@ -641,7 +567,7 @@ const Variable = ({ id, index, config, currentVal, isOpen, onToggle, onSelect, o
                         e.stopPropagation();
                         setIsAdding(true);
                     }}
-                    className={`w-full flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs ${style.text} ${style.bg} ${style.hoverBg} rounded border ${style.border} transition-colors font-medium dashed`}
+                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs text-gray-500 hover:text-indigo-600 hover:bg-indigo-50/50 rounded-lg border border-dashed border-gray-300 hover:border-indigo-300 transition-all font-medium"
                  >
                     <Plus size={12} /> {t('add_custom_option')}
                  </button>
@@ -712,6 +638,60 @@ const VisualEditor = React.forwardRef(({ value, onChange, banks, categories }, r
   );
 });
 
+// --- 组件：可折叠的分类区块 (New Component) ---
+const CategorySection = ({ catId, categories, banks, onInsert, onDeleteOption, onAddOption, onDeleteBank, onUpdateBankCategory, t }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const category = categories[catId];
+  
+  if (!category) return null;
+
+  const catBanks = Object.entries(banks).filter(([_, bank]) => (bank.category || 'other') === catId);
+  
+  // 如果该分类下没有词库，不显示
+  if (catBanks.length === 0) return null;
+
+  const style = CATEGORY_STYLES[category.color] || CATEGORY_STYLES.slate;
+
+  return (
+    <div className="break-inside-avoid transition-all duration-300">
+        <div 
+            className="flex items-center gap-1 mb-2 cursor-pointer group select-none py-1 -ml-1 pl-1 rounded hover:bg-gray-50 transition-colors"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+        >
+            <div className="text-gray-400 group-hover:text-gray-600 transition-colors mt-0.5">
+                {isCollapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
+            </div>
+            <h3 className={`text-xs font-bold uppercase tracking-wider ${style.text} flex items-center gap-1.5 flex-1`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${style.dotBg}`}></span>
+                {category.label}
+                <span className="text-gray-300 font-normal ml-1 text-[10px] tabular-nums">({catBanks.length})</span>
+            </h3>
+            {/* 折叠时的装饰线 */}
+            {isCollapsed && <div className="h-px bg-gray-100 flex-1 ml-2 mr-2"></div>}
+        </div>
+        
+        {!isCollapsed && (
+            <div className="space-y-3 pl-1">
+                {catBanks.map(([key, bank]) => (
+                    <BankGroup 
+                        key={key}
+                        bankKey={key} 
+                        bank={bank} 
+                        onInsert={onInsert}
+                        onDeleteOption={onDeleteOption}
+                        onAddOption={onAddOption}
+                        onDeleteBank={onDeleteBank}
+                        onUpdateBankCategory={onUpdateBankCategory}
+                        categories={categories}
+                        t={t}
+                    />
+                ))}
+            </div>
+        )}
+    </div>
+  );
+};
+
 // --- 组件：可折叠的词库组 ---
 const BankGroup = ({ bankKey, bank, onInsert, onDeleteOption, onAddOption, onDeleteBank, onUpdateBankCategory, categories, t }) => {
     const [isCollapsed, setIsCollapsed] = useState(true);
@@ -720,6 +700,7 @@ const BankGroup = ({ bankKey, bank, onInsert, onDeleteOption, onAddOption, onDel
     const categoryId = bank.category || 'other';
     const colorKey = categories[categoryId]?.color || 'slate';
     const style = CATEGORY_STYLES[colorKey];
+    const premium = PREMIUM_STYLES[colorKey] || PREMIUM_STYLES.slate;
 
     const handleDragStart = (e) => {
         e.dataTransfer.setData('text/plain', `{{${bankKey}}}`);
@@ -730,118 +711,128 @@ const BankGroup = ({ bankKey, bank, onInsert, onDeleteOption, onAddOption, onDel
         <div 
             draggable="true"
             onDragStart={handleDragStart}
-            className={`bg-white rounded-lg border ${style.border} relative group/card hover:shadow-sm transition-all overflow-hidden break-inside-avoid mb-3 cursor-grab active:cursor-grabbing`}
+            className="relative group/card mb-3 cursor-grab active:cursor-grabbing"
         >
-            {/* Header / Collapsed View */}
+            {/* Gradient Border Glow */}
             <div 
-                className={`flex justify-between items-start p-3 cursor-pointer ${style.hoverBg} transition-colors`}
-                onClick={() => setIsCollapsed(!isCollapsed)}
-            >
-                <div className="flex items-start gap-2 overflow-hidden flex-1 pr-2">
-                    <div className="mt-0.5 flex-shrink-0">
-                        {isCollapsed ? <ChevronDown size={16} className={style.text} /> : <ChevronUp size={16} className={style.text} />}
-                    </div>
-                    <div className="flex flex-col min-w-0">
-                        <span className={`text-sm font-bold ${style.text} truncate leading-tight`}>{bank.label}</span>
-                        <code className="text-[10px] text-gray-400 truncate font-mono">{bankKey}</code>
-                    </div>
-                </div>
-                <div className="flex gap-1 items-center">
-                    <button 
-                        onClick={(e) => { e.stopPropagation(); onInsert(bankKey); }}
-                        title={t('insert')}
-                        className={`p-1 ${style.text} bg-white rounded border border-transparent ${style.hoverBorder} transition-colors flex items-center gap-1`}
-                    >
-                        <Plus size={14} /> 
-                        {!isCollapsed && <span className="text-xs font-medium">{t('insert')}</span>}
-                    </button>
-                    
-                    {!isCollapsed && (
-                        <>
-                            <button 
-                                onClick={(e) => { 
-                                    e.stopPropagation(); 
-                                    setIsEditingCategory(!isEditingCategory); 
-                                }}
-                                title={t('category_label')}
-                                className={`p-1 text-gray-400 ${style.hoverText} rounded transition-colors opacity-0 group-hover/card:opacity-100`}
-                            >
-                                <Settings size={14} />
-                            </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); onDeleteBank(bankKey); }}
-                                className="p-1 text-gray-400 hover:text-red-500 rounded transition-colors opacity-0 group-hover/card:opacity-100"
-                            >
-                                <Trash2 size={14} />
-                            </button>
-                        </>
-                    )}
-                </div>
-            </div>
-            
-            {/* Expanded Content */}
-            {!isCollapsed && (
-                <div className={`p-3 pt-0 border-t ${style.border} ${style.bg}`}>
-                    
-                    {/* Category Edit Mode */}
-                    {isEditingCategory && (
-                        <div className="mb-3 pt-3 pb-3 border-b border-gray-200/50">
-                            <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1">{t('category_label')}</label>
-                            <select 
-                                value={categoryId}
-                                onChange={(e) => {
-                                    onUpdateBankCategory(bankKey, e.target.value);
-                                    setIsEditingCategory(false);
-                                }}
-                                className="w-full text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                {Object.values(categories).map(cat => (
-                                    <option key={cat.id} value={cat.id}>{cat.label}</option>
-                                ))}
-                            </select>
+                className="absolute -inset-[1px] rounded-xl opacity-70 group-hover/card:opacity-100 transition-opacity duration-300"
+                style={{ background: `linear-gradient(135deg, ${premium.from}, ${premium.to})` }}
+            />
+
+            {/* Main Card Content */}
+            <div className="relative bg-white rounded-[11px] m-[1px] overflow-hidden">
+                {/* Header / Collapsed View */}
+                <div 
+                    className="flex justify-between items-start p-3 cursor-pointer hover:bg-gray-50/80 transition-colors"
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                >
+                    <div className="flex items-start gap-2 overflow-hidden flex-1 pr-2">
+                        <div className="mt-0.5 flex-shrink-0 text-gray-400 group-hover/card:text-gray-600 transition-colors">
+                            {isCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
                         </div>
-                    )}
-
-                    <div className="flex flex-col gap-2 mb-3 mt-3">
-                        {bank.options.map((opt, idx) => (
-                            <div key={idx} className="group flex items-center justify-between gap-1 bg-white border border-gray-200 px-2 py-1 rounded text-xs text-gray-600 shadow-sm overflow-hidden">
-                                <span className="truncate" title={opt}>{opt}</span>
-                                <button 
-                                    onClick={() => onDeleteOption(bankKey, opt)}
-                                    className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition-opacity flex-shrink-0"
-                                >
-                                    <X size={12} />
-                                </button>
-                            </div>
-                        ))}
+                        <div className="flex flex-col min-w-0">
+                            <span className="text-sm font-bold text-gray-700 truncate leading-tight group-hover/card:text-gray-900 transition-colors">{bank.label}</span>
+                            <code className="text-[10px] text-gray-400 truncate font-mono mt-0.5" style={{ color: premium.to }}>{`{{${bankKey}}}`}</code>
+                        </div>
                     </div>
-
-                    <div className="flex gap-2">
-                        <input
-                            type="text"
-                            placeholder={t('add_option_placeholder')}
-                            className={`flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 ${style.inputRing} ${style.inputBorder}`}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    onAddOption(bankKey, e.target.value);
-                                    e.target.value = '';
-                                }
-                            }}
-                        />
+                    <div className="flex gap-1 items-center">
                         <button 
-                            className="p-1 bg-white border border-gray-200 text-gray-500 rounded hover:bg-gray-50"
-                            onClick={(e) => {
-                                const input = e.currentTarget.previousSibling;
-                                onAddOption(bankKey, input.value);
-                                input.value = '';
-                            }}
+                            onClick={(e) => { e.stopPropagation(); onInsert(bankKey); }}
+                            title={t('insert')}
+                            className="p-1.5 bg-white rounded-lg border border-gray-100 hover:border-indigo-200 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm flex items-center gap-1"
                         >
-                            <Plus size={16} />
+                            <Plus size={14} /> 
+                            {!isCollapsed && <span className="text-xs font-medium">{t('insert')}</span>}
                         </button>
+                        
+                        {!isCollapsed && (
+                            <>
+                                <button 
+                                    onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        setIsEditingCategory(!isEditingCategory); 
+                                    }}
+                                    title={t('category_label')}
+                                    className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                >
+                                    <Settings size={14} />
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); onDeleteBank(bankKey); }}
+                                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                >
+                                    <Trash2 size={14} />
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
-            )}
+                
+                {/* Expanded Content */}
+                {!isCollapsed && (
+                    <div className="p-3 pt-0">
+                        <div className="h-px bg-gray-100 mb-3 -mx-3"></div>
+                        
+                        {/* Category Edit Mode */}
+                        {isEditingCategory && (
+                            <div className="mb-3 pb-3 border-b border-gray-100">
+                                <label className="block text-[10px] uppercase font-bold text-gray-400 mb-1">{t('category_label')}</label>
+                                <select 
+                                    value={categoryId}
+                                    onChange={(e) => {
+                                        onUpdateBankCategory(bankKey, e.target.value);
+                                        setIsEditingCategory(false);
+                                    }}
+                                    className="w-full text-xs border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-gray-50"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {Object.values(categories).map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.label}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
+
+                        <div className="flex flex-col gap-2 mb-3">
+                            {bank.options.map((opt, idx) => (
+                                <div key={idx} className="group/opt flex items-center justify-between gap-2 bg-gray-50 hover:bg-white border border-transparent hover:border-gray-200 px-2.5 py-1.5 rounded-lg text-xs text-gray-600 shadow-sm transition-all duration-200">
+                                    <span className="truncate select-text" title={opt}>{opt}</span>
+                                    <button 
+                                        onClick={() => onDeleteOption(bankKey, opt)}
+                                        className="opacity-0 group-hover/opt:opacity-100 text-gray-300 hover:text-red-500 transition-all flex-shrink-0"
+                                    >
+                                        <X size={12} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                placeholder={t('add_option_placeholder')}
+                                className="flex-1 px-2.5 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        onAddOption(bankKey, e.target.value);
+                                        e.target.value = '';
+                                    }
+                                }}
+                            />
+                            <button 
+                                className="p-1.5 bg-gray-50 border border-gray-200 text-gray-400 rounded-lg hover:bg-white hover:border-indigo-300 hover:text-indigo-600 transition-all shadow-sm"
+                                onClick={(e) => {
+                                    const input = e.currentTarget.previousSibling;
+                                    onAddOption(bankKey, input.value);
+                                    input.value = '';
+                                }}
+                            >
+                                <Plus size={16} />
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
@@ -912,7 +903,7 @@ const CategoryManager = ({ isOpen, onClose, categories, setCategories, banks, se
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]">
         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <h3 className="font-bold text-gray-800 flex items-center gap-2">
@@ -995,26 +986,175 @@ const CategoryManager = ({ isOpen, onClose, categories, setCategories, banks, se
   );
 };
 
+// --- Modal: Insert Variable Picker ---
+const InsertVariableModal = ({ isOpen, onClose, categories, banks, onSelect, t }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh] animate-slide-up">
+        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+          <h3 className="font-bold text-gray-800 flex items-center gap-2">
+            <List size={18} className="text-indigo-600" /> {t('insert')}
+          </h3>
+          <button onClick={onClose} className="p-1 hover:bg-gray-200 rounded text-gray-500"><X size={18}/></button>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+           {Object.keys(categories).map(catId => {
+               const catBanks = Object.entries(banks).filter(([_, bank]) => (bank.category || 'other') === catId);
+               if (catBanks.length === 0) return null;
+               
+               const category = categories[catId];
+               const style = CATEGORY_STYLES[category.color] || CATEGORY_STYLES.slate;
+
+               return (
+                   <div key={catId}>
+                       <h4 className={`text-xs font-bold uppercase tracking-wider mb-2 ${style.text} flex items-center gap-1.5 sticky top-0 bg-white py-1 z-10`}>
+                           <span className={`w-1.5 h-1.5 rounded-full ${style.dotBg}`}></span>
+                           {category.label}
+                       </h4>
+                       <div className="grid grid-cols-1 gap-2">
+                           {catBanks.map(([key, bank]) => (
+                               <button
+                                   key={key}
+                                   onClick={() => onSelect(key)}
+                                   className={`
+                                     flex items-center justify-between p-3 rounded-lg border text-left transition-all group
+                                     bg-white border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/50 hover:shadow-sm
+                                   `}
+                               >
+                                   <div>
+                                       <span className="block text-sm font-medium text-gray-700 group-hover:text-indigo-700">{bank.label}</span>
+                                       <code className="text-[10px] text-gray-400 font-mono group-hover:text-indigo-400">{`{{${key}}}`}</code>
+                                   </div>
+                                   <Plus size={16} className="text-gray-300 group-hover:text-indigo-500" />
+                               </button>
+                           ))}
+                       </div>
+                   </div>
+               );
+           })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+// --- Helper Component: Premium Button (New) ---
+const PremiumButton = ({ onClick, children, className = "", active = false, disabled = false, title, icon: Icon, color = "indigo" }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    const premium = PREMIUM_STYLES[color] || PREMIUM_STYLES.indigo;
+
+    // Base classes
+    const baseClasses = `
+      flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg font-medium transition-all duration-300
+      disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale
+      ${className}
+    `;
+
+    // Active/Hover styles using inline styles for premium look
+    const style = (active || isHovered) && !disabled ? {
+        background: `linear-gradient(135deg, ${premium.from} 0%, ${premium.to} 100%)`,
+        boxShadow: `inset 0px 1px 2px 0px rgba(255, 255, 255, 0.3), 0 4px 12px ${premium.glowColor}`,
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        color: 'white',
+        transform: 'translateY(-1px)'
+    } : {
+        background: active ? '#EEF2FF' : 'white',
+        border: '1px solid #E5E7EB',
+        color: active ? premium.to : '#4B5563',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+    };
+
+    return (
+        <button
+            onClick={onClick}
+            disabled={disabled}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className={baseClasses}
+            style={style}
+            title={title}
+        >
+            {Icon && <Icon size={16} />}
+            {children && <span>{children}</span>}
+        </button>
+    );
+};
+
+// --- Helper Component: Editor Toolbar ---
+const EditorToolbar = ({ onInsertClick, canUndo, canRedo, onUndo, onRedo, t }) => {
+  return (
+    <div className="h-12 border-b border-gray-200 bg-white/80 backdrop-blur-sm flex items-center justify-between px-4 flex-shrink-0 z-20">
+      {/* Left: Undo/Redo */}
+      <div className="flex items-center gap-2">
+         <PremiumButton onClick={onUndo} disabled={!canUndo} title="Undo" icon={Undo} color="slate" className="!px-2 !py-1.5" />
+         <PremiumButton onClick={onRedo} disabled={!canRedo} title="Redo" icon={Redo} color="slate" className="!px-2 !py-1.5" />
+      </div>
+
+      {/* Right: Insert & Tools */}
+      <div className="flex items-center gap-2">
+         <PremiumButton onClick={onInsertClick} icon={Plus} color="indigo">
+            {t('insert')}
+         </PremiumButton>
+      </div>
+    </div>
+  );
+};
+
+// --- Helper Component: Lightbox ---
+const Lightbox = ({ isOpen, onClose, src }) => {
+  if (!isOpen || !src) return null;
+  return (
+    <div 
+        className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+        onClick={onClose}
+    >
+        <button 
+            className="absolute top-4 right-4 p-2 text-white/70 hover:text-white rounded-full hover:bg-white/10 transition-colors z-50"
+            onClick={onClose}
+        >
+            <X size={32} />
+        </button>
+        <div 
+            className="relative max-w-7xl w-full h-full flex items-center justify-center p-4"
+            onClick={(e) => e.stopPropagation()}
+        >
+            <img 
+                src={src} 
+                alt="Preview" 
+                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 select-none" 
+            />
+        </div>
+    </div>
+  );
+};
+
 const App = () => {
   // Global State with Persistence
-  const [banks, setBanks] = useStickyState(INITIAL_BANKS, "app_banks_v6"); 
-  const [defaults, setDefaults] = useStickyState(INITIAL_DEFAULTS, "app_defaults_v6");
+  const [banks, setBanks] = useStickyState(INITIAL_BANKS, "app_banks_v8"); 
+  const [defaults, setDefaults] = useStickyState(INITIAL_DEFAULTS, "app_defaults_v8");
   const [language, setLanguage] = useStickyState("cn", "app_language_v1"); 
   const [categories, setCategories] = useStickyState(INITIAL_CATEGORIES, "app_categories_v1"); // New state
   
-  const [templates, setTemplates] = useStickyState(INITIAL_TEMPLATES, "app_templates_v6");
-  const [activeTemplateId, setActiveTemplateId] = useStickyState("tpl_default", "app_active_template_id_v3");
+  const [templates, setTemplates] = useStickyState(INITIAL_TEMPLATES_CONFIG, "app_templates_v9");
+  const [activeTemplateId, setActiveTemplateId] = useStickyState("tpl_default", "app_active_template_id_v4");
   
   // UI State
   const [bankSidebarWidth, setBankSidebarWidth] = useStickyState(420, "app_bank_sidebar_width_v1"); // Default width increased to 420px for 2-column layout
   const [isResizing, setIsResizing] = useState(false);
+  const [mobileTab, setMobileTab] = useState("editor"); // 'templates', 'banks', 'editor'
 
   const [isEditing, setIsEditing] = useState(false);
   const [activePopover, setActivePopover] = useState(null);
   const [copied, setCopied] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isCategoryManagerOpen, setIsCategoryManagerOpen] = useState(false); // New UI state
-  
+  const [isInsertModalOpen, setIsInsertModalOpen] = useState(false); // New UI state for Insert Picker
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false); // New UI state for Lightbox
+
   // Add Bank State
   const [isAddingBank, setIsAddingBank] = useState(false);
   const [newBankLabel, setNewBankLabel] = useState("");
@@ -1024,6 +1164,12 @@ const App = () => {
   // Template Management UI State
   const [editingTemplateNameId, setEditingTemplateNameId] = useState(null);
   const [tempTemplateName, setTempTemplateName] = useState("");
+  const [zoomedImage, setZoomedImage] = useState(null);
+
+  // History State for Undo/Redo
+  const [historyPast, setHistoryPast] = useState([]);
+  const [historyFuture, setHistoryFuture] = useState([]);
+  const historyLastSaveTime = useRef(0);
 
   const popoverRef = useRef(null);
   const textareaRef = useRef(null);
@@ -1049,6 +1195,13 @@ const App = () => {
   const activeTemplate = templates.find(t => t.id === activeTemplateId) || templates[0];
 
   // --- Effects ---
+  // Reset history when template changes
+  useEffect(() => {
+      setHistoryPast([]);
+      setHistoryFuture([]);
+      historyLastSaveTime.current = 0;
+  }, [activeTemplateId]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
@@ -1152,10 +1305,74 @@ const App = () => {
     setEditingTemplateNameId(null);
   };
 
-  const updateActiveTemplateContent = (newContent) => {
+  const fileInputRef = useRef(null);
+  
+  const handleUploadImage = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+              setTemplates(prev => prev.map(t => 
+                  t.id === activeTemplateId ? { ...t, imageUrl: reader.result } : t
+              ));
+          };
+          reader.readAsDataURL(file);
+      }
+  };
+
+  const handleResetImage = () => {
+      const defaultUrl = INITIAL_TEMPLATES_CONFIG.find(t => t.id === activeTemplateId)?.imageUrl;
+      if (defaultUrl) {
+          setTemplates(prev => prev.map(t => 
+              t.id === activeTemplateId ? { ...t, imageUrl: defaultUrl } : t
+          ));
+      }
+  };
+
+  const updateActiveTemplateContent = (newContent, forceSaveHistory = false) => {
+    // History Management
+    const now = Date.now();
+    const shouldSave = forceSaveHistory || (now - historyLastSaveTime.current > 1000);
+
+    if (shouldSave) {
+        setHistoryPast(prev => [...prev, activeTemplate.content]);
+        setHistoryFuture([]); // Clear redo stack on new change
+        historyLastSaveTime.current = now;
+    }
+
     setTemplates(prev => prev.map(t => 
       t.id === activeTemplateId ? { ...t, content: newContent } : t
     ));
+  };
+
+  const handleUndo = () => {
+      if (historyPast.length === 0) return;
+      
+      const previous = historyPast[historyPast.length - 1];
+      const newPast = historyPast.slice(0, -1);
+      
+      setHistoryFuture(prev => [activeTemplate.content, ...prev]);
+      setHistoryPast(newPast);
+      
+      // Direct update without saving history again
+      setTemplates(prev => prev.map(t => 
+        t.id === activeTemplateId ? { ...t, content: previous } : t
+      ));
+  };
+
+  const handleRedo = () => {
+      if (historyFuture.length === 0) return;
+
+      const next = historyFuture[0];
+      const newFuture = historyFuture.slice(1);
+
+      setHistoryPast(prev => [...prev, activeTemplate.content]);
+      setHistoryFuture(newFuture);
+
+      // Direct update without saving history again
+      setTemplates(prev => prev.map(t => 
+        t.id === activeTemplateId ? { ...t, content: next } : t
+      ));
   };
 
   const updateActiveTemplateSelection = (uniqueKey, value) => {
@@ -1261,7 +1478,7 @@ const App = () => {
     if (!isEditing) {
       setIsEditing(true);
       setTimeout(() => {
-        updateActiveTemplateContent(activeTemplate.content + textToInsert);
+        updateActiveTemplateContent(activeTemplate.content + textToInsert, true);
         // Simple scroll to bottom hack
         if(textareaRef.current) textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
       }, 50);
@@ -1277,7 +1494,7 @@ const App = () => {
     const before = text.substring(0, start);
     const after = text.substring(end, text.length);
     
-    updateActiveTemplateContent(`${before}${textToInsert}${after}`);
+    updateActiveTemplateContent(`${before}${textToInsert}${after}`, true);
     
     setTimeout(() => {
       textarea.focus();
@@ -1317,28 +1534,62 @@ const App = () => {
 
     setIsExporting(true);
     try {
+        // 获取元素实际高度以支持长图导出
+        const elementHeight = element.scrollHeight;
+        
         const canvas = await html2canvas(element, {
             scale: 2, // High resolution
             useCORS: true,
-            backgroundColor: '#ffffff', // Ensure white background
+            backgroundColor: null, // Transparent
             logging: false,
+            windowHeight: elementHeight + 200, // 确保捕获完整高度（含footer空间）
+            height: elementHeight + 200,
             onclone: (clonedDoc) => {
-                // You can manipulate the cloned document here if needed (e.g. hide scrollbars)
                 const clonedElement = clonedDoc.getElementById('preview-card');
                 if (clonedElement) {
-                   clonedElement.style.boxShadow = 'none'; // Optional: remove shadow for cleaner export
-                   clonedElement.style.border = 'none';
+                   // Style for export - 支持长图
+                   clonedElement.style.backgroundImage = 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)'; 
+                   clonedElement.style.boxShadow = 'none';
+                   clonedElement.style.margin = '0';
+                   clonedElement.style.borderRadius = '0';
+                   clonedElement.style.padding = '60px'; // Generous padding
+                   clonedElement.style.width = '800px'; // Fixed width for consistent export
+                   clonedElement.style.height = 'auto'; // 自动高度，支持长内容
+                   clonedElement.style.maxWidth = 'none';
+                   clonedElement.style.minHeight = 'auto';
                    
+                   // Ensure Image Style in export to prevent stretching
+                   const img = clonedElement.querySelector('img');
+                   if (img) {
+                       img.style.maxWidth = '300px';
+                       img.style.maxHeight = '300px';
+                       img.style.width = 'auto';
+                       img.style.height = 'auto';
+                       img.style.objectFit = 'contain';
+                   }
+                   
+                   // Fix variable UI height issues
+                   const variables = clonedElement.querySelectorAll('span[role="button"]');
+                   variables.forEach(v => {
+                       v.style.display = 'inline-flex';
+                       v.style.alignItems = 'center';
+                       v.style.verticalAlign = 'middle';
+                       v.style.height = 'auto';
+                       v.style.lineHeight = '1.6';
+                       v.style.marginTop = '0';
+                       v.style.marginBottom = '0';
+                   });
+
                    // Add Footer Watermark
                    const footer = clonedDoc.createElement('div');
-                   footer.style.marginTop = '40px';
-                   footer.style.paddingTop = '20px';
-                   footer.style.borderTop = '1px solid #f3f4f6';
+                   footer.style.marginTop = '60px';
+                   footer.style.paddingTop = '30px';
+                   footer.style.borderTop = '1px solid #d1d5db';
                    footer.style.textAlign = 'center';
-                   footer.style.color = '#9ca3af';
-                   footer.style.fontSize = '12px';
+                   footer.style.color = '#6b7280';
+                   footer.style.fontSize = '14px';
                    footer.style.fontFamily = 'sans-serif';
-                   footer.innerText = '由“提示词填空器”制作生成，Made by 角落工作室';
+                   footer.innerText = '由“提示词填空器”制作生成，Made by "提示词填空器"';
                    
                    clonedElement.appendChild(footer);
                 }
@@ -1365,34 +1616,34 @@ const App = () => {
   const renderTemplateContent = () => {
     const lines = activeTemplate.content.split('\n');
     const counters = {}; 
-
+    
     return lines.map((line, lineIdx) => {
-      if (!line.trim()) return <div key={lineIdx} className="h-4"></div>;
+      if (!line.trim()) return <div key={lineIdx} className="h-6"></div>;
 
       let content = line;
       let Type = 'div';
-      let className = "text-gray-700 mb-1";
+      let className = "text-gray-700 mb-3 leading-10";
 
       if (line.startsWith('### ')) {
         Type = 'h3';
         className = "text-lg font-bold text-gray-900 mt-6 mb-3 border-b border-gray-100 pb-2";
         content = line.replace('### ', '');
       } else if (line.trim().startsWith('- ')) {
-        className = "ml-4 flex items-start gap-2 text-gray-700 mb-1";
+        className = "ml-4 flex items-start gap-2 text-gray-700 mb-2 leading-10";
         content = (
           <>
-            <span className="text-gray-400 mt-1.5">•</span>
+            <span className="text-gray-400 mt-2.5">•</span>
             <span className="flex-1">{parseLineWithVariables(line.replace('- ', '').trim(), lineIdx, counters)}</span>
           </>
         );
         return <div key={lineIdx} className={className}>{content}</div>;
       } else if (/^\d+\.\s/.test(line.trim())) {
-         className = "ml-4 flex items-start gap-2 text-gray-700 mb-1";
+         className = "ml-4 flex items-start gap-2 text-gray-700 mb-2 leading-10";
          const number = line.trim().match(/^\d+\./)[0];
          const text = line.trim().replace(/^\d+\.\s/, '');
          content = (
             <>
-              <span className="font-mono text-gray-400 mt-0.5 min-w-[20px]">{number}</span>
+              <span className="font-mono text-gray-400 mt-1 min-w-[20px]">{number}</span>
               <span className="flex-1">{parseLineWithVariables(text, lineIdx, counters)}</span>
             </>
          );
@@ -1449,36 +1700,53 @@ const App = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 font-sans text-slate-800 overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen w-screen bg-gradient-to-br from-[#F3F4F6] to-[#E5E7EB] font-sans text-slate-800 overflow-hidden md:p-4 md:gap-4">
       
       {/* --- 1. Templates Sidebar (Far Left) --- */}
-      <div className="w-[240px] bg-gray-900 flex flex-col border-r border-gray-800 z-20 flex-shrink-0">
-        <div className="p-4 border-b border-gray-800">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2 text-white">
-              <FileText className="w-5 h-5 text-indigo-400" />
-              <h2 className="text-lg font-bold">{t('template_management')}</h2>
+      {/* Mobile: Show only if tab is 'templates'. Desktop: Always show. */}
+      <div className={`
+        ${mobileTab === 'templates' ? 'flex fixed inset-0 z-50 md:static' : 'hidden'} 
+        md:flex w-full md:w-[260px] flex-col flex-shrink-0 h-full
+        bg-white/60 backdrop-blur-xl md:rounded-3xl border border-white/40 shadow-lg overflow-hidden transition-all duration-300
+      `}>
+        <div className="p-5 border-b border-gray-200/50 bg-white/30 backdrop-blur-sm">
+           <div className="mb-4 flex justify-between items-center">
+               <h1 className="text-gray-800 font-bold text-sm tracking-wide">提示词填空器 <span className="text-gray-400 text-xs font-normal ml-1">V0.3.0</span></h1>
+               {/* Language Toggle */}
+                <button 
+                  onClick={() => setLanguage(language === 'cn' ? 'en' : 'cn')}
+                  className="text-[10px] bg-white/80 text-gray-500 px-2 py-1 rounded-full hover:text-indigo-600 hover:bg-indigo-50 border border-gray-200/50 transition-colors flex items-center gap-1 shadow-sm"
+                >
+                  <Globe size={10} />
+                  {language.toUpperCase()}
+                </button>
+           </div>
+
+          <div className="flex items-center gap-2 text-gray-800 mb-1">
+            <div className="p-1.5 bg-indigo-100 rounded-lg text-indigo-600">
+                <FileText className="w-4 h-4" />
             </div>
-            {/* Language Toggle */}
-            <button 
-              onClick={() => setLanguage(language === 'cn' ? 'en' : 'cn')}
-              className="text-xs bg-gray-800 text-gray-400 px-2 py-1 rounded hover:text-white hover:bg-gray-700 transition-colors flex items-center gap-1"
-            >
-              <Globe size={12} />
-              {language.toUpperCase()}
-            </button>
+            <h2 className="text-base font-bold">{t('template_management')}</h2>
           </div>
-          <p className="text-xs text-gray-500">{t('template_subtitle')}</p>
+          <p className="text-xs text-gray-400">{t('template_subtitle')}</p>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
+        <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
           {templates.map(t_item => (
              <div 
                key={t_item.id}
-               onClick={() => setActiveTemplateId(t_item.id)}
+               onClick={() => {
+                   setActiveTemplateId(t_item.id);
+                   // On mobile, auto-switch to editor after selection
+                   if (window.innerWidth < 768) {
+                       setMobileTab('editor');
+                   }
+               }}
                className={`
-                 group flex items-center justify-between px-3 py-3 rounded-lg cursor-pointer transition-all
-                 ${activeTemplateId === t_item.id ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'}
+                 group flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200
+                 ${activeTemplateId === t_item.id 
+                    ? 'bg-white shadow-md ring-1 ring-indigo-100' 
+                    : 'text-gray-600 hover:bg-white/50 hover:text-gray-900'}
                `}
              >
                {editingTemplateNameId === t_item.id ? (
@@ -1489,33 +1757,37 @@ const App = () => {
                    onChange={(e) => setTempTemplateName(e.target.value)}
                    onBlur={saveTemplateName}
                    onKeyDown={(e) => e.key === 'Enter' && saveTemplateName()}
-                   className="bg-gray-700 text-white text-sm px-2 py-1 rounded w-full outline-none border border-indigo-400"
+                   className="bg-white text-gray-800 text-sm px-2 py-1 rounded-lg w-full outline-none border-2 border-indigo-400/50 shadow-sm"
                    onClick={(e) => e.stopPropagation()}
                  />
                ) : (
                  <>
                    <div className="flex items-center gap-2 overflow-hidden flex-1">
-                     <span className="truncate text-sm font-medium">{t_item.name}</span>
+                     {/* Active Indicator */}
+                     {activeTemplateId === t_item.id && (
+                         <div className="w-1 h-4 bg-indigo-500 rounded-full flex-shrink-0 animate-in fade-in zoom-in duration-300"></div>
+                     )}
+                     <span className={`truncate text-sm ${activeTemplateId === t_item.id ? 'font-bold text-gray-800' : 'font-medium'}`}>{t_item.name}</span>
                    </div>
-                   <div className="hidden group-hover:flex items-center gap-1">
+                   <div className={`flex items-center gap-1 ${activeTemplateId === t_item.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
                      <button 
                        title={t('rename')}
                        onClick={(e) => startRenamingTemplate(t_item, e)}
-                       className="p-1 hover:bg-gray-700 rounded text-gray-400 hover:text-white"
+                       className="p-1 hover:bg-gray-100 rounded text-gray-400 hover:text-indigo-600"
                      >
                        <Pencil size={12} />
                      </button>
                      <button 
                        title={t('duplicate')}
                        onClick={(e) => handleDuplicateTemplate(t_item, e)}
-                       className="p-1 hover:bg-gray-700 rounded text-gray-400 hover:text-white"
+                       className="p-1 hover:bg-gray-100 rounded text-gray-400 hover:text-indigo-600"
                      >
                        <CopyIcon size={12} />
                      </button>
                      <button 
                        title={t('delete')}
                        onClick={(e) => handleDeleteTemplate(t_item.id, e)}
-                       className="p-1 hover:bg-red-900/50 rounded text-gray-400 hover:text-red-400"
+                       className="p-1 hover:bg-red-50 rounded text-gray-400 hover:text-red-500"
                      >
                        <Trash2 size={12} />
                      </button>
@@ -1526,40 +1798,54 @@ const App = () => {
           ))}
         </div>
 
-        <div className="p-3 border-t border-gray-800">
-          <button 
+        <div className="p-4 border-t border-gray-200/50 bg-white/30 backdrop-blur-sm pb-20 md:pb-4">
+          <PremiumButton
             onClick={handleAddTemplate}
-            className="w-full flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm py-2 rounded transition-colors"
+            icon={Plus}
+            color="indigo"
+            active={true}
+            className="w-full !py-2.5 text-sm transition-all duration-300 transform hover:-translate-y-0.5"
           >
-            <Plus size={16} /> {t('new_template')}
-          </button>
+            {t('new_template')}
+          </PremiumButton>
+        </div>
+
+        {/* Footer Info - Hidden on mobile to save space */}
+        <div className="hidden md:block p-4 pt-0 border-t border-transparent text-[10px] text-gray-400 leading-relaxed text-center opacity-60 hover:opacity-100 transition-opacity">
+            <p>由角落工作室制作</p>
         </div>
       </div>
 
       {/* --- 2. Bank Sidebar (Middle Left) - UPDATED Resizable & Responsive Layout --- */}
       <div 
         ref={sidebarRef}
-        className="bg-white border-r border-gray-200 flex flex-col h-full shadow-sm z-10 flex-shrink-0 relative"
-        style={{ width: `${bankSidebarWidth}px` }}
+        className={`
+            ${mobileTab === 'banks' ? 'flex fixed inset-0 z-50 bg-white md:static' : 'hidden'} 
+            md:flex flex-col h-full flex-shrink-0 relative rounded-3xl overflow-hidden transition-all duration-300
+            bg-white/40 backdrop-blur-md border border-white/30 shadow-lg
+        `}
+        style={{ width: window.innerWidth >= 768 ? `${bankSidebarWidth}px` : '100%' }}
       >
-        {/* Resizer Handle */}
+        {/* Resizer Handle - Desktop Only */}
         <div 
-            className="absolute right-0 top-0 bottom-0 w-1.5 cursor-col-resize hover:bg-indigo-400 transition-colors z-50 group flex items-center justify-center"
+            className="hidden md:flex absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize z-40 group items-center justify-center"
             onMouseDown={startResizing}
         >
              {/* Visual handle indicator on hover */}
-            <div className="h-8 w-1 rounded-full bg-gray-300 group-hover:bg-indigo-200 transition-colors"></div>
+            <div className="h-12 w-1 rounded-full bg-gray-300/50 group-hover:bg-indigo-400/80 transition-colors shadow-sm backdrop-blur-sm"></div>
         </div>
 
-        <div className="p-5 border-b border-gray-100 bg-white">
+        <div className="p-5 border-b border-white/20 bg-white/40 backdrop-blur-md sticky top-0 z-30">
           <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2">
-                <Settings className="w-5 h-5 text-gray-600" />
-                <h2 className="text-lg font-bold text-gray-800">{t('bank_config')}</h2>
+            <div className="flex items-center gap-2 text-gray-800">
+                <div className="p-1.5 bg-white rounded-lg text-gray-600 shadow-sm border border-gray-100">
+                    <Settings size={16} />
+                </div>
+                <h2 className="text-base font-bold">{t('bank_config')}</h2>
             </div>
             <button 
                 onClick={() => setIsCategoryManagerOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors text-xs font-medium"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white/60 hover:bg-white text-gray-600 rounded-lg transition-all text-xs font-medium shadow-sm border border-transparent hover:border-gray-200 mr-1"
                 title={t('manage_categories')}
             >
                 <List size={14} />
@@ -1569,172 +1855,118 @@ const App = () => {
           <p className="text-xs text-gray-500">{t('bank_subtitle')}</p>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 pb-20">
+        <div className="flex-1 overflow-y-auto p-4 pb-24 md:pb-20 custom-scrollbar">
           
-          {bankSidebarWidth >= 520 ? (
-             <div className="flex gap-4 items-start">
+          {bankSidebarWidth >= 520 || window.innerWidth < 768 ? (
+             <div className="flex flex-col md:flex-row gap-4 items-start">
                {/* Left Column */}
-               <div className="flex-1 flex flex-col gap-6 min-w-0">
-                  {Object.keys(categories).filter((_, i) => i % 2 === 0).map(catId => {
-                      const catBanks = Object.entries(banks).filter(([_, bank]) => (bank.category || 'other') === catId);
-                      if (catBanks.length === 0) return null;
-                      
-                      const catConfig = categories[catId];
-                      if (!catConfig) return null; 
-
-                      const style = CATEGORY_STYLES[catConfig.color] || CATEGORY_STYLES.slate;
-
-                      return (
-                        <div key={catId} className="break-inside-avoid">
-                            <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 ${style.text} flex items-center gap-1.5`}>
-                               <span className={`w-1.5 h-1.5 rounded-full ${style.dotBg}`}></span>
-                               {catConfig.label}
-                            </h3>
-                            <div>
-                                {catBanks.map(([key, bank]) => (
-                                    <BankGroup 
-                                        key={key}
-                                        bankKey={key} 
-                                        bank={bank} 
-                                        onInsert={insertVariableToTemplate}
-                                        onDeleteOption={handleDeleteOption}
-                                        onAddOption={handleAddOption}
-                                        onDeleteBank={handleDeleteBank}
-                                        onUpdateBankCategory={handleUpdateBankCategory}
-                                        categories={categories}
-                                        t={t}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                      );
-                  })}
+               <div className="flex-1 flex flex-col gap-4 min-w-0 w-full">
+                  {Object.keys(categories).filter((_, i) => i % 2 === 0).map(catId => (
+                      <CategorySection 
+                          key={catId}
+                          catId={catId}
+                          categories={categories}
+                          banks={banks}
+                          onInsert={(key) => {
+                              insertVariableToTemplate(key);
+                              // On mobile, maybe feedback or auto switch? Let's stay to allow multiple inserts
+                          }}
+                          onDeleteOption={handleDeleteOption}
+                          onAddOption={handleAddOption}
+                          onDeleteBank={handleDeleteBank}
+                          onUpdateBankCategory={handleUpdateBankCategory}
+                          t={t}
+                      />
+                  ))}
                </div>
                
                {/* Right Column */}
-               <div className="flex-1 flex flex-col gap-6 min-w-0">
-                  {Object.keys(categories).filter((_, i) => i % 2 === 1).map(catId => {
-                      const catBanks = Object.entries(banks).filter(([_, bank]) => (bank.category || 'other') === catId);
-                      if (catBanks.length === 0) return null;
-                      
-                      const catConfig = categories[catId];
-                      if (!catConfig) return null; 
-
-                      const style = CATEGORY_STYLES[catConfig.color] || CATEGORY_STYLES.slate;
-
-                      return (
-                        <div key={catId} className="break-inside-avoid">
-                            <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 ${style.text} flex items-center gap-1.5`}>
-                               <span className={`w-1.5 h-1.5 rounded-full ${style.dotBg}`}></span>
-                               {catConfig.label}
-                            </h3>
-                            <div>
-                                {catBanks.map(([key, bank]) => (
-                                    <BankGroup 
-                                        key={key}
-                                        bankKey={key} 
-                                        bank={bank} 
-                                        onInsert={insertVariableToTemplate}
-                                        onDeleteOption={handleDeleteOption}
-                                        onAddOption={handleAddOption}
-                                        onDeleteBank={handleDeleteBank}
-                                        onUpdateBankCategory={handleUpdateBankCategory}
-                                        categories={categories}
-                                        t={t}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                      );
-                  })}
+               <div className="flex-1 flex flex-col gap-4 min-w-0 w-full">
+                  {Object.keys(categories).filter((_, i) => i % 2 === 1).map(catId => (
+                      <CategorySection 
+                          key={catId}
+                          catId={catId}
+                          categories={categories}
+                          banks={banks}
+                          onInsert={insertVariableToTemplate}
+                          onDeleteOption={handleDeleteOption}
+                          onAddOption={handleAddOption}
+                          onDeleteBank={handleDeleteBank}
+                          onUpdateBankCategory={handleUpdateBankCategory}
+                          t={t}
+                      />
+                  ))}
                </div>
              </div>
           ) : (
-            <div className="flex flex-col gap-6">
-                {Object.keys(categories).map(catId => {
-                    const catBanks = Object.entries(banks).filter(([_, bank]) => (bank.category || 'other') === catId);
-                    if (catBanks.length === 0) return null;
-                    
-                    const catConfig = categories[catId];
-                    if (!catConfig) return null; 
-
-                    const style = CATEGORY_STYLES[catConfig.color] || CATEGORY_STYLES.slate;
-
-                    return (
-                        <div key={catId} className="break-inside-avoid">
-                            <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 ${style.text} flex items-center gap-1.5`}>
-                               <span className={`w-1.5 h-1.5 rounded-full ${style.dotBg}`}></span>
-                               {catConfig.label}
-                            </h3>
-                            <div>
-                                {catBanks.map(([key, bank]) => (
-                                    <BankGroup 
-                                        key={key}
-                                        bankKey={key} 
-                                        bank={bank} 
-                                        onInsert={insertVariableToTemplate}
-                                        onDeleteOption={handleDeleteOption}
-                                        onAddOption={handleAddOption}
-                                        onDeleteBank={handleDeleteBank}
-                                        onUpdateBankCategory={handleUpdateBankCategory}
-                                        categories={categories}
-                                        t={t}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    );
-                })}
+            <div className="flex flex-col gap-4">
+                {Object.keys(categories).map(catId => (
+                    <CategorySection 
+                        key={catId}
+                        catId={catId}
+                        categories={categories}
+                        banks={banks}
+                        onInsert={insertVariableToTemplate}
+                        onDeleteOption={handleDeleteOption}
+                        onAddOption={handleAddOption}
+                        onDeleteBank={handleDeleteBank}
+                        onUpdateBankCategory={handleUpdateBankCategory}
+                        t={t}
+                    />
+                ))}
             </div>
           )}
 
             {isAddingBank ? (
-                <div className="border-2 border-dashed border-indigo-200 rounded-lg p-4 bg-indigo-50/50 mt-4">
-                    <h4 className="text-xs font-bold text-indigo-900 mb-3 uppercase tracking-wide">{t('add_bank_title')}</h4>
+                <div className="border border-dashed border-indigo-300/50 rounded-xl p-4 bg-indigo-50/30 mt-4 backdrop-blur-sm">
+                    <h4 className="text-xs font-bold text-indigo-900 mb-3 uppercase tracking-wide flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                        {t('add_bank_title')}
+                    </h4>
                     <div className="space-y-3">
                         <div>
-                            <label className="block text-xs text-gray-500 mb-1">{t('label_name')}</label>
+                            <label className="block text-xs text-gray-500 mb-1 font-medium">{t('label_name')}</label>
                             <input 
                                 autoFocus
                                 type="text" 
-                                className="w-full text-sm border border-gray-300 rounded px-2 py-1.5 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none"
+                                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none bg-white/80"
                                 placeholder={t('label_placeholder')}
                                 value={newBankLabel}
                                 onChange={e => setNewBankLabel(e.target.value)}
                             />
                         </div>
                         <div>
-                            <label className="block text-xs text-gray-500 mb-1">{t('id_name')}</label>
+                            <label className="block text-xs text-gray-500 mb-1 font-medium">{t('id_name')}</label>
                             <input 
                                 type="text" 
-                                className="w-full text-sm border border-gray-300 rounded px-2 py-1.5 font-mono focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none"
+                                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 font-mono focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none bg-white/80"
                                 placeholder={t('id_placeholder')}
                                 value={newBankKey}
                                 onChange={e => setNewBankKey(e.target.value)} 
                             />
                         </div>
                         <div>
-                            <label className="block text-xs text-gray-500 mb-1">{t('category_label')}</label>
+                            <label className="block text-xs text-gray-500 mb-1 font-medium">{t('category_label')}</label>
                             <select 
                                 value={newBankCategory}
                                 onChange={e => setNewBankCategory(e.target.value)}
-                                className="w-full text-sm border border-gray-300 rounded px-2 py-1.5 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none bg-white"
+                                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none bg-white/80"
                             >
                                 {Object.values(categories).map(cat => (
                                     <option key={cat.id} value={cat.id}>{cat.label}</option>
                                 ))}
                             </select>
                         </div>
-                        <div className="flex gap-2 pt-1">
+                        <div className="flex gap-2 pt-2">
                             <button 
                                 onClick={handleAddBank}
-                                className="flex-1 bg-indigo-600 text-white text-xs py-1.5 rounded hover:bg-indigo-700 font-medium"
+                                className="flex-1 bg-indigo-600 text-white text-xs py-2 rounded-lg hover:bg-indigo-700 font-medium shadow-md shadow-indigo-500/20 transition-all"
                             >
                                 {t('confirm_add')}
                             </button>
                             <button 
                                 onClick={() => setIsAddingBank(false)}
-                                className="flex-1 bg-white border border-gray-300 text-gray-600 text-xs py-1.5 rounded hover:bg-gray-50"
+                                className="flex-1 bg-white border border-gray-200 text-gray-600 text-xs py-2 rounded-lg hover:bg-gray-50 transition-all"
                             >
                                 {t('cancel')}
                             </button>
@@ -1744,7 +1976,7 @@ const App = () => {
             ) : (
                 <button 
                     onClick={() => setIsAddingBank(true)}
-                    className="w-full py-3 mt-4 border-2 border-dashed border-gray-200 rounded-lg text-gray-400 hover:text-indigo-500 hover:border-indigo-300 hover:bg-indigo-50 transition-all flex items-center justify-center gap-2 font-medium text-sm"
+                    className="w-full py-4 mt-4 border border-dashed border-gray-300 rounded-xl text-gray-400 hover:text-indigo-500 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 font-medium text-sm backdrop-blur-sm"
                 >
                     <Plus size={18} />
                     {t('add_bank_group')}
@@ -1764,90 +1996,276 @@ const App = () => {
         t={t}
       />
 
+      {/* --- Insert Variable Modal --- */}
+      <InsertVariableModal
+        isOpen={isInsertModalOpen}
+        onClose={() => setIsInsertModalOpen(false)}
+        categories={categories}
+        banks={banks}
+        onSelect={(key) => {
+            insertVariableToTemplate(key);
+            setIsInsertModalOpen(false);
+        }}
+        t={t}
+      />
+
       {/* --- 3. Main Editor (Right) --- */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden bg-gray-50/50 relative">
+      <div className={`
+          ${mobileTab === 'editor' ? 'flex fixed inset-0 z-50 md:static' : 'hidden'} 
+          md:flex flex-1 flex-col h-full overflow-hidden relative
+          bg-white/80 backdrop-blur-xl md:rounded-3xl border border-white/40 shadow-xl
+      `}>
         
         {/* 顶部工具栏 */}
-        <div className="px-8 py-4 bg-white border-b border-gray-200 flex justify-between items-center shadow-sm z-20 h-[72px]">
-          <div>
-            <h1 className="text-xl font-bold text-gray-800">{activeTemplate.name}</h1>
-            <p className="text-xs text-gray-500 mt-0.5">
-                {isEditing ? t('editing_status') : t('preview_status')}
-            </p>
+        <div className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-100/50 flex justify-between items-center z-20 h-[60px] md:h-[72px] bg-white/50 backdrop-blur-sm">
+          <div className="min-w-0 flex-1 mr-2">
+            <h1 className="text-base md:text-lg font-bold text-gray-800 truncate">{activeTemplate.name}</h1>
+            <div className="hidden md:flex items-center gap-2 mt-0.5">
+                <span className={`w-1.5 h-1.5 rounded-full ${isEditing ? 'bg-amber-400 animate-pulse' : 'bg-green-400'}`}></span>
+                <p className="text-xs text-gray-400">
+                    {isEditing ? t('editing_status') : t('preview_status')}
+                </p>
+            </div>
           </div>
           
-          <div className="flex items-center gap-3">
-             <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
+          <div className="flex items-center gap-2 md:gap-3">
+             
+             <div className="flex bg-gray-100/80 p-1 rounded-xl border border-gray-200 shadow-inner">
                 <button
                     onClick={() => setIsEditing(false)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${!isEditing ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    className={`
+                        p-1.5 md:px-3 md:py-1.5 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-1.5
+                        ${!isEditing 
+                            ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-black/5' 
+                            : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}
+                    `}
+                    title={t('preview_mode')}
                 >
-                    <Eye size={16} /> {t('preview_mode')}
+                    <Eye size={16} /> <span className="hidden md:inline">{t('preview_mode')}</span>
                 </button>
                 <button
                     onClick={() => setIsEditing(true)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${isEditing ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    className={`
+                        p-1.5 md:px-3 md:py-1.5 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-1.5
+                        ${isEditing 
+                            ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-black/5' 
+                            : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}
+                    `}
+                    title={t('edit_mode')}
                 >
-                    <Edit3 size={16} /> {t('edit_mode')}
+                    <Edit3 size={16} /> <span className="hidden md:inline">{t('edit_mode')}</span>
                 </button>
              </div>
 
-            <div className="h-6 w-px bg-gray-200 mx-1"></div>
+            <div className="h-6 w-px bg-gray-200 mx-1 hidden md:block"></div>
 
-            <button
-                onClick={handleExportImage}
-                disabled={isEditing}
-                className={`
-                flex items-center gap-2 px-3 py-2 rounded-lg font-medium shadow-sm transition-all border
-                bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-indigo-600
-                disabled:opacity-50 disabled:cursor-not-allowed
-                `}
-                title={t('export_image')}
+            <PremiumButton 
+                onClick={handleExportImage} 
+                disabled={isEditing} 
+                title={t('export_image')} 
+                icon={ImageIcon} 
+                color="violet"
             >
-                <ImageIcon size={18} />
                 <span className="hidden sm:inline">{t('export_image')}</span>
-            </button>
+            </PremiumButton>
 
-            <button
-                onClick={handleCopy}
-                className={`
-                flex items-center gap-2 px-4 py-2 rounded-lg font-medium shadow-sm transition-all border
-                ${copied 
-                    ? 'bg-green-50 border-green-200 text-green-700' 
-                    : 'bg-gray-900 border-gray-900 text-white hover:bg-gray-800'}
-                `}
+            <PremiumButton 
+                onClick={handleCopy} 
+                title={copied ? t('copied') : t('copy_result')} 
+                icon={copied ? Check : CopyIcon} 
+                color={copied ? "emerald" : "indigo"}
+                active={true} // Always active look for CTA
+                className="transition-all duration-300 transform hover:-translate-y-0.5"
             >
-                {copied ? <Check size={18} /> : <CopyIcon size={18} />}
-                {copied ? t('copied') : t('copy_result')}
-            </button>
+                 <span className="hidden md:inline ml-1">{copied ? t('copied') : t('copy_result')}</span>
+            </PremiumButton>
           </div>
         </div>
 
         {/* 核心内容区 */}
-        <div className="flex-1 overflow-hidden relative">
-            {isEditing ? (
-                <VisualEditor
-                    ref={textareaRef}
-                    value={activeTemplate.content}
-                    onChange={(e) => updateActiveTemplateContent(e.target.value)}
-                    banks={banks}
-                    categories={categories}
+        <div className="flex-1 overflow-hidden relative pb-16 md:pb-0 flex flex-col bg-gradient-to-br from-white/60 to-gray-50/60">
+            {isEditing && (
+                <EditorToolbar 
+                    onInsertClick={() => setIsInsertModalOpen(true)}
+                    canUndo={historyPast.length > 0}
+                    canRedo={historyFuture.length > 0}
+                    onUndo={handleUndo}
+                    onRedo={handleRedo}
+                    t={t}
                 />
+            )}
+            
+            {isEditing ? (
+                <div className="flex-1 relative overflow-hidden">
+                    <VisualEditor
+                        ref={textareaRef}
+                        value={activeTemplate.content}
+                        onChange={(e) => updateActiveTemplateContent(e.target.value)}
+                        banks={banks}
+                        categories={categories}
+                    />
+                </div>
             ) : (
-                <div className="w-full h-full overflow-y-auto p-8">
+                <div className="w-full h-full relative overflow-hidden group">
+                     {/* Background Image Layer - Blurry Ambient Background */}
                      <div 
-                        id="preview-card"
-                        className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 p-8 min-h-[800px]"
-                     >
-                        <div id="final-prompt-content" className="prose prose-slate max-w-none">
-                            {renderTemplateContent()}
-                        </div>
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 opacity-60 blur-[80px] scale-125"
+                        style={{ 
+                            backgroundImage: activeTemplate.imageUrl ? `url(${activeTemplate.imageUrl})` : 'none',
+                        }}
+                     ></div>
+                     <div className="absolute inset-0 bg-white/10 backdrop-blur-xl"></div> {/* Additional Overlay for smoothness */}
+
+                     <div className="w-full h-full overflow-y-auto px-3 py-4 md:p-8 custom-scrollbar relative z-10">
+                         <div 
+                            id="preview-card"
+                            className="max-w-4xl mx-auto bg-white/80 rounded-2xl md:rounded-[2rem] shadow-xl md:shadow-2xl shadow-indigo-900/10 border border-white/60 p-4 sm:p-6 md:p-12 min-h-[500px] md:min-h-[600px] backdrop-blur-2xl transition-all duration-500 relative"
+                         >
+                            {/* --- Top Section: Title & Image --- */}
+                            <div className="flex flex-col md:flex-row justify-between items-start mb-6 md:mb-10 relative">
+                                {/* Left: Title & Meta Info */}
+                                <div className="flex-1 min-w-0 pr-4 z-10 pt-2">
+                                    <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3 tracking-tight leading-tight">
+                                        {activeTemplate.name}
+                                    </h2>
+                                    {/* Tags / Meta (Example) */}
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        <span className="px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-600 text-xs font-bold tracking-wide border border-indigo-100/50">
+                                            V0.3.0
+                                        </span>
+                                        <span className="px-2.5 py-1 rounded-md bg-amber-50 text-amber-600 text-xs font-bold tracking-wide border border-amber-100/50">
+                                            Prompt Template
+                                        </span>
+                                    </div>
+                                    <p className="text-gray-400 text-sm font-medium mt-2">
+                                        Made by "提示词填空器"
+                                    </p>
+                                </div>
+
+                                {/* Right: Image (Overhanging) - 使用像素值偏移 */}
+                                {activeTemplate.imageUrl && (
+                                    <div 
+                                        className="w-full md:w-auto mt-4 md:mt-0 relative md:-mr-[50px] md:-mt-[50px] z-20 flex-shrink-0"
+                                    >
+                                        <div 
+                                            className="bg-white p-1.5 md:p-2 rounded-lg md:rounded-xl shadow-lg md:shadow-xl transform md:rotate-2 border border-gray-100/50 transition-all duration-300 hover:rotate-0 hover:scale-105 hover:shadow-2xl group/image w-full md:w-auto"
+                                        >
+                                            <div className="relative overflow-hidden rounded-md md:rounded-lg bg-gray-50 flex items-center justify-center">
+                                                {/* Smart Image Container - 移动端全宽，桌面端固定尺寸 */}
+                                                <img 
+                                                    src={activeTemplate.imageUrl} 
+                                                    alt="Template Preview" 
+                                                    className="w-full md:w-auto md:max-w-[300px] md:max-h-[300px] h-auto object-contain block" 
+                                                />
+                                                
+                                                {/* Hidden File Input */}
+                                                <input 
+                                                    type="file" 
+                                                    ref={fileInputRef} 
+                                                    onChange={handleUploadImage} 
+                                                    className="hidden" 
+                                                    accept="image/*"
+                                                />
+
+                                                {/* Hover Overlay with Actions */}
+                                                <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/20 transition-colors duration-300 flex items-center justify-center gap-3 opacity-0 group-hover/image:opacity-100 backdrop-blur-[2px]">
+                                                    {/* View Big */}
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); setZoomedImage(activeTemplate.imageUrl); }}
+                                                        className="p-2 bg-white/90 text-gray-700 rounded-full hover:bg-white hover:text-indigo-600 transition-all shadow-lg transform translate-y-4 group-hover/image:translate-y-0 duration-300 hover:scale-110"
+                                                        title="查看大图"
+                                                    >
+                                                        <Maximize2 size={18} />
+                                                    </button>
+                                                    
+                                                    {/* Upload */}
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                                                        className="p-2 bg-white/90 text-gray-700 rounded-full hover:bg-white hover:text-indigo-600 transition-all shadow-lg transform translate-y-4 group-hover/image:translate-y-0 duration-300 delay-75 hover:scale-110"
+                                                        title="上传图片"
+                                                    >
+                                                        <ImageIcon size={18} />
+                                                    </button>
+                                                    
+                                                    {/* Reset */}
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); handleResetImage(); }}
+                                                        className="p-2 bg-white/90 text-gray-700 rounded-full hover:bg-white hover:text-indigo-600 transition-all shadow-lg transform translate-y-4 group-hover/image:translate-y-0 duration-300 delay-150 hover:scale-110"
+                                                        title="重置默认图片"
+                                                    >
+                                                        <Undo size={18} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* --- Bottom Section: Content --- */}
+                            <div className="relative z-10 border-t border-gray-100 pt-8 mt-4">
+                                <div id="final-prompt-content" className="prose prose-slate max-w-none text-base md:text-lg leading-relaxed text-gray-600">
+                                    {renderTemplateContent()}
+                                </div>
+                            </div>
+                         </div>
+                         
+                         {/* Bottom spacing for aesthetics */}
+                         <div className="h-24"></div>
                      </div>
-                     <div className="h-20"></div>
                 </div>
             )}
         </div>
       </div>
+
+      {/* --- Image Lightbox --- */}
+      {zoomedImage && (
+        <div 
+            className="fixed inset-0 z-[70] bg-black/80 backdrop-blur-xl flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300"
+            onClick={() => setZoomedImage(null)}
+        >
+            <button 
+                className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors border border-white/10"
+                onClick={() => setZoomedImage(null)}
+            >
+                <X size={28} />
+            </button>
+            <img 
+                src={zoomedImage} 
+                alt="Zoomed Preview" 
+                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 select-none"
+                onClick={(e) => e.stopPropagation()} 
+            />
+        </div>
+      )}
+
+      {/* --- Mobile Bottom Navigation --- */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-gray-200 flex justify-around items-center z-50 h-16 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+          <button 
+             onClick={() => setMobileTab('templates')}
+             className={`flex flex-col items-center justify-center w-full h-full gap-1 ${mobileTab === 'templates' ? 'text-indigo-600' : 'text-gray-400'}`}
+          >
+             <FileText size={20} />
+             <span className="text-[10px] font-medium">{t('template_management')}</span>
+          </button>
+          
+          <button 
+             onClick={() => setMobileTab('banks')}
+             className={`flex flex-col items-center justify-center w-full h-full gap-1 ${mobileTab === 'banks' ? 'text-indigo-600' : 'text-gray-400'}`}
+          >
+             <Settings size={20} />
+             <span className="text-[10px] font-medium">{t('bank_config')}</span>
+          </button>
+          
+          <button 
+             onClick={() => setMobileTab('editor')}
+             className={`flex flex-col items-center justify-center w-full h-full gap-1 ${mobileTab === 'editor' ? 'text-indigo-600' : 'text-gray-400'}`}
+          >
+             <Edit3 size={20} />
+             <span className="text-[10px] font-medium">Editor</span>
+          </button>
+      </div>
+
     </div>
   );
 };
