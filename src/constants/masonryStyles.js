@@ -1,6 +1,6 @@
 export const MASONRY_STYLES = {
   poster: {
-    label: "海报视图",
+    label: "海報視圖",
     container: "columns-1 sm:columns-2 lg:columns-2 xl:columns-3 gap-5 w-full",
     card: "break-inside-avoid cursor-pointer group mb-5 transition-all duration-500 relative overflow-hidden rounded-2xl isolate border-2 border-white hover:shadow-[0_0_25px_rgba(251,146,60,0.6)]",
     newCard: "hidden md:block",
@@ -14,7 +14,7 @@ export const MASONRY_STYLES = {
     showNewCardText: false
   },
   classic: {
-    label: "经典视图",
+    label: "經典視圖",
     container: "columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6 pb-20",
     card: "break-inside-avoid rounded-[36px] hover:shadow-2xl transition-all duration-300 cursor-pointer group p-2.5 relative overflow-hidden",
     newCard: "break-inside-avoid rounded-[36px] hover:shadow-2xl transition-all duration-300 cursor-pointer group p-2.5 relative overflow-hidden flex flex-col items-center justify-center min-h-[300px]",
@@ -26,7 +26,7 @@ export const MASONRY_STYLES = {
     showNewCardText: true
   },
   compact: {
-    label: "紧凑视图",
+    label: "緊湊視圖",
     container: "columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-3 space-y-3 pb-20",
     card: "break-inside-avoid rounded-2xl hover:shadow-lg transition-all duration-200 cursor-pointer group p-1.5 relative overflow-hidden",
     newCard: "break-inside-avoid rounded-2xl hover:shadow-lg transition-all duration-200 cursor-pointer group p-1.5 relative overflow-hidden flex flex-col items-center justify-center min-h-[200px]",
@@ -38,7 +38,7 @@ export const MASONRY_STYLES = {
     showNewCardText: true
   },
   minimal: {
-    label: "极简视图",
+    label: "極簡視圖",
     container: "columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6 pb-20 w-full px-4",
     card: "break-inside-avoid rounded-[32px] transition-all duration-500 cursor-pointer group relative overflow-hidden bg-gray-100 isolate hover:shadow-2xl",
     newCard: "break-inside-avoid rounded-[32px] transition-all duration-500 cursor-pointer group relative overflow-hidden flex flex-col items-center justify-center min-h-[400px] bg-gray-50 border-2 border-dashed border-gray-200 hover:border-orange-300 hover:bg-orange-50",
@@ -54,7 +54,7 @@ export const MASONRY_STYLES = {
     actionIconSize: 20
   },
   list: {
-    label: "列表视图",
+    label: "列表視圖",
     container: "flex flex-col gap-4 pb-20 max-w-3xl mx-auto",
     card: "w-full rounded-2xl hover:shadow-xl transition-all duration-300 cursor-pointer group p-2 relative overflow-hidden flex gap-4 bg-white/60",
     newCard: "w-full rounded-2xl hover:shadow-xl transition-all duration-300 cursor-pointer group p-4 relative overflow-hidden flex items-center justify-center min-h-[100px] border-2 border-dashed border-gray-300",

@@ -1,9 +1,9 @@
-// 通用工具函数
+// 通用工具函數
 
-// 深拷贝对象
+// 深拷貝物件
 export const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
 
-// 生成唯一键名
+// 生成唯一鍵名
 export const makeUniqueKey = (base, existingKeys, suffix = "custom") => {
   let candidate = `${base}_${suffix}`;
   let counter = 1;
@@ -14,7 +14,14 @@ export const makeUniqueKey = (base, existingKeys, suffix = "custom") => {
   return candidate;
 };
 
-// 等待图片加载完成，避免导出时空白
+// 取得本地化文字
+export const getLocalized = (obj, language) => {
+  if (!obj) return "";
+  if (typeof obj === 'string') return obj;
+  return obj[language] || obj['zh-tw'] || obj.en || "";
+};
+
+// 等待圖片載入完成，避免匯出時空白
 export const waitForImageLoad = (img, timeout = 6000) => {
   if (!img) return Promise.resolve();
   if (img.complete && img.naturalWidth > 0) return Promise.resolve();
@@ -25,9 +32,10 @@ export const waitForImageLoad = (img, timeout = 6000) => {
       clearTimeout(timer);
     };
     const onLoad = () => { clear(); resolve(); };
-    const onError = () => { clear(); resolve(); }; // 失败也放行，避免阻塞
+    const onError = () => { clear(); resolve(); }; // 失敗也放行，避免阻塞
     const timer = setTimeout(() => { clear(); resolve(); }, timeout);
     img.addEventListener('load', onLoad);
     img.addEventListener('error', onError);
   });
 };
+

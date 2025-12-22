@@ -1,4 +1,4 @@
-// VisualEditor 组件 - 可视化编辑器
+// VisualEditor 元件 - 可視化編輯器
 import React, { useRef } from 'react';
 import { CATEGORY_STYLES } from '../constants/styles';
 
@@ -12,6 +12,7 @@ export const VisualEditor = React.forwardRef(({ value, onChange, banks, categori
   };
 
   const renderHighlights = (text) => {
+    if (!text || typeof text !== 'string') return null;
     // Split by {{...}}
     const parts = text.split(/(\{\{[^{}\n]+\}\})/g);
     return parts.map((part, i) => {

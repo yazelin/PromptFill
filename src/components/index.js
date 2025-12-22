@@ -1,5 +1,5 @@
-// 组件统一导出文件
-// 这个文件集中管理所有组件的导出，方便管理和导入
+// 元件統一匯出檔
+// 這個檔案集中管理所有元件的匯出，方便管理與匯入
 
 export { Variable } from './Variable';
 export { VisualEditor } from './VisualEditor';
@@ -10,3 +10,4 @@ export { TemplatePreview } from './TemplatePreview';
 export { TemplatesSidebar } from './TemplatesSidebar';
 export { BanksSidebar, CategoryManager, InsertVariableModal, AddBankModal } from './BanksSidebar';
 export { DiscoveryView } from './DiscoveryView';
+export { MobileSettingsView } from './MobileSettingsView';

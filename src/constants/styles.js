@@ -1,4 +1,4 @@
-// 样式常量配置
+// 樣式常量配置
 
 export const PREMIUM_STYLES = {
   blue: { from: "#93C5FD", to: "#3B82F6", shadowColor: "rgba(59, 130, 246, 0.4)", glowColor: "rgba(59, 130, 246, 0.6)" },
@@ -115,42 +115,42 @@ export const CATEGORY_STYLES = {
 };
 
 export const TAG_STYLES = {
-  "建筑": "bg-stone-50 text-stone-600 border border-stone-200",
+  "建築": "bg-stone-50 text-stone-600 border border-stone-200",
   "人物": "bg-rose-50 text-rose-600 border border-rose-200",
-  "摄影": "bg-orange-50 text-orange-600 border border-orange-200",
-  "产品": "bg-amber-50 text-amber-600 border border-amber-200",
-  "实拍": "bg-emerald-50 text-emerald-600 border border-emerald-200",
-  "图表": "bg-sky-50 text-sky-600 border border-sky-200",
+  "攝影": "bg-orange-50 text-orange-600 border border-orange-200",
+  "產品": "bg-amber-50 text-amber-600 border border-amber-200",
+  "實拍": "bg-emerald-50 text-emerald-600 border border-emerald-200",
+  "圖表": "bg-sky-50 text-sky-600 border border-sky-200",
   "卡通": "bg-pink-50 text-pink-600 border border-pink-200",
-  "宠物": "bg-orange-50 text-orange-600 border border-orange-200",
-  "游戏": "bg-violet-50 text-violet-600 border border-violet-200",
-  "创意": "bg-fuchsia-50 text-fuchsia-600 border border-fuchsia-200",
+  "寵物": "bg-orange-50 text-orange-600 border border-orange-200",
+  "遊戲": "bg-violet-50 text-violet-600 border border-violet-200",
+  "創意": "bg-fuchsia-50 text-fuchsia-600 border border-fuchsia-200",
   "default": "bg-gray-50 text-gray-500 border border-gray-200"
 };
 
 export const TAG_LABELS = {
-  cn: {
-    "建筑": "建筑",
+  "zh-tw": {
+    "建築": "建築",
     "人物": "人物",
-    "摄影": "摄影",
-    "产品": "产品",
-    "实拍": "实拍",
-    "图表": "图表",
+    "攝影": "攝影",
+    "產品": "產品",
+    "實拍": "實拍",
+    "圖表": "圖表",
     "卡通": "卡通",
-    "宠物": "宠物",
-    "游戏": "游戏",
-    "创意": "创意"
+    "寵物": "寵物",
+    "遊戲": "遊戲",
+    "創意": "創意"
   },
   en: {
-    "建筑": "Architecture",
+    "建築": "Architecture",
     "人物": "Character",
-    "摄影": "Photography",
-    "产品": "Product",
-    "实拍": "Real Shot",
-    "图表": "Infographic",
+    "攝影": "Photography",
+    "產品": "Product",
+    "實拍": "Real Shot",
+    "圖表": "Infographic",
     "卡通": "Cartoon",
-    "宠物": "Pets",
-    "游戏": "Gaming",
-    "创意": "Creative"
+    "寵物": "Pets",
+    "遊戲": "Gaming",
+    "創意": "Creative"
   }
 };

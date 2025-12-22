@@ -1,4 +1,4 @@
-// EditorToolbar 组件 - 编辑器工具栏
+// EditorToolbar 元件 - 編輯器工具列
 import React from 'react';
 import { Plus, Undo, Redo } from 'lucide-react';
 import { PremiumButton } from './PremiumButton';
