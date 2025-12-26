@@ -34,6 +34,7 @@ jobs:
         run: npm run build
         env:
           VITE_GITHUB_REPO: yazelin/PromptFill
+          VITE_IMGBB_API_KEY: ${{ secrets.VITE_IMGBB_API_KEY }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
