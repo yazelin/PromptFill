@@ -34,8 +34,11 @@ import {
   ArrowUpDown,
   RefreshCw,
   Sparkles,
+  Share2,
+  Loader2,
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
+import LZString from 'lz-string';
 
 // ====== 匯入資料設定 ======
 import { INITIAL_TEMPLATES_CONFIG, TEMPLATE_TAGS, SYSTEM_DATA_VERSION } from './data/templates';
@@ -714,6 +717,10 @@ const App = () => {
   const [activePopover, setActivePopover] = useState(null);
   const [copied, setCopied] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [sharedTemplate, setSharedTemplate] = useState(null); // 分享模式：儲存從 URL 解析的模板
+  const [sharedBanks, setSharedBanks] = useState({}); // 分享模式：儲存從 URL 解析的詞庫
+  const [sharedDefaults, setSharedDefaults] = useState({}); // 分享模式：儲存從 URL 解析的預設值
+  const [isShareMode, setIsShareMode] = useState(false); // 分享模式：是否處於預覽分享模板狀態
   const [isCategoryManagerOpen, setIsCategoryManagerOpen] = useState(false); // 新 UI 狀態
   const [isInsertModalOpen, setIsInsertModalOpen] = useState(false); // 新 UI 狀態：插入選擇器
   const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false); // 新 UI 狀態：Lightbox
@@ -776,8 +783,16 @@ const App = () => {
       } else if (isMobileDevice && !val && mobileTab === 'home') {
         setMobileTab('editor');
       }
+      // 回到發現頁時退出分享模式
+      if (val && isShareMode) {
+        setSharedTemplate(null);
+        setSharedBanks({});
+        setSharedDefaults({});
+        setIsShareMode(false);
+        window.history.replaceState(null, '', window.location.pathname);
+      }
     },
-    [isMobileDevice, mobileTab]
+    [isMobileDevice, mobileTab, isShareMode]
   );
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -1929,6 +1944,15 @@ const App = () => {
 
   const updateActiveTemplateSelection = React.useCallback(
     (uniqueKey, value) => {
+      // 分享模式：更新 sharedTemplate
+      if (isShareMode && sharedTemplate) {
+        setSharedTemplate((prev) => ({
+          ...prev,
+          selections: { ...prev.selections, [uniqueKey]: value },
+        }));
+        return;
+      }
+      // 正常模式：更新 templates 陣列
       setTemplates((prev) =>
         prev.map((t) => {
           if (t.id === activeTemplateId) {
@@ -1941,7 +1965,7 @@ const App = () => {
         })
       );
     },
-    [activeTemplateId, setTemplates]
+    [activeTemplateId, setTemplates, isShareMode, sharedTemplate]
   );
 
   // --- Bank Actions ---
@@ -1959,15 +1983,19 @@ const App = () => {
     (key, index, newValue) => {
       if (!newValue || !newValue.trim()) return;
 
-      // 1. Add to bank if not exists
-      if (!banks[key].options.includes(newValue)) {
+      // 使用合併的詞庫（分享模式下包含 sharedBanks）
+      const mergedBanks = isShareMode ? { ...banks, ...sharedBanks } : banks;
+      const bank = mergedBanks[key];
+
+      // 1. Add to bank if not exists (只在非分享模式下添加)
+      if (bank && !bank.options.includes(newValue) && !isShareMode) {
         handleAddOption(key, newValue);
       }
 
       // 2. Select it
       handleSelect(key, index, newValue);
     },
-    [banks, handleSelect]
+    [banks, sharedBanks, isShareMode, handleSelect]
   );
 
   const handleAddOption = React.useCallback(
@@ -2117,8 +2145,12 @@ const App = () => {
   };
 
   const handleCopy = () => {
+    // 获取当前模板（分享模式時使用分享的模板）
+    const currentTemplate = isShareMode && sharedTemplate ? sharedTemplate : activeTemplate;
+    const currentDefaults = isShareMode ? { ...defaults, ...sharedDefaults } : defaults;
+
     // 获取当前模板语言的内容
-    let finalString = getLocalized(activeTemplate.content, templateLanguage);
+    let finalString = getLocalized(currentTemplate.content, templateLanguage);
     const counters = {};
 
     finalString = finalString.replace(/{{(.*?)}}/g, (match, key) => {
@@ -2128,7 +2160,7 @@ const App = () => {
 
       const uniqueKey = `${k}-${idx}`;
       // Prioritize selection, then default, and get localized value
-      const value = activeTemplate.selections[uniqueKey] || defaults[k];
+      const value = currentTemplate.selections[uniqueKey] || currentDefaults[k];
       return getLocalized(value, templateLanguage) || match;
     });
 
@@ -2150,8 +2182,12 @@ const App = () => {
     setIsExporting(true);
 
     try {
+      // 获取当前模板（分享模式時使用分享的模板）
+      const currentTemplate = isShareMode && sharedTemplate ? sharedTemplate : activeTemplate;
+      const currentDefaults = isShareMode ? { ...defaults, ...sharedDefaults } : defaults;
+
       // 生成最終提示詞
-      let finalString = getLocalized(activeTemplate.content, templateLanguage);
+      let finalString = getLocalized(currentTemplate.content, templateLanguage);
       const counters = {};
 
       finalString = finalString.replace(/{{(.*?)}}/g, (match, key) => {
@@ -2160,7 +2196,7 @@ const App = () => {
         counters[k] = idx + 1;
 
         const uniqueKey = `${k}-${idx}`;
-        const value = activeTemplate.selections[uniqueKey] || defaults[k];
+        const value = currentTemplate.selections[uniqueKey] || currentDefaults[k];
         return getLocalized(value, templateLanguage) || match;
       });
 
@@ -2182,6 +2218,421 @@ const App = () => {
       setIsExporting(false);
     }
   };
+
+  // 從模板內容中提取使用的變數 keys
+  const extractVariableKeys = (content) => {
+    const keys = new Set();
+    const contentStr = typeof content === 'object'
+      ? Object.values(content).join(' ')
+      : content;
+    const matches = contentStr.match(/{{(.*?)}}/g) || [];
+    matches.forEach(match => {
+      const key = match.replace(/{{|}}/g, '').trim();
+      keys.add(key);
+    });
+    return Array.from(keys);
+  };
+
+  // 產生分享 URL
+  const generateShareUrl = (uploadedUrls = {}) => {
+    const templateToShare = isShareMode && sharedTemplate ? sharedTemplate : activeTemplate;
+
+    // 提取模板使用到的變數 keys
+    const usedKeys = extractVariableKeys(templateToShare.content);
+
+    // 只包含使用到的詞庫和預設值
+    const usedBanks = {};
+    const usedDefaults = {};
+    usedKeys.forEach(key => {
+      if (banks[key]) {
+        usedBanks[key] = banks[key];
+      }
+      if (defaults[key]) {
+        usedDefaults[key] = defaults[key];
+      }
+    });
+
+    // 處理圖片：將 base64 替換為上傳後的 URL，或只包含外部 URL
+    const isExternalUrl = (url) => url && (url.startsWith('http://') || url.startsWith('https://'));
+    const resolveImageUrl = (url) => {
+      // 如果有上傳後的 URL，使用它
+      if (uploadedUrls[url]) {
+        return uploadedUrls[url];
+      }
+      // 如果是外部 URL，直接使用
+      if (isExternalUrl(url)) {
+        return url;
+      }
+      // 其他情況（未上傳成功的 base64）忽略
+      return null;
+    };
+
+    let imageUrl = null;
+    let imageUrls = null;
+
+    if (templateToShare.imageUrls && Array.isArray(templateToShare.imageUrls)) {
+      const resolvedUrls = templateToShare.imageUrls
+        .map(resolveImageUrl)
+        .filter(Boolean);
+      if (resolvedUrls.length > 0) {
+        imageUrls = resolvedUrls;
+      }
+    } else if (templateToShare.imageUrl) {
+      const resolved = resolveImageUrl(templateToShare.imageUrl);
+      if (resolved) {
+        imageUrl = resolved;
+      }
+    }
+
+    const shareData = {
+      name: templateToShare.name,
+      content: templateToShare.content,
+      selections: templateToShare.selections || {},
+      tags: templateToShare.tags || [],
+      author: templateToShare.author || '',
+      banks: usedBanks,
+      defaults: usedDefaults,
+      ...(imageUrl && { imageUrl }),
+      ...(imageUrls && { imageUrls }),
+    };
+
+    try {
+      const jsonStr = JSON.stringify(shareData);
+      // 使用 LZ-String 壓縮，比 base64 短很多
+      const compressed = LZString.compressToEncodedURIComponent(jsonStr);
+      const baseUrl = window.location.origin + window.location.pathname;
+      return `${baseUrl}#template=${compressed}`;
+    } catch (err) {
+      console.error('Failed to generate share URL:', err);
+      return null;
+    }
+  };
+
+  // 壓縮圖片到指定大小以下（預設 500KB）
+  const compressImage = async (base64Data, maxSizeKB = 500) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let { width, height } = img;
+        const maxDimension = 512; // 最大邊長（縮圖用）
+
+        // 縮小尺寸
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = (height / width) * maxDimension;
+            width = maxDimension;
+          } else {
+            width = (width / height) * maxDimension;
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // 逐步降低品質直到小於目標大小
+        let quality = 0.9;
+        let result = canvas.toDataURL('image/jpeg', quality);
+
+        while (result.length > maxSizeKB * 1024 * 1.37 && quality > 0.1) {
+          quality -= 0.1;
+          result = canvas.toDataURL('image/jpeg', quality);
+        }
+
+        // 如果還是太大，進一步縮小尺寸
+        if (result.length > maxSizeKB * 1024 * 1.37) {
+          const scale = Math.sqrt((maxSizeKB * 1024 * 1.37) / result.length);
+          canvas.width = width * scale;
+          canvas.height = height * scale;
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          result = canvas.toDataURL('image/jpeg', 0.8);
+        }
+
+        resolve(result);
+      };
+      img.onerror = () => resolve(base64Data); // 失敗時返回原圖
+      img.src = base64Data;
+    });
+  };
+
+  // 上傳圖片到 ImgBB（支援 CORS）
+  const uploadToImageHost = async (base64Data) => {
+    try {
+      // 先壓縮圖片到 300KB 以下
+      const compressedData = await compressImage(base64Data, 300);
+
+      // 移除 base64 header，只保留資料部分
+      const base64Only = compressedData.replace(/^data:image\/\w+;base64,/, '');
+
+      // ImgBB 需要 URL-encoded form data
+      const formBody = new URLSearchParams();
+      formBody.append('image', base64Only);
+
+      // ImgBB 免費 API（支援 CORS）
+      // API Key 從環境變數讀取，申請：https://api.imgbb.com/
+      const apiKey = import.meta.env.VITE_IMGBB_API_KEY;
+      if (!apiKey) {
+        throw new Error('Missing VITE_IMGBB_API_KEY in .env');
+      }
+
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBody.toString(),
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.data?.url) {
+        return result.data.url;
+      }
+
+      console.error('ImgBB response:', result);
+      throw new Error(result.error?.message || 'Upload failed');
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      return null;
+    }
+  };
+
+  // 檢查是否為 base64 圖片
+  const isBase64Image = (url) => url && url.startsWith('data:image');
+
+  // 處理分享按鈕點擊
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleShare = async () => {
+    const templateToShare = isShareMode && sharedTemplate ? sharedTemplate : activeTemplate;
+
+    // 檢查是否有 base64 圖片需要上傳
+    let imagesToUpload = [];
+    if (templateToShare.imageUrls && Array.isArray(templateToShare.imageUrls)) {
+      imagesToUpload = templateToShare.imageUrls.filter(isBase64Image);
+    } else if (isBase64Image(templateToShare.imageUrl)) {
+      imagesToUpload = [templateToShare.imageUrl];
+    }
+
+    let uploadedUrls = {};
+
+    // 如果有 base64 圖片，先上傳到 Catbox
+    if (imagesToUpload.length > 0) {
+      setIsUploading(true);
+      addToast(t('uploading_images') || '📤 上傳圖片中...', 'info');
+
+      try {
+        const uploadPromises = imagesToUpload.map(async (base64Url) => {
+          const uploadedUrl = await uploadToImageHost(base64Url);
+          return { original: base64Url, uploaded: uploadedUrl };
+        });
+
+        const results = await Promise.all(uploadPromises);
+        results.forEach(({ original, uploaded }) => {
+          if (uploaded) {
+            uploadedUrls[original] = uploaded;
+          }
+        });
+      } catch (err) {
+        console.error('Image upload error:', err);
+      }
+
+      setIsUploading(false);
+    }
+
+    // 產生分享 URL（使用上傳後的圖片 URL）
+    const longUrl = generateShareUrl(uploadedUrls);
+    if (!longUrl) {
+      addToast(t('share_failed') || '分享失敗');
+      setIsUploading(false);
+      return;
+    }
+
+    setIsUploading(false);
+
+    try {
+      await navigator.clipboard.writeText(longUrl);
+      addToast(t('share_copied') || '✅ 分享連結已複製');
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = longUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      addToast(t('share_copied') || '✅ 分享連結已複製');
+    }
+  };
+
+  // 解析分享 URL
+  const parseShareUrl = () => {
+    const hash = window.location.hash;
+    if (!hash || !hash.includes('template=')) {
+      return null;
+    }
+
+    try {
+      const params = new URLSearchParams(hash.substring(1));
+      const templateParam = params.get('template');
+      if (!templateParam) return null;
+
+      // 使用 LZ-String 解壓縮
+      const jsonStr = LZString.decompressFromEncodedURIComponent(templateParam);
+      if (!jsonStr) return null;
+
+      const templateData = JSON.parse(jsonStr);
+
+      return {
+        template: {
+          id: `shared_${Date.now()}`,
+          name: templateData.name || t('shared_template') || '分享的模板',
+          content: templateData.content || '',
+          selections: templateData.selections || {},
+          author: templateData.author || t('from_community') || '社群分享',
+          tags: templateData.tags || [],
+          ...(templateData.imageUrl && { imageUrl: templateData.imageUrl }),
+          ...(templateData.imageUrls && { imageUrls: templateData.imageUrls }),
+        },
+        banks: templateData.banks || {},
+        defaults: templateData.defaults || {},
+      };
+    } catch (err) {
+      console.error('Failed to parse share URL:', err);
+      return null;
+    }
+  };
+
+  // 匯入分享的模板
+  // 下載外部圖片並轉為 base64
+  const downloadImageAsBase64 = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch image');
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (err) {
+      console.error('Failed to download image:', err);
+      return null;
+    }
+  };
+
+  const [isImporting, setIsImporting] = useState(false);
+
+  const handleImportShared = async () => {
+    if (!sharedTemplate) return;
+
+    setIsImporting(true);
+    addToast(t('importing_template') || '📥 匯入模板中...', 'info');
+
+    const newTemplate = {
+      ...sharedTemplate,
+      id: `tpl_${Date.now()}`,
+    };
+
+    // 下載外部圖片並轉為 base64 儲存到本地
+    try {
+      if (newTemplate.imageUrls && Array.isArray(newTemplate.imageUrls)) {
+        const downloadedUrls = await Promise.all(
+          newTemplate.imageUrls.map(async (url) => {
+            if (url.startsWith('http')) {
+              const base64 = await downloadImageAsBase64(url);
+              return base64 || url; // 下載失敗時保留原 URL
+            }
+            return url;
+          })
+        );
+        newTemplate.imageUrls = downloadedUrls;
+      } else if (newTemplate.imageUrl && newTemplate.imageUrl.startsWith('http')) {
+        const base64 = await downloadImageAsBase64(newTemplate.imageUrl);
+        if (base64) {
+          newTemplate.imageUrl = base64;
+        }
+      }
+    } catch (err) {
+      console.error('Failed to download images:', err);
+    }
+
+    // 合併詞庫：只加入本地不存在的詞庫
+    if (Object.keys(sharedBanks).length > 0) {
+      const mergedBanks = { ...banks };
+      Object.keys(sharedBanks).forEach(key => {
+        if (!mergedBanks[key]) {
+          mergedBanks[key] = sharedBanks[key];
+        }
+      });
+      setBanks(mergedBanks);
+    }
+
+    // 合併預設值：只加入本地不存在的預設值
+    if (Object.keys(sharedDefaults).length > 0) {
+      const mergedDefaults = { ...defaults };
+      Object.keys(sharedDefaults).forEach(key => {
+        if (!mergedDefaults[key]) {
+          mergedDefaults[key] = sharedDefaults[key];
+        }
+      });
+      setDefaults(mergedDefaults);
+    }
+
+    setTemplates([...templates, newTemplate]);
+    setActiveTemplateId(newTemplate.id);
+    setSharedTemplate(null);
+    setSharedBanks({});
+    setSharedDefaults({});
+    setIsShareMode(false);
+    setIsImporting(false);
+
+    // 清除 URL hash
+    window.history.replaceState(null, '', window.location.pathname);
+
+    addToast(t('import_success') || '✅ 模板已匯入');
+  };
+
+  // 退出分享模式（不匯入）
+  const exitShareMode = () => {
+    if (!isShareMode) return;
+    setSharedTemplate(null);
+    setSharedBanks({});
+    setSharedDefaults({});
+    setIsShareMode(false);
+    // 清除 URL hash
+    window.history.replaceState(null, '', window.location.pathname);
+  };
+
+  // 頁面載入時解析分享 URL
+  useEffect(() => {
+    const parsed = parseShareUrl();
+    if (parsed) {
+      setSharedTemplate(parsed.template);
+      setSharedBanks(parsed.banks);
+      setSharedDefaults(parsed.defaults);
+      setIsShareMode(true);
+      // 自動切換到預覽模式，隱藏發現頁面
+      setDiscoveryView(false);
+      // 行動端：切換到編輯器 Tab
+      if (isMobileDevice) {
+        setMobileTab('editor');
+      }
+    }
+  }, []);
+
+  // 當使用者選擇其他模板時，退出分享模式
+  useEffect(() => {
+    if (isShareMode) {
+      exitShareMode();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTemplateId]);
 
   // 行動端模擬拖曳處理器
   const onTouchDragStart = (key, x, y) => {
@@ -2423,10 +2874,36 @@ const App = () => {
                     className="whitespace-nowrap"
                   >
                     <img src="./gemini.svg" alt="Gemini" className="w-4 h-4 flex-shrink-0" />
-                    <span className="hidden sm:inline">
-                      {isExporting ? t('exporting') : t('export_image')}
-                    </span>
                   </PremiumButton>
+                  {isShareMode ? (
+                    <PremiumButton
+                      onClick={handleImportShared}
+                      title={isImporting ? (t('importing_template') || '匯入中...') : (t('import_shared') || '匯入模板')}
+                      color="emerald"
+                      className="whitespace-nowrap"
+                      disabled={isImporting}
+                    >
+                      {isImporting ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <Download size={16} />
+                      )}
+                    </PremiumButton>
+                  ) : (
+                    <PremiumButton
+                      onClick={handleShare}
+                      title={isUploading ? (t('uploading_images') || '上傳中...') : (t('share') || '分享')}
+                      color="blue"
+                      className="whitespace-nowrap"
+                      disabled={isUploading}
+                    >
+                      {isUploading ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <Share2 size={16} />
+                      )}
+                    </PremiumButton>
+                  )}
                 </div>
               </div>
             )}
@@ -2487,9 +2964,9 @@ const App = () => {
                     </div>
                   ) : (
                     <TemplatePreview
-                      activeTemplate={activeTemplate}
-                      banks={banks}
-                      defaults={defaults}
+                      activeTemplate={isShareMode && sharedTemplate ? sharedTemplate : activeTemplate}
+                      banks={isShareMode ? { ...banks, ...sharedBanks } : banks}
+                      defaults={isShareMode ? { ...defaults, ...sharedDefaults } : defaults}
                       categories={categories}
                       activePopover={activePopover}
                       setActivePopover={setActivePopover}
@@ -2914,6 +3391,7 @@ const App = () => {
             setZoomedImage(null);
             setIsTemplatesDrawerOpen(false);
             setIsBanksDrawerOpen(false);
+            exitShareMode(); // 切換回首頁時退出分享模式
           }}
           className={`flex flex-col items-center justify-center w-full h-full transition-all active:scale-90 ${mobileTab === 'home' ? 'text-orange-600' : 'text-gray-700'}`}
           style={{ filter: 'drop-shadow(1px 1px 0px rgba(255,255,255,0.3))' }}

@@ -135,6 +135,16 @@ export const TRANSLATIONS = {
     submit_template_copied: "已開啟 GitHub Issue 頁面",
     submit_bank_copied: "已開啟 GitHub Issue 頁面",
     from_github: "來自社群",
+    // 分享功能
+    share: "分享",
+    share_copied: "✅ 分享連結已複製",
+    share_failed: "分享失敗",
+    import_shared: "匯入模板",
+    import_success: "✅ 模板已匯入",
+    shared_template: "分享的模板",
+    uploading_images: "📤 上傳圖片中...",
+    upload_failed: "部分圖片上傳失敗",
+    importing_template: "📥 匯入模板中...",
   },
   en: {
     template_management: "Templates",
@@ -271,5 +281,15 @@ export const TRANSLATIONS = {
     submit_template_copied: "Opening GitHub Issue...",
     submit_bank_copied: "Opening GitHub Issue...",
     from_github: "From Community",
+    // Share functionality
+    share: "Share",
+    share_copied: "✅ Share link copied",
+    share_failed: "Share failed",
+    import_shared: "Import Template",
+    import_success: "✅ Template imported",
+    shared_template: "Shared Template",
+    uploading_images: "📤 Uploading images...",
+    upload_failed: "Some images failed to upload",
+    importing_template: "📥 Importing template...",
   },
 };
