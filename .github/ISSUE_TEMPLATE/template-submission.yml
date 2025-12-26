@@ -1,0 +1,77 @@
+name: 📝 模板提交 / Template Submission
+description: 提交新的提示詞模板 / Submit a new prompt template
+title: "[Template] "
+labels: ["template", "pending"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感謝您提交模板！請填寫以下資訊。
+        Thank you for submitting a template! Please fill in the information below.
+
+  - type: input
+    id: name-zh
+    attributes:
+      label: 模板名稱 (中文)
+      description: 模板的中文名稱
+      placeholder: 例如：角色概念圖
+    validations:
+      required: true
+
+  - type: input
+    id: name-en
+    attributes:
+      label: Template Name (English)
+      description: Template name in English
+      placeholder: e.g., Character Concept Sheet
+    validations:
+      required: false
+
+  - type: textarea
+    id: content-zh
+    attributes:
+      label: 模板內容 (中文)
+      description: 模板的中文內容，可使用 {{variable}} 作為變數
+      placeholder: |
+        你是一位 {{role}}，請幫我設計...
+    validations:
+      required: true
+
+  - type: textarea
+    id: content-en
+    attributes:
+      label: Template Content (English)
+      description: Template content in English, use {{variable}} for variables
+      placeholder: |
+        You are a {{role}}, please help me design...
+    validations:
+      required: false
+
+  - type: input
+    id: preview
+    attributes:
+      label: 預覽圖片 / Preview Image
+      description: 預覽圖片的 URL（可選）/ Preview image URL (optional)
+      placeholder: https://example.com/preview.png
+    validations:
+      required: false
+
+  - type: input
+    id: tags
+    attributes:
+      label: 標籤 / Tags
+      description: 以逗號分隔的標籤（可選）/ Comma-separated tags (optional)
+      placeholder: 人物, 攝影, 創意
+    validations:
+      required: false
+
+  - type: textarea
+    id: defaults
+    attributes:
+      label: 預設值 (JSON) / Default Values (JSON)
+      description: 變數的預設值，JSON 格式（可選）/ Default values for variables in JSON format (optional)
+      placeholder: |
+        {"role": "設計師", "style": "modern"}
+      render: json
+    validations:
+      required: false

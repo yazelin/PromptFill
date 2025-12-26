@@ -747,6 +747,272 @@ export const INITIAL_BANKS = {
       { "zh-tw": "乾枯的桉樹葉", en: "Dried eucalyptus leaves" },
       { "zh-tw": "鮮豔的向日葵", en: "Vibrant sunflowers" }
     ]
+  },
+  "flower_type": {
+    "label": { "zh-tw": "花卉類型", "en": "Flower Type" },
+    "category": "item",
+    "options": [
+      { "zh-tw": "白玫瑰", "en": "White Rose" },
+      { "zh-tw": "紅玫瑰", "en": "Red Rose" },
+      { "zh-tw": "百合", "en": "Lily" },
+      { "zh-tw": "鬱金香", "en": "Tulip" },
+      { "zh-tw": "牡丹", "en": "Peony" },
+      { "zh-tw": "蘭花", "en": "Orchid" },
+      { "zh-tw": "向日葵", "en": "Sunflower" },
+      { "zh-tw": "櫻花", "en": "Cherry Blossom" },
+      { "zh-tw": "繡球花", "en": "Hydrangea" },
+      { "zh-tw": "薰衣草", "en": "Lavender" }
+    ]
+  },
+  "business_type": {
+    "label": { "zh-tw": "商業類型", "en": "Business Type" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "餐廳", "en": "Restaurant" },
+      { "zh-tw": "咖啡廳", "en": "Café" },
+      { "zh-tw": "美髮沙龍", "en": "Hair Salon" },
+      { "zh-tw": "健身房", "en": "Gym" },
+      { "zh-tw": "烘焙坊", "en": "Bakery" },
+      { "zh-tw": "花店", "en": "Flower Shop" },
+      { "zh-tw": "服飾店", "en": "Clothing Store" },
+      { "zh-tw": "書店", "en": "Bookstore" },
+      { "zh-tw": "寵物店", "en": "Pet Shop" },
+      { "zh-tw": "美甲店", "en": "Nail Salon" }
+    ]
+  },
+  "pet_type": {
+    "label": { "zh-tw": "寵物類型", "en": "Pet Type" },
+    "category": "character",
+    "options": [
+      { "zh-tw": "狗", "en": "Dog" },
+      { "zh-tw": "貓", "en": "Cat" },
+      { "zh-tw": "兔子", "en": "Rabbit" },
+      { "zh-tw": "倉鼠", "en": "Hamster" },
+      { "zh-tw": "鸚鵡", "en": "Parrot" },
+      { "zh-tw": "金魚", "en": "Goldfish" },
+      { "zh-tw": "烏龜", "en": "Turtle" },
+      { "zh-tw": "柴犬", "en": "Shiba Inu" },
+      { "zh-tw": "柯基", "en": "Corgi" },
+      { "zh-tw": "布偶貓", "en": "Ragdoll Cat" }
+    ]
+  },
+  "garment_type": {
+    "label": { "zh-tw": "服裝類型", "en": "Garment Type" },
+    "category": "item",
+    "options": [
+      { "zh-tw": "T恤", "en": "T-shirt" },
+      { "zh-tw": "夾克", "en": "Jacket" },
+      { "zh-tw": "連帽衫", "en": "Hoodie" },
+      { "zh-tw": "襯衫", "en": "Shirt" },
+      { "zh-tw": "洋裝", "en": "Dress" },
+      { "zh-tw": "外套", "en": "Coat" },
+      { "zh-tw": "毛衣", "en": "Sweater" },
+      { "zh-tw": "背心", "en": "Vest" },
+      { "zh-tw": "風衣", "en": "Trench Coat" },
+      { "zh-tw": "運動衫", "en": "Sweatshirt" }
+    ]
+  },
+  "source_language": {
+    "label": { "zh-tw": "來源語言", "en": "Source Language" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "日文", "en": "Japanese" },
+      { "zh-tw": "英文", "en": "English" },
+      { "zh-tw": "韓文", "en": "Korean" },
+      { "zh-tw": "中文", "en": "Chinese" },
+      { "zh-tw": "法文", "en": "French" },
+      { "zh-tw": "西班牙文", "en": "Spanish" }
+    ]
+  },
+  "target_language": {
+    "label": { "zh-tw": "目標語言", "en": "Target Language" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "繁體中文", "en": "Traditional Chinese" },
+      { "zh-tw": "簡體中文", "en": "Simplified Chinese" },
+      { "zh-tw": "英文", "en": "English" },
+      { "zh-tw": "日文", "en": "Japanese" },
+      { "zh-tw": "韓文", "en": "Korean" },
+      { "zh-tw": "法文", "en": "French" }
+    ]
+  },
+  "product": {
+    "label": { "zh-tw": "產品", "en": "Product" },
+    "category": "item",
+    "options": [
+      { "zh-tw": "麥當勞薯條盒", "en": "McDonald's French Fries Box" },
+      { "zh-tw": "麥當勞漢堡", "en": "McDonald's Burger" },
+      { "zh-tw": "星巴克咖啡杯", "en": "Starbucks Coffee Cup" },
+      { "zh-tw": "可口可樂瓶", "en": "Coca-Cola Bottle" },
+      { "zh-tw": "Apple iPhone", "en": "Apple iPhone" },
+      { "zh-tw": "Nike 運動鞋", "en": "Nike Sneakers" },
+      { "zh-tw": "樂高積木", "en": "LEGO Bricks" },
+      { "zh-tw": "任天堂 Switch", "en": "Nintendo Switch" },
+      { "zh-tw": "IKEA 購物袋", "en": "IKEA Shopping Bag" },
+      { "zh-tw": "Chanel 香水瓶", "en": "Chanel Perfume Bottle" },
+      { "zh-tw": "Hermès 柏金包", "en": "Hermès Birkin Bag" },
+      { "zh-tw": "Tesla 電動車", "en": "Tesla Electric Car" },
+      { "zh-tw": "Dyson 吸塵器", "en": "Dyson Vacuum" },
+      { "zh-tw": "Supreme Box Logo T恤", "en": "Supreme Box Logo Tee" }
+    ]
+  },
+  "bottle_shape": {
+    "label": { "zh-tw": "瓶身造型", "en": "Bottle Shape" },
+    "category": "item",
+    "options": [
+      { "zh-tw": "經典方瓶", "en": "Classic Square Bottle" },
+      { "zh-tw": "優雅圓瓶", "en": "Elegant Round Bottle" },
+      { "zh-tw": "橢圓流線瓶", "en": "Oval Streamlined Bottle" },
+      { "zh-tw": "錐形高挑瓶", "en": "Tapered Tall Bottle" },
+      { "zh-tw": "不規則藝術瓶", "en": "Irregular Art Bottle" },
+      { "zh-tw": "復古藥瓶造型", "en": "Vintage Apothecary Style" },
+      { "zh-tw": "極簡圓柱瓶", "en": "Minimalist Cylinder" },
+      { "zh-tw": "鑽石切割瓶", "en": "Diamond Cut Bottle" }
+    ]
+  },
+  "liquid_color": {
+    "label": { "zh-tw": "液體顏色", "en": "Liquid Color" },
+    "category": "visual",
+    "options": [
+      { "zh-tw": "琥珀色", "en": "Amber" },
+      { "zh-tw": "透明無色", "en": "Clear/Colorless" },
+      { "zh-tw": "淡粉色", "en": "Light Pink" },
+      { "zh-tw": "金色", "en": "Gold" },
+      { "zh-tw": "淡紫色", "en": "Light Purple" },
+      { "zh-tw": "蜂蜜色", "en": "Honey" },
+      { "zh-tw": "玫瑰金", "en": "Rose Gold" },
+      { "zh-tw": "淡藍色", "en": "Light Blue" }
+    ]
+  },
+  "label_description": {
+    "label": { "zh-tw": "標籤描述", "en": "Label Description" },
+    "category": "item",
+    "options": [
+      { "zh-tw": "金色標籤", "en": "Gold Label" },
+      { "zh-tw": "銀色標籤", "en": "Silver Label" },
+      { "zh-tw": "黑色極簡標籤", "en": "Black Minimalist Label" },
+      { "zh-tw": "復古風格標籤", "en": "Vintage Style Label" },
+      { "zh-tw": "透明浮雕標籤", "en": "Transparent Embossed Label" },
+      { "zh-tw": "手寫書法標籤", "en": "Handwritten Calligraphy Label" },
+      { "zh-tw": "霧面啞光標籤", "en": "Matte Finish Label" },
+      { "zh-tw": "燙金壓印標籤", "en": "Gold Foil Stamped Label" }
+    ]
+  },
+  "product_name": {
+    "label": { "zh-tw": "產品名稱", "en": "Product Name" },
+    "category": "item",
+    "options": [
+      { "zh-tw": "N°5 香水", "en": "N°5 Perfume" },
+      { "zh-tw": "Miss Dior 花漾迪奧", "en": "Miss Dior" },
+      { "zh-tw": "Jo Malone 英國梨與小蒼蘭", "en": "Jo Malone English Pear & Freesia" },
+      { "zh-tw": "YSL 黑鴉片", "en": "YSL Black Opium" },
+      { "zh-tw": "Gucci Bloom 花悅", "en": "Gucci Bloom" },
+      { "zh-tw": "Tom Ford 烏木沉香", "en": "Tom Ford Oud Wood" },
+      { "zh-tw": "Hermès 大地", "en": "Hermès Terre d'Hermès" },
+      { "zh-tw": "Creed 銀色山泉", "en": "Creed Silver Mountain Water" }
+    ]
+  },
+  "caption": {
+    "label": { "zh-tw": "迷因文字", "en": "Meme Caption" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "好傻喔", "en": "So silly" },
+      { "zh-tw": "不想上班", "en": "Don't want to work" },
+      { "zh-tw": "為什麼又是我", "en": "Why me again" },
+      { "zh-tw": "今天也很累", "en": "Tired again today" },
+      { "zh-tw": "算了不管了", "en": "Whatever, I give up" },
+      { "zh-tw": "有事嗎？", "en": "Got a problem?" },
+      { "zh-tw": "就這樣吧", "en": "That's it then" },
+      { "zh-tw": "我好可愛", "en": "I'm so cute" },
+      { "zh-tw": "不要吵我", "en": "Leave me alone" },
+      { "zh-tw": "開心開心", "en": "Happy happy" }
+    ]
+  },
+  "main_title": {
+    "label": { "zh-tw": "主標題", "en": "Main Title" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "秋季限定", "en": "Autumn Limited Edition" },
+      { "zh-tw": "新品上市", "en": "New Arrival" },
+      { "zh-tw": "週年慶典", "en": "Anniversary Sale" },
+      { "zh-tw": "限時特惠", "en": "Limited Time Offer" },
+      { "zh-tw": "夏日清涼", "en": "Summer Cool" },
+      { "zh-tw": "冬季暖心", "en": "Winter Warmth" },
+      { "zh-tw": "春季新風尚", "en": "Spring New Style" },
+      { "zh-tw": "會員專屬", "en": "Members Only" }
+    ]
+  },
+  "offer": {
+    "label": { "zh-tw": "優惠內容", "en": "Promotional Offer" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "買一送一", "en": "Buy One Get One Free" },
+      { "zh-tw": "第二件半價", "en": "50% Off Second Item" },
+      { "zh-tw": "滿額免運", "en": "Free Shipping on Orders" },
+      { "zh-tw": "限時8折", "en": "20% Off Limited Time" },
+      { "zh-tw": "全館5折起", "en": "50% Off Storewide" },
+      { "zh-tw": "加購價$99", "en": "Add-on for $99" },
+      { "zh-tw": "消費滿千送百", "en": "Spend $1000 Get $100" },
+      { "zh-tw": "新會員首購9折", "en": "10% Off First Purchase" }
+    ]
+  },
+  "footer": {
+    "label": { "zh-tw": "頁腳文字", "en": "Footer Text" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "限時優惠", "en": "Limited Time Offer" },
+      { "zh-tw": "售完為止", "en": "While Supplies Last" },
+      { "zh-tw": "歡迎預約", "en": "Reservations Welcome" },
+      { "zh-tw": "詳情請洽門市", "en": "Contact Store for Details" },
+      { "zh-tw": "僅限本週", "en": "This Week Only" },
+      { "zh-tw": "數量有限", "en": "Limited Quantity" },
+      { "zh-tw": "不可與其他優惠併用", "en": "Cannot Be Combined" },
+      { "zh-tw": "歡迎來電訂購", "en": "Call to Order" }
+    ]
+  },
+  "number_of_days": {
+    "label": { "zh-tw": "天數", "en": "Number of Days" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "1", "en": "1" },
+      { "zh-tw": "2", "en": "2" },
+      { "zh-tw": "3", "en": "3" },
+      { "zh-tw": "4", "en": "4" },
+      { "zh-tw": "5", "en": "5" },
+      { "zh-tw": "7", "en": "7" },
+      { "zh-tw": "10", "en": "10" },
+      { "zh-tw": "14", "en": "14" }
+    ]
+  },
+  "scene_description": {
+    "label": { "zh-tw": "場景描述", "en": "Scene Description" },
+    "category": "visual",
+    "options": [
+      { "zh-tw": "一隻可愛的巨大小貓俏皮地用爪子撥弄經過的行人", "en": "A cute giant kitten playfully batting at passing pedestrians with its paw" },
+      { "zh-tw": "一條巨龍從螢幕中飛出，噴著火焰", "en": "A giant dragon flying out of the screen, breathing fire" },
+      { "zh-tw": "一隻恐龍探出頭來，好奇地觀察街道上的人們", "en": "A dinosaur peeking out, curiously watching people on the street" },
+      { "zh-tw": "一隻巨大的金魚在空中優雅地游動", "en": "A giant goldfish gracefully swimming in the air" },
+      { "zh-tw": "一個太空人漂浮在螢幕外，向路人揮手", "en": "An astronaut floating outside the screen, waving to pedestrians" },
+      { "zh-tw": "一隻巨大的熊貓抱著竹子，懶洋洋地看著人群", "en": "A giant panda holding bamboo, lazily watching the crowd" },
+      { "zh-tw": "一隻神奇的鳳凰展翅飛出，羽毛閃閃發光", "en": "A magical phoenix spreading its wings, feathers glowing" },
+      { "zh-tw": "一群蝴蝶從螢幕中飛出，環繞在建築物周圍", "en": "A group of butterflies flying out, surrounding the buildings" }
+    ]
+  },
+  "slogan": {
+    "label": { "zh-tw": "標語", "en": "Slogan" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "3分鐘搞定！", "en": "Done in 3 Minutes!" },
+      { "zh-tw": "你一定沒想到！", "en": "You Won't Believe This!" },
+      { "zh-tw": "超簡單教學", "en": "Super Easy Tutorial" },
+      { "zh-tw": "這樣做太神了！", "en": "This Trick is Amazing!" },
+      { "zh-tw": "必看！", "en": "Must Watch!" },
+      { "zh-tw": "新手必學", "en": "Beginners Must Learn" },
+      { "zh-tw": "省錢秘訣", "en": "Money Saving Tips" },
+      { "zh-tw": "效果驚人！", "en": "Amazing Results!" },
+      { "zh-tw": "一招搞定", "en": "One Trick Solution" },
+      { "zh-tw": "居然可以這樣！", "en": "You Can Do This!" }
+    ]
   }
 };
 
@@ -815,5 +1081,24 @@ export const INITIAL_DEFAULTS = {
   character_name: { "zh-tw": "龍貓", en: "Totoro" },
   fruit: { "zh-tw": "檸檬", en: "Lemon" },
   jewelry_style: { "zh-tw": "精美的金色背鏈", en: "Fine gold back necklace" },
-  flower_type: { "zh-tw": "一束深紅色玫瑰", en: "A bouquet of deep red roses" }
+  flower_type: { "zh-tw": "一束深紅色玫瑰", en: "A bouquet of deep red roses" },
+
+  // Nanobanana 模板詞庫預設值
+  business_type: { "zh-tw": "咖啡廳", en: "Café" },
+  pet_type: { "zh-tw": "狗", en: "Dog" },
+  garment_type: { "zh-tw": "T恤", en: "T-shirt" },
+  source_language: { "zh-tw": "日文", en: "Japanese" },
+  target_language: { "zh-tw": "繁體中文", en: "Traditional Chinese" },
+  product: { "zh-tw": "星巴克咖啡杯", en: "Starbucks Coffee Cup" },
+  bottle_shape: { "zh-tw": "經典方瓶", en: "Classic Square Bottle" },
+  liquid_color: { "zh-tw": "琥珀色", en: "Amber" },
+  label_description: { "zh-tw": "金色標籤", en: "Gold Label" },
+  product_name: { "zh-tw": "N°5 香水", en: "N°5 Perfume" },
+  caption: { "zh-tw": "好傻喔", en: "So silly" },
+  main_title: { "zh-tw": "秋季限定", en: "Autumn Limited Edition" },
+  offer: { "zh-tw": "買一送一", en: "Buy One Get One Free" },
+  footer: { "zh-tw": "限時優惠", en: "Limited Time Offer" },
+  number_of_days: { "zh-tw": "3", en: "3" },
+  scene_description: { "zh-tw": "一隻可愛的巨大小貓俏皮地用爪子撥弄經過的行人", en: "A cute giant kitten playfully batting at passing pedestrians with its paw" },
+  slogan: { "zh-tw": "3分鐘搞定！", en: "Done in 3 Minutes!" }
 };

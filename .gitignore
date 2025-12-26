@@ -44,3 +44,9 @@ App-clean.jsx
 
 # Tauri (Desktop App)
 src-tauri/
+
+# Claude Code
+.claude/
+CLAUDE.md
+AGENTS.md
+openspec/

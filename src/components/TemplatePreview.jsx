@@ -65,7 +65,7 @@ export const TemplatePreview = React.memo(
         return activeTemplate.imageUrls;
       }
       return activeTemplate?.imageUrl ? [activeTemplate.imageUrl] : [];
-    }, [activeTemplate.imageUrls, activeTemplate.imageUrl]);
+    }, [activeTemplate?.imageUrls, activeTemplate?.imageUrl]);
 
     const currentImageUrl = allImages[editImageIndex] || activeTemplate?.imageUrl;
 
@@ -76,7 +76,7 @@ export const TemplatePreview = React.memo(
 
     React.useEffect(() => {
       setEditImageIndex(0);
-    }, [activeTemplate.id]);
+    }, [activeTemplate?.id]);
 
     const templateLangs = activeTemplate.language
       ? Array.isArray(activeTemplate.language)

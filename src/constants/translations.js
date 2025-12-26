@@ -125,6 +125,16 @@ export const TRANSLATIONS = {
     connect_author: "聯絡與關於",
     toolbox_chatgpt: "ChatGPT 萬能工具箱",
     gemini_muji: "Gemini 🍌 無印良品",
+// GitHub Issues 相關
+    sync_community: "同步社群模板",
+    github_data_refreshed: "社群資料已更新",
+    github_data_refresh_failed: "更新社群資料失敗",
+    loading_github_data: "載入社群資料中...",
+    refresh_github_data: "重新載入社群資料",
+    submit_to_author: "提交給作者",
+    submit_template_copied: "已開啟 GitHub Issue 頁面",
+    submit_bank_copied: "已開啟 GitHub Issue 頁面",
+    from_github: "來自社群",
   },
   en: {
     template_management: "Templates",
@@ -251,5 +261,15 @@ export const TRANSLATIONS = {
     connect_author: "Connect & About",
     toolbox_chatgpt: "ChatGPT All-in-One Toolbox",
     gemini_muji: "Gemini 🍌 MUJI",
+// GitHub Issues related
+    sync_community: "Sync Community Templates",
+    github_data_refreshed: "Community data updated",
+    github_data_refresh_failed: "Failed to update community data",
+    loading_github_data: "Loading community data...",
+    refresh_github_data: "Refresh community data",
+    submit_to_author: "Submit to Author",
+    submit_template_copied: "Opening GitHub Issue...",
+    submit_bank_copied: "Opening GitHub Issue...",
+    from_github: "From Community",
   },
 };

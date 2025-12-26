@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Settings, List, Check, ChevronRight, ChevronDown, Plus, Trash2, X, ChevronUp, Pencil } from 'lucide-react';
+import { Settings, List, Check, ChevronRight, ChevronDown, Plus, Trash2, X, ChevronUp, Pencil, Send } from 'lucide-react';
 import { CATEGORY_STYLES, PREMIUM_STYLES } from '../constants/styles';
 import { getLocalized } from '../utils/helpers';
 
 /**
  * 元件：詞庫分類塊
  */
-const CategorySection = ({ catId, categories, banks, onInsert, onDeleteOption, onAddOption, onDeleteBank, onUpdateBankCategory, onStartAddBank, t, language, onTouchDragStart }) => {
+const CategorySection = ({ catId, categories, banks, onInsert, onDeleteOption, onAddOption, onDeleteBank, onSubmitBank, onUpdateBankCategory, onStartAddBank, t, language, onTouchDragStart, INITIAL_BANKS }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const category = categories[catId];
   
@@ -50,14 +50,16 @@ const CategorySection = ({ catId, categories, banks, onInsert, onDeleteOption, o
                         onDeleteOption={onDeleteOption}
                         onAddOption={onAddOption}
                         onDeleteBank={onDeleteBank}
+                        onSubmitBank={onSubmitBank}
                         onUpdateBankCategory={onUpdateBankCategory}
                         categories={categories}
                         t={t}
                         language={language}
                         onTouchDragStart={onTouchDragStart}
+                        INITIAL_BANKS={INITIAL_BANKS}
                     />
                 ))}
-                
+
                 {/* 新建詞組按鈕 */}
                 <button
                     onClick={() => onStartAddBank(catId)}
@@ -76,7 +78,7 @@ const CategorySection = ({ catId, categories, banks, onInsert, onDeleteOption, o
 /**
  * 元件：可折疊的詞庫組
  */
-const BankGroup = ({ bankKey, bank, onInsert, onDeleteOption, onAddOption, onDeleteBank, onUpdateBankCategory, categories, t, language, onTouchDragStart }) => {
+const BankGroup = ({ bankKey, bank, onInsert, onDeleteOption, onAddOption, onDeleteBank, onSubmitBank, onUpdateBankCategory, categories, t, language, onTouchDragStart, INITIAL_BANKS }) => {
     const [isCollapsed, setIsCollapsed] = useState(true);
     const [isEditingCategory, setIsEditingCategory] = useState(false);
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
@@ -152,7 +154,16 @@ const BankGroup = ({ bankKey, bank, onInsert, onDeleteOption, onAddOption, onDel
                                 >
                                     <Settings size={14} />
                                 </button>
-                                <button 
+                                {!INITIAL_BANKS[bankKey] && onSubmitBank && (
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); onSubmitBank(bankKey, bank); }}
+                                        title={t('submit_to_author')}
+                                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200 shadow-sm hover:shadow"
+                                    >
+                                        <Send size={14} />
+                                    </button>
+                                )}
+                                <button
                                     onClick={(e) => { e.stopPropagation(); onDeleteBank(bankKey); }}
                                     className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200 shadow-sm hover:shadow"
                                 >
@@ -540,26 +551,28 @@ export const AddBankModal = ({ isOpen, onClose, t, categories, newBankLabel, set
 /**
  * BanksSidebar 元件 - 負責展示右側詞庫配置
  */
-export const BanksSidebar = React.memo(({ 
-  mobileTab, 
+export const BanksSidebar = React.memo(({
+  mobileTab,
   isBanksDrawerOpen,
   setIsBanksDrawerOpen,
-  bankSidebarWidth, 
-  sidebarRef, 
-  startResizing, 
-  setIsCategoryManagerOpen, 
-  categories, 
-  banks, 
-  insertVariableToTemplate, 
-  handleDeleteOption, 
-  handleAddOption, 
-  handleDeleteBank, 
-  handleUpdateBankCategory, 
-  handleStartAddBank, 
+  bankSidebarWidth,
+  sidebarRef,
+  startResizing,
+  setIsCategoryManagerOpen,
+  categories,
+  banks,
+  insertVariableToTemplate,
+  handleDeleteOption,
+  handleAddOption,
+  handleDeleteBank,
+  handleSubmitBank,
+  handleUpdateBankCategory,
+  handleStartAddBank,
   t,
   language,
   // 移动端模拟拖拽 props
-  onTouchDragStart
+  onTouchDragStart,
+  INITIAL_BANKS
 }) => {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -618,7 +631,7 @@ export const BanksSidebar = React.memo(({
            <div className="flex flex-col md:flex-row gap-4 items-start">
              <div className="flex-1 flex flex-col gap-4 min-w-0 w-full">
                 {Object.keys(categories).filter((_, i) => i % 2 === 0).map(catId => (
-                    <CategorySection 
+                    <CategorySection
                         key={catId}
                         catId={catId}
                         categories={categories}
@@ -627,17 +640,19 @@ export const BanksSidebar = React.memo(({
                         onDeleteOption={handleDeleteOption}
                         onAddOption={handleAddOption}
                         onDeleteBank={handleDeleteBank}
+                        onSubmitBank={handleSubmitBank}
                         onUpdateBankCategory={handleUpdateBankCategory}
                         onStartAddBank={handleStartAddBank}
                         t={t}
                         language={language}
                         onTouchDragStart={onTouchDragStart}
+                        INITIAL_BANKS={INITIAL_BANKS}
                     />
                 ))}
              </div>
              <div className="flex-1 flex flex-col gap-4 min-w-0 w-full">
                 {Object.keys(categories).filter((_, i) => i % 2 === 1).map(catId => (
-                    <CategorySection 
+                    <CategorySection
                         key={catId}
                         catId={catId}
                         categories={categories}
@@ -646,11 +661,13 @@ export const BanksSidebar = React.memo(({
                         onDeleteOption={handleDeleteOption}
                         onAddOption={handleAddOption}
                         onDeleteBank={handleDeleteBank}
+                        onSubmitBank={handleSubmitBank}
                         onUpdateBankCategory={handleUpdateBankCategory}
                         onStartAddBank={handleStartAddBank}
                         t={t}
                         language={language}
                         onTouchDragStart={onTouchDragStart}
+                        INITIAL_BANKS={INITIAL_BANKS}
                     />
                 ))}
              </div>
@@ -658,7 +675,7 @@ export const BanksSidebar = React.memo(({
         ) : (
           <div className="flex flex-col gap-4">
               {Object.keys(categories).map(catId => (
-                  <CategorySection 
+                  <CategorySection
                       key={catId}
                       catId={catId}
                       categories={categories}
@@ -667,11 +684,13 @@ export const BanksSidebar = React.memo(({
                       onDeleteOption={handleDeleteOption}
                       onAddOption={handleAddOption}
                       onDeleteBank={handleDeleteBank}
+                      onSubmitBank={handleSubmitBank}
                       onUpdateBankCategory={handleUpdateBankCategory}
                       onStartAddBank={handleStartAddBank}
                       t={t}
                       language={language}
                       onTouchDragStart={onTouchDragStart}
+                      INITIAL_BANKS={INITIAL_BANKS}
                   />
               ))}
           </div>

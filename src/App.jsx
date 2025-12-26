@@ -55,6 +55,16 @@ import { SCENE_WORDS, STYLE_WORDS } from './constants/slogan';
 import { useStickyState } from './hooks/useStickyState';
 import { useToast } from './contexts/ToastContext';
 
+// ====== 匯入 GitHub API 服務 ======
+import {
+  fetchTemplatesFromIssues,
+  fetchBanksFromIssues,
+  mergeTemplates,
+  mergeBanks,
+  refreshFromGitHub,
+  clearCache as clearGitHubCache,
+} from './services/github';
+
 // ====== 匯入 UI 元件 ======
 import {
   Variable,
@@ -208,7 +218,7 @@ const ImagePreviewModal = React.memo(
           {/* Background Layer - Light Version */}
           <div
             className="absolute inset-0 z-[-1] bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: 'url(/background1.png)' }}
+            style={{ backgroundImage: 'url(./background1.png)' }}
           >
             <div className="absolute inset-0 bg-white/60 backdrop-blur-2xl"></div>
           </div>
@@ -375,7 +385,7 @@ const ImagePreviewModal = React.memo(
         <div
           className="absolute inset-0 z-[-1] bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: 'url(/background1.png)',
+            backgroundImage: 'url(./background1.png)',
           }}
         >
           <div className="absolute inset-0 bg-black/85 backdrop-blur-3xl"></div>
@@ -740,6 +750,10 @@ const App = () => {
   const [editingTemplateTags, setEditingTemplateTags] = useState(null); // {id, tags}
   const [isDiscoveryView, setDiscoveryView] = useState(true); // 首次載入預設顯示發現（海報）視圖
 
+  // GitHub Issues 資料載入狀態
+  const [isLoadingGitHubData, setIsLoadingGitHubData] = useState(false);
+  const [isGitHubDataLoaded, setIsGitHubDataLoaded] = useState(false);
+
   // Zoom 圖片：按下 ESC 關閉
   useEffect(() => {
     if (!zoomedImage) return;
@@ -797,7 +811,7 @@ const App = () => {
   useEffect(() => {
     const checkUpdates = async () => {
       try {
-        const response = await fetch('/version.json?t=' + Date.now());
+        const response = await fetch('./version.json?t=' + Date.now());
         if (response.ok) {
           const data = await response.json();
 
@@ -821,6 +835,59 @@ const App = () => {
 
     return () => clearInterval(timer);
   }, [lastAppliedDataVersion]); // 移除 lastAppliedAppVersion 依賴
+
+  // 第二階段：非同步載入 GitHub Issues 資料
+  useEffect(() => {
+    const loadGitHubData = async () => {
+      setIsLoadingGitHubData(true);
+      try {
+        const [githubTemplates, githubBanks] = await Promise.all([
+          fetchTemplatesFromIssues(),
+          fetchBanksFromIssues(),
+        ]);
+
+        // 合併 GitHub 資料與現有資料
+        if (githubTemplates.length > 0) {
+          setTemplates((prev) => mergeTemplates(prev, githubTemplates));
+        }
+
+        if (Object.keys(githubBanks).length > 0) {
+          setBanks((prev) => mergeBanks(prev, githubBanks));
+        }
+
+        setIsGitHubDataLoaded(true);
+      } catch (error) {
+        console.error('Failed to load GitHub data:', error);
+      } finally {
+        setIsLoadingGitHubData(false);
+      }
+    };
+
+    loadGitHubData();
+  }, []); // 只在首次掛載時載入
+
+  // 手動重新載入 GitHub 資料
+  const handleRefreshGitHubData = async () => {
+    setIsLoadingGitHubData(true);
+    try {
+      const { templates: githubTemplates, banks: githubBanks } = await refreshFromGitHub();
+
+      if (githubTemplates.length > 0) {
+        setTemplates((prev) => mergeTemplates(prev, githubTemplates));
+      }
+
+      if (Object.keys(githubBanks).length > 0) {
+        setBanks((prev) => mergeBanks(prev, githubBanks));
+      }
+
+      addToast(t('github_data_refreshed'));
+    } catch (error) {
+      console.error('Failed to refresh GitHub data:', error);
+      addToast(t('github_data_refresh_failed'));
+    } finally {
+      setIsLoadingGitHubData(false);
+    }
+  };
 
   // History State for Undo/Redo
   const [historyPast, setHistoryPast] = useState([]);
@@ -1447,7 +1514,7 @@ const App = () => {
               title: templateName,
               text: '匯出的提示詞模板',
             });
-            showToastMessage('✅ 模板已分享／儲存');
+            addToast('✅ 模板已分享／儲存');
             return;
           }
         } catch (shareError) {
@@ -1475,11 +1542,75 @@ const App = () => {
         URL.revokeObjectURL(url);
       }, 100);
 
-      showToastMessage('✅ 模板已匯出');
+      addToast('✅ 模板已匯出');
     } catch (error) {
       console.error('匯出失敗:', error);
-      addToast('匯出失敗，請重試', 'error');
+      addToast('❌ 匯出失敗，請重試');
     }
+  };
+
+  // --- 提交模板給作者 ---
+  const handleSubmitTemplate = async (template) => {
+    const githubRepo = import.meta.env.VITE_GITHUB_REPO || 'doggy8088/PromptFill';
+
+    // 準備表單欄位
+    const nameZh = getLocalized(template.name, 'zh-tw') || '';
+    const nameEn = getLocalized(template.name, 'en') || '';
+    const contentZh = getLocalized(template.content, 'zh-tw') || '';
+    const contentEn = getLocalized(template.content, 'en') || '';
+    const preview = template.imageUrl || '';
+    const tags = (template.tags || []).join(', ');
+    const defaults = template.defaults ? JSON.stringify(template.defaults, null, 2) : '';
+
+    // 建立 URL 參數
+    const params = new URLSearchParams();
+    params.set('template', 'template-submission.yml');
+    params.set('title', `[Template] ${nameZh || nameEn}`);
+    if (nameZh) params.set('name-zh', nameZh);
+    if (nameEn) params.set('name-en', nameEn);
+    if (contentZh) params.set('content-zh', contentZh);
+    if (contentEn) params.set('content-en', contentEn);
+    if (preview) params.set('preview', preview);
+    if (tags) params.set('tags', tags);
+    if (defaults) params.set('defaults', defaults);
+
+    const issueUrl = `https://github.com/${githubRepo}/issues/new?${params.toString()}`;
+    window.open(issueUrl, '_blank');
+    addToast(t('submit_template_copied'));
+  };
+
+  // --- 提交詞庫給作者 ---
+  const handleSubmitBank = async (bankId, bank) => {
+    const githubRepo = import.meta.env.VITE_GITHUB_REPO || 'doggy8088/PromptFill';
+
+    // 準備表單欄位
+    const nameZh = getLocalized(bank.label, 'zh-tw') || '';
+    const nameEn = getLocalized(bank.label, 'en') || '';
+    const category = bank.category || 'other';
+
+    // 轉換選項為文字格式（每行：中文 | English）
+    const optionsText = (bank.options || [])
+      .map(opt => {
+        if (typeof opt === 'string') return opt;
+        const zh = opt['zh-tw'] || opt.zh || '';
+        const en = opt['en'] || '';
+        return en ? `${zh} | ${en}` : zh;
+      })
+      .join('\n');
+
+    // 建立 URL 參數
+    const params = new URLSearchParams();
+    params.set('template', 'bank-submission.yml');
+    params.set('title', `[Bank] ${nameZh || nameEn || bankId}`);
+    if (nameZh) params.set('name-zh', nameZh);
+    if (nameEn) params.set('name-en', nameEn);
+    params.set('bank-id', bankId);
+    params.set('category', `${category} (${categories[category]?.label?.['zh-tw'] || category})`);
+    if (optionsText) params.set('options', optionsText);
+
+    const issueUrl = `https://github.com/${githubRepo}/issues/new?${params.toString()}`;
+    window.open(issueUrl, '_blank');
+    addToast(t('submit_bank_copied'));
   };
 
   const handleExportAllTemplates = async () => {
@@ -1512,7 +1643,7 @@ const App = () => {
               title: '提示詞填空器備份',
               text: '所有模板和詞庫的完整備份',
             });
-            showToastMessage('✅ 備份已分享／儲存');
+            addToast('✅ 備份已分享／儲存');
             return;
           }
         } catch (shareError) {
@@ -1540,10 +1671,10 @@ const App = () => {
         URL.revokeObjectURL(url);
       }, 100);
 
-      showToastMessage('✅ 備份已匯出');
+      addToast('✅ 備份已匯出');
     } catch (error) {
       console.error('匯出失敗:', error);
-      addToast('匯出失敗，請重試', 'error');
+      addToast('❌ 匯出失敗，請重試');
     }
   };
 
@@ -2155,6 +2286,7 @@ const App = () => {
             startRenamingTemplate={startRenamingTemplate}
             handleDuplicateTemplate={handleDuplicateTemplate}
             handleExportTemplate={handleExportTemplate}
+            handleSubmitToAuthor={handleSubmitTemplate}
             handleDeleteTemplate={handleDeleteTemplate}
             handleAddTemplate={handleAddTemplate}
             INITIAL_TEMPLATES_CONFIG={INITIAL_TEMPLATES_CONFIG}
@@ -2165,6 +2297,8 @@ const App = () => {
             setTempTemplateAuthor={setTempTemplateAuthor}
             saveTemplateName={saveTemplateName}
             setEditingTemplateNameId={setEditingTemplateNameId}
+            handleSyncCommunity={handleRefreshGitHubData}
+            isSyncingCommunity={isLoadingGitHubData}
           />
 
           {/* --- 2. Main Editor (Middle) --- */}
@@ -2455,11 +2589,13 @@ const App = () => {
             handleDeleteOption={handleDeleteOption}
             handleAddOption={handleAddOption}
             handleDeleteBank={handleDeleteBank}
+            handleSubmitBank={handleSubmitBank}
             handleUpdateBankCategory={handleUpdateBankCategory}
             handleStartAddBank={handleStartAddBank}
             t={t}
             language={templateLanguage}
             onTouchDragStart={onTouchDragStart}
+            INITIAL_BANKS={INITIAL_BANKS}
           />
         </>
       )}
@@ -2570,6 +2706,14 @@ const App = () => {
                 >
                   <RefreshCw size={18} />
                   <span>{t('refresh_system')}</span>
+                </button>
+                <button
+                  onClick={handleRefreshGitHubData}
+                  disabled={isLoadingGitHubData}
+                  className="w-full text-center px-5 py-4 text-sm font-semibold bg-white hover:bg-green-50 text-green-600 rounded-2xl transition-all duration-300 border-2 border-green-100 hover:border-green-200 flex items-center justify-center gap-2.5 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <RefreshCw size={18} className={isLoadingGitHubData ? 'animate-spin' : ''} />
+                  <span>{isLoadingGitHubData ? t('loading_github_data') : t('refresh_github_data')}</span>
                 </button>
               </div>
 

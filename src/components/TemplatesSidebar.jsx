@@ -20,6 +20,9 @@ import {
   Github,
   Toolbox,
   Banana,
+  Cloud,
+  Send,
+  Loader2,
 } from 'lucide-react';
 import { PremiumButton } from './PremiumButton';
 import { getLocalized } from '../utils/helpers';
@@ -66,6 +69,9 @@ export const TemplatesSidebar = React.memo(
     setTempTemplateAuthor,
     saveTemplateName,
     setEditingTemplateNameId,
+    handleSyncCommunity,
+    isSyncingCommunity,
+    handleSubmitToAuthor,
   }) => {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -118,6 +124,18 @@ export const TemplatesSidebar = React.memo(
                   >
                     <RotateCcw size={16} />
                   </button>
+
+                  {/* Sync Community Button */}
+                  {handleSyncCommunity && (
+                    <button
+                      onClick={handleSyncCommunity}
+                      disabled={isSyncingCommunity}
+                      className="p-1.5 rounded-lg transition-colors text-gray-400 hover:text-blue-600 hover:bg-blue-50 disabled:opacity-50"
+                      title={t('sync_community', '同步社群模板')}
+                    >
+                      {isSyncingCommunity ? <Loader2 size={16} className="animate-spin" /> : <Cloud size={16} />}
+                    </button>
+                  )}
 
                   {/* Sort Menu Button */}
                   <div className="relative">
@@ -318,6 +336,18 @@ export const TemplatesSidebar = React.memo(
                           >
                             <Download size={13} />
                           </button>
+                          {handleSubmitToAuthor && !INITIAL_TEMPLATES_CONFIG.some((cfg) => cfg.id === t_item.id) && (
+                            <button
+                              title={t('submit_to_author', '提交給作者')}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSubmitToAuthor(t_item);
+                              }}
+                              className="p-1.5 hover:bg-green-50 rounded-lg text-gray-400 hover:text-green-600 transition-all duration-200 hover:scale-110"
+                            >
+                              <Send size={13} />
+                            </button>
+                          )}
                           <button
                             title={t('delete')}
                             onClick={(e) => {

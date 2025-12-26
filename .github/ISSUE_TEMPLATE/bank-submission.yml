@@ -1,0 +1,66 @@
+name: 📚 詞庫提交 / Bank Submission
+description: 提交新的詞庫 / Submit a new word bank
+title: "[Bank] "
+labels: ["bank", "pending"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感謝您提交詞庫！請填寫以下資訊。
+        Thank you for submitting a word bank! Please fill in the information below.
+
+  - type: input
+    id: name-zh
+    attributes:
+      label: 詞庫名稱 (中文)
+      description: 詞庫的中文名稱
+      placeholder: 例如：角色身份
+    validations:
+      required: true
+
+  - type: input
+    id: name-en
+    attributes:
+      label: Bank Name (English)
+      description: Bank name in English
+      placeholder: e.g., Role
+    validations:
+      required: false
+
+  - type: input
+    id: bank-id
+    attributes:
+      label: 詞庫 ID / Bank ID
+      description: 唯一識別符（英文小寫，底線分隔）/ Unique identifier (lowercase, underscore-separated)
+      placeholder: e.g., role, clothing_female
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 分類 / Category
+      description: 選擇詞庫所屬分類 / Select the category for this bank
+      options:
+        - character (人物)
+        - item (物品)
+        - action (動作)
+        - location (地點)
+        - visual (畫面)
+        - other (其他)
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: 選項 / Options
+      description: |
+        每行一個選項，格式：中文 | English
+        One option per line, format: 中文 | English
+      placeholder: |
+        設計師 | Designer
+        攝影師 | Photographer
+        插畫師 | Illustrator
+    validations:
+      required: true
