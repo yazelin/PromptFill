@@ -1013,6 +1013,165 @@ export const INITIAL_BANKS = {
       { "zh-tw": "一招搞定", "en": "One Trick Solution" },
       { "zh-tw": "居然可以這樣！", "en": "You Can Do This!" }
     ]
+  },
+  // 新增詞庫 - 用於更多模板
+  "country": {
+    "label": { "zh-tw": "國家", "en": "Country" },
+    "category": "location",
+    "options": [
+      { "zh-tw": "日本", "en": "Japan" },
+      { "zh-tw": "美國", "en": "United States" },
+      { "zh-tw": "法國", "en": "France" },
+      { "zh-tw": "義大利", "en": "Italy" },
+      { "zh-tw": "英國", "en": "United Kingdom" },
+      { "zh-tw": "德國", "en": "Germany" },
+      { "zh-tw": "中國", "en": "China" },
+      { "zh-tw": "韓國", "en": "South Korea" },
+      { "zh-tw": "臺灣", "en": "Taiwan" },
+      { "zh-tw": "泰國", "en": "Thailand" },
+      { "zh-tw": "澳洲", "en": "Australia" },
+      { "zh-tw": "西班牙", "en": "Spain" }
+    ]
+  },
+  "city": {
+    "label": { "zh-tw": "城市", "en": "City" },
+    "category": "location",
+    "options": [
+      { "zh-tw": "東京", "en": "Tokyo" },
+      { "zh-tw": "紐約", "en": "New York" },
+      { "zh-tw": "巴黎", "en": "Paris" },
+      { "zh-tw": "倫敦", "en": "London" },
+      { "zh-tw": "上海", "en": "Shanghai" },
+      { "zh-tw": "首爾", "en": "Seoul" },
+      { "zh-tw": "台北", "en": "Taipei" },
+      { "zh-tw": "香港", "en": "Hong Kong" },
+      { "zh-tw": "新加坡", "en": "Singapore" },
+      { "zh-tw": "曼谷", "en": "Bangkok" },
+      { "zh-tw": "杜拜", "en": "Dubai" },
+      { "zh-tw": "雪梨", "en": "Sydney" }
+    ]
+  },
+  "phone_model": {
+    "label": { "zh-tw": "手機型號", "en": "Phone Model" },
+    "category": "item",
+    "options": [
+      { "zh-tw": "iPhone 16 Pro", "en": "iPhone 16 Pro" },
+      { "zh-tw": "iPhone 16 Pro Max", "en": "iPhone 16 Pro Max" },
+      { "zh-tw": "Samsung Galaxy S24 Ultra", "en": "Samsung Galaxy S24 Ultra" },
+      { "zh-tw": "Google Pixel 9 Pro", "en": "Google Pixel 9 Pro" },
+      { "zh-tw": "華為 Mate 60 Pro", "en": "Huawei Mate 60 Pro" },
+      { "zh-tw": "小米 14 Ultra", "en": "Xiaomi 14 Ultra" },
+      { "zh-tw": "OnePlus 12", "en": "OnePlus 12" },
+      { "zh-tw": "Sony Xperia 1 VI", "en": "Sony Xperia 1 VI" }
+    ]
+  },
+  "camera_model": {
+    "label": { "zh-tw": "相機型號", "en": "Camera Model" },
+    "category": "item",
+    "options": [
+      { "zh-tw": "Canon EOS R5", "en": "Canon EOS R5" },
+      { "zh-tw": "Sony A7 IV", "en": "Sony A7 IV" },
+      { "zh-tw": "Nikon Z8", "en": "Nikon Z8" },
+      { "zh-tw": "Fujifilm X-T5", "en": "Fujifilm X-T5" },
+      { "zh-tw": "Canon IXUS 285", "en": "Canon IXUS 285" },
+      { "zh-tw": "Sony RX100 VII", "en": "Sony RX100 VII" },
+      { "zh-tw": "Leica Q3", "en": "Leica Q3" },
+      { "zh-tw": "Polaroid Now+", "en": "Polaroid Now+" }
+    ]
+  },
+  "anime_character": {
+    "label": { "zh-tw": "動漫角色", "en": "Anime Character" },
+    "category": "character",
+    "options": [
+      { "zh-tw": "路飛 (海賊王)", "en": "Luffy (One Piece)" },
+      { "zh-tw": "鳴人 (火影忍者)", "en": "Naruto (Naruto)" },
+      { "zh-tw": "炭治郎 (鬼滅之刃)", "en": "Tanjiro (Demon Slayer)" },
+      { "zh-tw": "五條悟 (咒術迴戰)", "en": "Gojo Satoru (Jujutsu Kaisen)" },
+      { "zh-tw": "女帝漢考克 (海賊王)", "en": "Boa Hancock (One Piece)" },
+      { "zh-tw": "零二 (DARLING in the FRANXX)", "en": "Zero Two (DARLING in the FRANXX)" },
+      { "zh-tw": "初音未來", "en": "Hatsune Miku" },
+      { "zh-tw": "艾倫·乍加 (進擊的巨人)", "en": "Eren Yeager (Attack on Titan)" },
+      { "zh-tw": "悟空 (七龍珠)", "en": "Goku (Dragon Ball)" },
+      { "zh-tw": "阿尼亞 (間諜家家酒)", "en": "Anya (Spy x Family)" }
+    ]
+  },
+  "holiday": {
+    "label": { "zh-tw": "節日", "en": "Holiday" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "聖誕節", "en": "Christmas" },
+      { "zh-tw": "新年", "en": "New Year" },
+      { "zh-tw": "農曆新年", "en": "Lunar New Year" },
+      { "zh-tw": "情人節", "en": "Valentine's Day" },
+      { "zh-tw": "萬聖節", "en": "Halloween" },
+      { "zh-tw": "復活節", "en": "Easter" },
+      { "zh-tw": "感恩節", "en": "Thanksgiving" },
+      { "zh-tw": "中秋節", "en": "Mid-Autumn Festival" },
+      { "zh-tw": "端午節", "en": "Dragon Boat Festival" },
+      { "zh-tw": "母親節", "en": "Mother's Day" }
+    ]
+  },
+  "room_type": {
+    "label": { "zh-tw": "房間類型", "en": "Room Type" },
+    "category": "location",
+    "options": [
+      { "zh-tw": "居家辦公室", "en": "Home Office" },
+      { "zh-tw": "臥室", "en": "Bedroom" },
+      { "zh-tw": "客廳", "en": "Living Room" },
+      { "zh-tw": "廚房", "en": "Kitchen" },
+      { "zh-tw": "浴室", "en": "Bathroom" },
+      { "zh-tw": "書房", "en": "Study Room" },
+      { "zh-tw": "遊戲室", "en": "Game Room" },
+      { "zh-tw": "陽台花園", "en": "Balcony Garden" },
+      { "zh-tw": "咖啡角落", "en": "Coffee Corner" },
+      { "zh-tw": "錄音室", "en": "Recording Studio" }
+    ]
+  },
+  "novel_genre": {
+    "label": { "zh-tw": "小說類型", "en": "Novel Genre" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "奇幻冒險", "en": "Fantasy Adventure" },
+      { "zh-tw": "科幻未來", "en": "Sci-Fi Future" },
+      { "zh-tw": "懸疑推理", "en": "Mystery Thriller" },
+      { "zh-tw": "浪漫愛情", "en": "Romance" },
+      { "zh-tw": "武俠仙俠", "en": "Martial Arts Fantasy" },
+      { "zh-tw": "恐怖驚悚", "en": "Horror Thriller" },
+      { "zh-tw": "歷史穿越", "en": "Historical Time Travel" },
+      { "zh-tw": "都市異能", "en": "Urban Supernatural" }
+    ]
+  },
+  "novel_title": {
+    "label": { "zh-tw": "小說/電影名稱", "en": "Novel/Movie Title" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "哈利波特", "en": "Harry Potter" },
+      { "zh-tw": "魔戒", "en": "The Lord of the Rings" },
+      { "zh-tw": "三體", "en": "The Three-Body Problem" },
+      { "zh-tw": "冰與火之歌", "en": "A Song of Ice and Fire" },
+      { "zh-tw": "小王子", "en": "The Little Prince" },
+      { "zh-tw": "神鬼奇航", "en": "Pirates of the Caribbean" },
+      { "zh-tw": "鐵達尼號", "en": "Titanic" },
+      { "zh-tw": "星際效應", "en": "Interstellar" },
+      { "zh-tw": "盜夢空間", "en": "Inception" },
+      { "zh-tw": "阿凡達", "en": "Avatar" }
+    ]
+  },
+  "brand_name": {
+    "label": { "zh-tw": "品牌名稱", "en": "Brand Name" },
+    "category": "other",
+    "options": [
+      { "zh-tw": "Apple", "en": "Apple" },
+      { "zh-tw": "Tesla", "en": "Tesla" },
+      { "zh-tw": "Nvidia", "en": "Nvidia" },
+      { "zh-tw": "Meta", "en": "Meta" },
+      { "zh-tw": "Google", "en": "Google" },
+      { "zh-tw": "Microsoft", "en": "Microsoft" },
+      { "zh-tw": "Amazon", "en": "Amazon" },
+      { "zh-tw": "Netflix", "en": "Netflix" },
+      { "zh-tw": "Spotify", "en": "Spotify" },
+      { "zh-tw": "Nike", "en": "Nike" }
+    ]
   }
 };
 
@@ -1100,5 +1259,17 @@ export const INITIAL_DEFAULTS = {
   footer: { "zh-tw": "限時優惠", en: "Limited Time Offer" },
   number_of_days: { "zh-tw": "3", en: "3" },
   scene_description: { "zh-tw": "一隻可愛的巨大小貓俏皮地用爪子撥弄經過的行人", en: "A cute giant kitten playfully batting at passing pedestrians with its paw" },
-  slogan: { "zh-tw": "3分鐘搞定！", en: "Done in 3 Minutes!" }
+  slogan: { "zh-tw": "3分鐘搞定！", en: "Done in 3 Minutes!" },
+
+  // 新增詞庫預設值
+  country: { "zh-tw": "日本", en: "Japan" },
+  city: { "zh-tw": "東京", en: "Tokyo" },
+  phone_model: { "zh-tw": "iPhone 16 Pro", en: "iPhone 16 Pro" },
+  camera_model: { "zh-tw": "Canon EOS R5", en: "Canon EOS R5" },
+  anime_character: { "zh-tw": "路飛 (海賊王)", en: "Luffy (One Piece)" },
+  holiday: { "zh-tw": "聖誕節", en: "Christmas" },
+  room_type: { "zh-tw": "居家辦公室", en: "Home Office" },
+  novel_genre: { "zh-tw": "奇幻冒險", en: "Fantasy Adventure" },
+  novel_title: { "zh-tw": "哈利波特", en: "Harry Potter" },
+  brand_name: { "zh-tw": "Apple", en: "Apple" }
 };
