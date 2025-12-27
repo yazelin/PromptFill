@@ -725,6 +725,17 @@ export const INITIAL_BANKS = {
       { "zh-tw": "椰子", en: "Coconut" }
     ]
   },
+  xmas_theme: {
+    label: { "zh-tw": "聖誕主題", en: "Christmas Theme" },
+    category: "other",
+    options: [
+      { "zh-tw": "抽象聖誕樹", en: "an abstract Christmas Tree" },
+      { "zh-tw": "聖誕雪花", en: "Christmas snowflake" },
+      { "zh-tw": "馴鹿與森林", en: "Reindeer and forest" },
+      { "zh-tw": "聖誕裝飾球", en: "Christmas ornaments" },
+      { "zh-tw": "聖誕薑餅屋", en: "Christmas gingerbread house" }
+    ]
+  },
   jewelry_style: {
     label: { "zh-tw": "珠寶樣式", en: "Jewelry Style" },
     category: "item",
@@ -748,429 +759,75 @@ export const INITIAL_BANKS = {
       { "zh-tw": "鮮豔的向日葵", en: "Vibrant sunflowers" }
     ]
   },
-  "flower_type": {
-    "label": { "zh-tw": "花卉類型", "en": "Flower Type" },
-    "category": "item",
-    "options": [
-      { "zh-tw": "白玫瑰", "en": "White Rose" },
-      { "zh-tw": "紅玫瑰", "en": "Red Rose" },
-      { "zh-tw": "百合", "en": "Lily" },
-      { "zh-tw": "鬱金香", "en": "Tulip" },
-      { "zh-tw": "牡丹", "en": "Peony" },
-      { "zh-tw": "蘭花", "en": "Orchid" },
-      { "zh-tw": "向日葵", "en": "Sunflower" },
-      { "zh-tw": "櫻花", "en": "Cherry Blossom" },
-      { "zh-tw": "繡球花", "en": "Hydrangea" },
-      { "zh-tw": "薰衣草", "en": "Lavender" }
+  character_type_pixar: {
+    label: { "zh-tw": "角色模式", en: "Character Mode" },
+    category: "character",
+    options: [
+      { "zh-tw": "單人角色：聚焦於個人生活方式", en: "Single: Focus on personal lifestyle" },
+      { "zh-tw": "情侶角色：每人18件物品，用愛心符號連線，冷暖對比", en: "Couple: 18 items each, heart connectors, contrast" },
+      { "zh-tw": "孕婦角色：包含孕期用品、嬰兒圖標及B超照片", en: "Pregnant: Includes pregnancy items, baby icons, ultrasound" },
+      { "zh-tw": "親子角色：包含成人與兒童用品，體現家庭溫馨", en: "Family: Includes adult and child items, family warmth" }
     ]
   },
-  "business_type": {
-    "label": { "zh-tw": "商業類型", "en": "Business Type" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "餐廳", "en": "Restaurant" },
-      { "zh-tw": "咖啡廳", "en": "Café" },
-      { "zh-tw": "美髮沙龍", "en": "Hair Salon" },
-      { "zh-tw": "健身房", "en": "Gym" },
-      { "zh-tw": "烘焙坊", "en": "Bakery" },
-      { "zh-tw": "花店", "en": "Flower Shop" },
-      { "zh-tw": "服飾店", "en": "Clothing Store" },
-      { "zh-tw": "書店", "en": "Bookstore" },
-      { "zh-tw": "寵物店", "en": "Pet Shop" },
-      { "zh-tw": "美甲店", "en": "Nail Salon" }
+  theme_pixar: {
+    label: { "zh-tw": "配色主題", en: "Theme & Color" },
+    category: "visual",
+    options: [
+      { "zh-tw": "女性/時尚主題：香檳金、玫瑰金、奶油色、櫻花粉", en: "Female/Fashion: Champagne Gold, Rose Gold, Cream, Cherry Pink" },
+      { "zh-tw": "男性/科技主題：鋼藍色、深灰色、電光藍、銀色", en: "Male/Tech: Steel Blue, Dark Grey, Electric Blue, Silver" },
+      { "zh-tw": "正式/奢華主題：純黑、24K金、深紅色、象牙白", en: "Formal/Luxury: Pure Black, 24K Gold, Deep Red, Ivory White" },
+      { "zh-tw": "情侶/對比主題：冷暖色調對比", en: "Couple/Contrast: Contrast of warm and cool tones" }
     ]
   },
-  "pet_type": {
-    "label": { "zh-tw": "寵物類型", "en": "Pet Type" },
-    "category": "character",
-    "options": [
-      { "zh-tw": "狗", "en": "Dog" },
-      { "zh-tw": "貓", "en": "Cat" },
-      { "zh-tw": "兔子", "en": "Rabbit" },
-      { "zh-tw": "倉鼠", "en": "Hamster" },
-      { "zh-tw": "鸚鵡", "en": "Parrot" },
-      { "zh-tw": "金魚", "en": "Goldfish" },
-      { "zh-tw": "烏龜", "en": "Turtle" },
-      { "zh-tw": "柴犬", "en": "Shiba Inu" },
-      { "zh-tw": "柯基", "en": "Corgi" },
-      { "zh-tw": "布偶貓", "en": "Ragdoll Cat" }
+  item_layout_pixar: {
+    label: { "zh-tw": "物品佈局", en: "Item Layout" },
+    category: "visual",
+    options: [
+      { "zh-tw": "90度直角整齊排列 (Knolling)", en: "90-degree Knolling layout" },
+      { "zh-tw": "放射式構圖 (Radial)", en: "Radial composition" },
+      { "zh-tw": "階梯式錯落佈局 (Step)", en: "Step-like staggered layout" },
+      { "zh-tw": "網格對稱佈局 (Grid)", en: "Grid symmetrical layout" }
     ]
   },
-  "garment_type": {
-    "label": { "zh-tw": "服裝類型", "en": "Garment Type" },
-    "category": "item",
-    "options": [
-      { "zh-tw": "T恤", "en": "T-shirt" },
-      { "zh-tw": "夾克", "en": "Jacket" },
-      { "zh-tw": "連帽衫", "en": "Hoodie" },
-      { "zh-tw": "襯衫", "en": "Shirt" },
-      { "zh-tw": "洋裝", "en": "Dress" },
-      { "zh-tw": "外套", "en": "Coat" },
-      { "zh-tw": "毛衣", "en": "Sweater" },
-      { "zh-tw": "背心", "en": "Vest" },
-      { "zh-tw": "風衣", "en": "Trench Coat" },
-      { "zh-tw": "運動衫", "en": "Sweatshirt" }
+  fashion_parts: {
+    label: { "zh-tw": "時尚穿搭拆解", en: "Fashion Deconstruction" },
+    category: "item",
+    options: [
+      { "zh-tw": "風衣拆解：翻領、肩章、腰帶、袖口束帶、主衣身", en: "Trench coat: Lapel, epaulets, belt, cuffs, main body" },
+      { "zh-tw": "西裝拆解：駁領、口袋、內襯、袖釦、墊肩", en: "Suit: Lapel, pockets, lining, cufflinks, shoulder pads" },
+      { "zh-tw": "運動鞋拆解：鞋底、鞋面、鞋帶、氣墊、鞋墊", en: "Sneakers: Sole, upper, laces, air cushion, insole" },
+      { "zh-tw": "連衣裙拆解：蕾絲邊、拉鍊、腰部剪裁、裙襬、領口", en: "Dress: Lace trim, zipper, waist cut, hem, neckline" },
+      { "zh-tw": "包袋拆解：五金鎖釦、肩帶、內袋、縫線細節、手柄", en: "Bag: Metal lock, strap, inner pocket, stitching, handle" }
     ]
   },
-  "source_language": {
-    "label": { "zh-tw": "來源語言", "en": "Source Language" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "日文", "en": "Japanese" },
-      { "zh-tw": "英文", "en": "English" },
-      { "zh-tw": "韓文", "en": "Korean" },
-      { "zh-tw": "中文", "en": "Chinese" },
-      { "zh-tw": "法文", "en": "French" },
-      { "zh-tw": "西班牙文", "en": "Spanish" }
+  beauty_items: {
+    label: { "zh-tw": "美妝個護拆解", en: "Beauty Deconstruction" },
+    category: "item",
+    options: [
+      { "zh-tw": "彩妝：口紅（帶切面）、眼影盤、粉餅、腮紅刷", en: "Makeup: Lipstick (cut), eyeshadow palette, compact, blush brush" },
+      { "zh-tw": "護膚：精華液瓶、面霜罐、美容儀、面膜", en: "Skincare: Serum bottle, cream jar, beauty device, mask" },
+      { "zh-tw": "香氛：香水瓶（帶液體折射）、香薰蠟燭、擴香器", en: "Fragrance: Perfume bottle (refraction), scented candle, diffuser" },
+      { "zh-tw": "洗護：洗面奶、爽膚水、卸妝油、潔面儀", en: "Cleansing: Cleanser, toner, cleansing oil, facial device" }
     ]
   },
-  "target_language": {
-    "label": { "zh-tw": "目標語言", "en": "Target Language" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "繁體中文", "en": "Traditional Chinese" },
-      { "zh-tw": "簡體中文", "en": "Simplified Chinese" },
-      { "zh-tw": "英文", "en": "English" },
-      { "zh-tw": "日文", "en": "Japanese" },
-      { "zh-tw": "韓文", "en": "Korean" },
-      { "zh-tw": "法文", "en": "French" }
+  digital_items: {
+    label: { "zh-tw": "數碼生活拆解", en: "Digital Deconstruction" },
+    category: "item",
+    options: [
+      { "zh-tw": "手機拆解：手機殼、螢幕內容、攝像頭模組、主板元件", en: "Phone: Case, screen content, camera module, motherboard" },
+      { "zh-tw": "相機拆解：鏡頭組、機身、閃光燈、儲存卡、肩帶", en: "Camera: Lens set, body, flash, memory card, strap" },
+      { "zh-tw": "影音：無線耳機、智慧手錶、平板電腦、藍牙音箱", en: "Audio: Wireless headphones, smartwatch, tablet, speaker" },
+      { "zh-tw": "辦公：筆記本電腦、鍵盤軸體、滑鼠、手繪板", en: "Office: Laptop, keyboard switches, mouse, drawing tablet" }
     ]
   },
-  "product": {
-    "label": { "zh-tw": "產品", "en": "Product" },
-    "category": "item",
-    "options": [
-      { "zh-tw": "麥當勞薯條盒", "en": "McDonald's French Fries Box" },
-      { "zh-tw": "麥當勞漢堡", "en": "McDonald's Burger" },
-      { "zh-tw": "星巴克咖啡杯", "en": "Starbucks Coffee Cup" },
-      { "zh-tw": "可口可樂瓶", "en": "Coca-Cola Bottle" },
-      { "zh-tw": "Apple iPhone", "en": "Apple iPhone" },
-      { "zh-tw": "Nike 運動鞋", "en": "Nike Sneakers" },
-      { "zh-tw": "樂高積木", "en": "LEGO Bricks" },
-      { "zh-tw": "任天堂 Switch", "en": "Nintendo Switch" },
-      { "zh-tw": "IKEA 購物袋", "en": "IKEA Shopping Bag" },
-      { "zh-tw": "Chanel 香水瓶", "en": "Chanel Perfume Bottle" },
-      { "zh-tw": "Hermès 柏金包", "en": "Hermès Birkin Bag" },
-      { "zh-tw": "Tesla 電動車", "en": "Tesla Electric Car" },
-      { "zh-tw": "Dyson 吸塵器", "en": "Dyson Vacuum" },
-      { "zh-tw": "Supreme Box Logo T恤", "en": "Supreme Box Logo Tee" }
-    ]
-  },
-  "bottle_shape": {
-    "label": { "zh-tw": "瓶身造型", "en": "Bottle Shape" },
-    "category": "item",
-    "options": [
-      { "zh-tw": "經典方瓶", "en": "Classic Square Bottle" },
-      { "zh-tw": "優雅圓瓶", "en": "Elegant Round Bottle" },
-      { "zh-tw": "橢圓流線瓶", "en": "Oval Streamlined Bottle" },
-      { "zh-tw": "錐形高挑瓶", "en": "Tapered Tall Bottle" },
-      { "zh-tw": "不規則藝術瓶", "en": "Irregular Art Bottle" },
-      { "zh-tw": "復古藥瓶造型", "en": "Vintage Apothecary Style" },
-      { "zh-tw": "極簡圓柱瓶", "en": "Minimalist Cylinder" },
-      { "zh-tw": "鑽石切割瓶", "en": "Diamond Cut Bottle" }
-    ]
-  },
-  "liquid_color": {
-    "label": { "zh-tw": "液體顏色", "en": "Liquid Color" },
-    "category": "visual",
-    "options": [
-      { "zh-tw": "琥珀色", "en": "Amber" },
-      { "zh-tw": "透明無色", "en": "Clear/Colorless" },
-      { "zh-tw": "淡粉色", "en": "Light Pink" },
-      { "zh-tw": "金色", "en": "Gold" },
-      { "zh-tw": "淡紫色", "en": "Light Purple" },
-      { "zh-tw": "蜂蜜色", "en": "Honey" },
-      { "zh-tw": "玫瑰金", "en": "Rose Gold" },
-      { "zh-tw": "淡藍色", "en": "Light Blue" }
-    ]
-  },
-  "label_description": {
-    "label": { "zh-tw": "標籤描述", "en": "Label Description" },
-    "category": "item",
-    "options": [
-      { "zh-tw": "金色標籤", "en": "Gold Label" },
-      { "zh-tw": "銀色標籤", "en": "Silver Label" },
-      { "zh-tw": "黑色極簡標籤", "en": "Black Minimalist Label" },
-      { "zh-tw": "復古風格標籤", "en": "Vintage Style Label" },
-      { "zh-tw": "透明浮雕標籤", "en": "Transparent Embossed Label" },
-      { "zh-tw": "手寫書法標籤", "en": "Handwritten Calligraphy Label" },
-      { "zh-tw": "霧面啞光標籤", "en": "Matte Finish Label" },
-      { "zh-tw": "燙金壓印標籤", "en": "Gold Foil Stamped Label" }
-    ]
-  },
-  "product_name": {
-    "label": { "zh-tw": "產品名稱", "en": "Product Name" },
-    "category": "item",
-    "options": [
-      { "zh-tw": "N°5 香水", "en": "N°5 Perfume" },
-      { "zh-tw": "Miss Dior 花漾迪奧", "en": "Miss Dior" },
-      { "zh-tw": "Jo Malone 英國梨與小蒼蘭", "en": "Jo Malone English Pear & Freesia" },
-      { "zh-tw": "YSL 黑鴉片", "en": "YSL Black Opium" },
-      { "zh-tw": "Gucci Bloom 花悅", "en": "Gucci Bloom" },
-      { "zh-tw": "Tom Ford 烏木沉香", "en": "Tom Ford Oud Wood" },
-      { "zh-tw": "Hermès 大地", "en": "Hermès Terre d'Hermès" },
-      { "zh-tw": "Creed 銀色山泉", "en": "Creed Silver Mountain Water" }
-    ]
-  },
-  "caption": {
-    "label": { "zh-tw": "迷因文字", "en": "Meme Caption" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "好傻喔", "en": "So silly" },
-      { "zh-tw": "不想上班", "en": "Don't want to work" },
-      { "zh-tw": "為什麼又是我", "en": "Why me again" },
-      { "zh-tw": "今天也很累", "en": "Tired again today" },
-      { "zh-tw": "算了不管了", "en": "Whatever, I give up" },
-      { "zh-tw": "有事嗎？", "en": "Got a problem?" },
-      { "zh-tw": "就這樣吧", "en": "That's it then" },
-      { "zh-tw": "我好可愛", "en": "I'm so cute" },
-      { "zh-tw": "不要吵我", "en": "Leave me alone" },
-      { "zh-tw": "開心開心", "en": "Happy happy" }
-    ]
-  },
-  "main_title": {
-    "label": { "zh-tw": "主標題", "en": "Main Title" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "秋季限定", "en": "Autumn Limited Edition" },
-      { "zh-tw": "新品上市", "en": "New Arrival" },
-      { "zh-tw": "週年慶典", "en": "Anniversary Sale" },
-      { "zh-tw": "限時特惠", "en": "Limited Time Offer" },
-      { "zh-tw": "夏日清涼", "en": "Summer Cool" },
-      { "zh-tw": "冬季暖心", "en": "Winter Warmth" },
-      { "zh-tw": "春季新風尚", "en": "Spring New Style" },
-      { "zh-tw": "會員專屬", "en": "Members Only" }
-    ]
-  },
-  "offer": {
-    "label": { "zh-tw": "優惠內容", "en": "Promotional Offer" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "買一送一", "en": "Buy One Get One Free" },
-      { "zh-tw": "第二件半價", "en": "50% Off Second Item" },
-      { "zh-tw": "滿額免運", "en": "Free Shipping on Orders" },
-      { "zh-tw": "限時8折", "en": "20% Off Limited Time" },
-      { "zh-tw": "全館5折起", "en": "50% Off Storewide" },
-      { "zh-tw": "加購價$99", "en": "Add-on for $99" },
-      { "zh-tw": "消費滿千送百", "en": "Spend $1000 Get $100" },
-      { "zh-tw": "新會員首購9折", "en": "10% Off First Purchase" }
-    ]
-  },
-  "footer": {
-    "label": { "zh-tw": "頁腳文字", "en": "Footer Text" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "限時優惠", "en": "Limited Time Offer" },
-      { "zh-tw": "售完為止", "en": "While Supplies Last" },
-      { "zh-tw": "歡迎預約", "en": "Reservations Welcome" },
-      { "zh-tw": "詳情請洽門市", "en": "Contact Store for Details" },
-      { "zh-tw": "僅限本週", "en": "This Week Only" },
-      { "zh-tw": "數量有限", "en": "Limited Quantity" },
-      { "zh-tw": "不可與其他優惠併用", "en": "Cannot Be Combined" },
-      { "zh-tw": "歡迎來電訂購", "en": "Call to Order" }
-    ]
-  },
-  "number_of_days": {
-    "label": { "zh-tw": "天數", "en": "Number of Days" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "1", "en": "1" },
-      { "zh-tw": "2", "en": "2" },
-      { "zh-tw": "3", "en": "3" },
-      { "zh-tw": "4", "en": "4" },
-      { "zh-tw": "5", "en": "5" },
-      { "zh-tw": "7", "en": "7" },
-      { "zh-tw": "10", "en": "10" },
-      { "zh-tw": "14", "en": "14" }
-    ]
-  },
-  "scene_description": {
-    "label": { "zh-tw": "場景描述", "en": "Scene Description" },
-    "category": "visual",
-    "options": [
-      { "zh-tw": "一隻可愛的巨大小貓俏皮地用爪子撥弄經過的行人", "en": "A cute giant kitten playfully batting at passing pedestrians with its paw" },
-      { "zh-tw": "一條巨龍從螢幕中飛出，噴著火焰", "en": "A giant dragon flying out of the screen, breathing fire" },
-      { "zh-tw": "一隻恐龍探出頭來，好奇地觀察街道上的人們", "en": "A dinosaur peeking out, curiously watching people on the street" },
-      { "zh-tw": "一隻巨大的金魚在空中優雅地游動", "en": "A giant goldfish gracefully swimming in the air" },
-      { "zh-tw": "一個太空人漂浮在螢幕外，向路人揮手", "en": "An astronaut floating outside the screen, waving to pedestrians" },
-      { "zh-tw": "一隻巨大的熊貓抱著竹子，懶洋洋地看著人群", "en": "A giant panda holding bamboo, lazily watching the crowd" },
-      { "zh-tw": "一隻神奇的鳳凰展翅飛出，羽毛閃閃發光", "en": "A magical phoenix spreading its wings, feathers glowing" },
-      { "zh-tw": "一群蝴蝶從螢幕中飛出，環繞在建築物周圍", "en": "A group of butterflies flying out, surrounding the buildings" }
-    ]
-  },
-  "slogan": {
-    "label": { "zh-tw": "標語", "en": "Slogan" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "3分鐘搞定！", "en": "Done in 3 Minutes!" },
-      { "zh-tw": "你一定沒想到！", "en": "You Won't Believe This!" },
-      { "zh-tw": "超簡單教學", "en": "Super Easy Tutorial" },
-      { "zh-tw": "這樣做太神了！", "en": "This Trick is Amazing!" },
-      { "zh-tw": "必看！", "en": "Must Watch!" },
-      { "zh-tw": "新手必學", "en": "Beginners Must Learn" },
-      { "zh-tw": "省錢秘訣", "en": "Money Saving Tips" },
-      { "zh-tw": "效果驚人！", "en": "Amazing Results!" },
-      { "zh-tw": "一招搞定", "en": "One Trick Solution" },
-      { "zh-tw": "居然可以這樣！", "en": "You Can Do This!" }
-    ]
-  },
-  // 新增詞庫 - 用於更多模板
-  "country": {
-    "label": { "zh-tw": "國家", "en": "Country" },
-    "category": "location",
-    "options": [
-      { "zh-tw": "日本", "en": "Japan" },
-      { "zh-tw": "美國", "en": "United States" },
-      { "zh-tw": "法國", "en": "France" },
-      { "zh-tw": "義大利", "en": "Italy" },
-      { "zh-tw": "英國", "en": "United Kingdom" },
-      { "zh-tw": "德國", "en": "Germany" },
-      { "zh-tw": "中國", "en": "China" },
-      { "zh-tw": "韓國", "en": "South Korea" },
-      { "zh-tw": "臺灣", "en": "Taiwan" },
-      { "zh-tw": "泰國", "en": "Thailand" },
-      { "zh-tw": "澳洲", "en": "Australia" },
-      { "zh-tw": "西班牙", "en": "Spain" }
-    ]
-  },
-  "city": {
-    "label": { "zh-tw": "城市", "en": "City" },
-    "category": "location",
-    "options": [
-      { "zh-tw": "東京", "en": "Tokyo" },
-      { "zh-tw": "紐約", "en": "New York" },
-      { "zh-tw": "巴黎", "en": "Paris" },
-      { "zh-tw": "倫敦", "en": "London" },
-      { "zh-tw": "上海", "en": "Shanghai" },
-      { "zh-tw": "首爾", "en": "Seoul" },
-      { "zh-tw": "台北", "en": "Taipei" },
-      { "zh-tw": "香港", "en": "Hong Kong" },
-      { "zh-tw": "新加坡", "en": "Singapore" },
-      { "zh-tw": "曼谷", "en": "Bangkok" },
-      { "zh-tw": "杜拜", "en": "Dubai" },
-      { "zh-tw": "雪梨", "en": "Sydney" }
-    ]
-  },
-  "phone_model": {
-    "label": { "zh-tw": "手機型號", "en": "Phone Model" },
-    "category": "item",
-    "options": [
-      { "zh-tw": "iPhone 16 Pro", "en": "iPhone 16 Pro" },
-      { "zh-tw": "iPhone 16 Pro Max", "en": "iPhone 16 Pro Max" },
-      { "zh-tw": "Samsung Galaxy S24 Ultra", "en": "Samsung Galaxy S24 Ultra" },
-      { "zh-tw": "Google Pixel 9 Pro", "en": "Google Pixel 9 Pro" },
-      { "zh-tw": "華為 Mate 60 Pro", "en": "Huawei Mate 60 Pro" },
-      { "zh-tw": "小米 14 Ultra", "en": "Xiaomi 14 Ultra" },
-      { "zh-tw": "OnePlus 12", "en": "OnePlus 12" },
-      { "zh-tw": "Sony Xperia 1 VI", "en": "Sony Xperia 1 VI" }
-    ]
-  },
-  "camera_model": {
-    "label": { "zh-tw": "相機型號", "en": "Camera Model" },
-    "category": "item",
-    "options": [
-      { "zh-tw": "Canon EOS R5", "en": "Canon EOS R5" },
-      { "zh-tw": "Sony A7 IV", "en": "Sony A7 IV" },
-      { "zh-tw": "Nikon Z8", "en": "Nikon Z8" },
-      { "zh-tw": "Fujifilm X-T5", "en": "Fujifilm X-T5" },
-      { "zh-tw": "Canon IXUS 285", "en": "Canon IXUS 285" },
-      { "zh-tw": "Sony RX100 VII", "en": "Sony RX100 VII" },
-      { "zh-tw": "Leica Q3", "en": "Leica Q3" },
-      { "zh-tw": "Polaroid Now+", "en": "Polaroid Now+" }
-    ]
-  },
-  "anime_character": {
-    "label": { "zh-tw": "動漫角色", "en": "Anime Character" },
-    "category": "character",
-    "options": [
-      { "zh-tw": "路飛 (海賊王)", "en": "Luffy (One Piece)" },
-      { "zh-tw": "鳴人 (火影忍者)", "en": "Naruto (Naruto)" },
-      { "zh-tw": "炭治郎 (鬼滅之刃)", "en": "Tanjiro (Demon Slayer)" },
-      { "zh-tw": "五條悟 (咒術迴戰)", "en": "Gojo Satoru (Jujutsu Kaisen)" },
-      { "zh-tw": "女帝漢考克 (海賊王)", "en": "Boa Hancock (One Piece)" },
-      { "zh-tw": "零二 (DARLING in the FRANXX)", "en": "Zero Two (DARLING in the FRANXX)" },
-      { "zh-tw": "初音未來", "en": "Hatsune Miku" },
-      { "zh-tw": "艾倫·乍加 (進擊的巨人)", "en": "Eren Yeager (Attack on Titan)" },
-      { "zh-tw": "悟空 (七龍珠)", "en": "Goku (Dragon Ball)" },
-      { "zh-tw": "阿尼亞 (間諜家家酒)", "en": "Anya (Spy x Family)" }
-    ]
-  },
-  "holiday": {
-    "label": { "zh-tw": "節日", "en": "Holiday" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "聖誕節", "en": "Christmas" },
-      { "zh-tw": "新年", "en": "New Year" },
-      { "zh-tw": "農曆新年", "en": "Lunar New Year" },
-      { "zh-tw": "情人節", "en": "Valentine's Day" },
-      { "zh-tw": "萬聖節", "en": "Halloween" },
-      { "zh-tw": "復活節", "en": "Easter" },
-      { "zh-tw": "感恩節", "en": "Thanksgiving" },
-      { "zh-tw": "中秋節", "en": "Mid-Autumn Festival" },
-      { "zh-tw": "端午節", "en": "Dragon Boat Festival" },
-      { "zh-tw": "母親節", "en": "Mother's Day" }
-    ]
-  },
-  "room_type": {
-    "label": { "zh-tw": "房間類型", "en": "Room Type" },
-    "category": "location",
-    "options": [
-      { "zh-tw": "居家辦公室", "en": "Home Office" },
-      { "zh-tw": "臥室", "en": "Bedroom" },
-      { "zh-tw": "客廳", "en": "Living Room" },
-      { "zh-tw": "廚房", "en": "Kitchen" },
-      { "zh-tw": "浴室", "en": "Bathroom" },
-      { "zh-tw": "書房", "en": "Study Room" },
-      { "zh-tw": "遊戲室", "en": "Game Room" },
-      { "zh-tw": "陽台花園", "en": "Balcony Garden" },
-      { "zh-tw": "咖啡角落", "en": "Coffee Corner" },
-      { "zh-tw": "錄音室", "en": "Recording Studio" }
-    ]
-  },
-  "novel_genre": {
-    "label": { "zh-tw": "小說類型", "en": "Novel Genre" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "奇幻冒險", "en": "Fantasy Adventure" },
-      { "zh-tw": "科幻未來", "en": "Sci-Fi Future" },
-      { "zh-tw": "懸疑推理", "en": "Mystery Thriller" },
-      { "zh-tw": "浪漫愛情", "en": "Romance" },
-      { "zh-tw": "武俠仙俠", "en": "Martial Arts Fantasy" },
-      { "zh-tw": "恐怖驚悚", "en": "Horror Thriller" },
-      { "zh-tw": "歷史穿越", "en": "Historical Time Travel" },
-      { "zh-tw": "都市異能", "en": "Urban Supernatural" }
-    ]
-  },
-  "novel_title": {
-    "label": { "zh-tw": "小說/電影名稱", "en": "Novel/Movie Title" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "哈利波特", "en": "Harry Potter" },
-      { "zh-tw": "魔戒", "en": "The Lord of the Rings" },
-      { "zh-tw": "三體", "en": "The Three-Body Problem" },
-      { "zh-tw": "冰與火之歌", "en": "A Song of Ice and Fire" },
-      { "zh-tw": "小王子", "en": "The Little Prince" },
-      { "zh-tw": "神鬼奇航", "en": "Pirates of the Caribbean" },
-      { "zh-tw": "鐵達尼號", "en": "Titanic" },
-      { "zh-tw": "星際效應", "en": "Interstellar" },
-      { "zh-tw": "盜夢空間", "en": "Inception" },
-      { "zh-tw": "阿凡達", "en": "Avatar" }
-    ]
-  },
-  "brand_name": {
-    "label": { "zh-tw": "品牌名稱", "en": "Brand Name" },
-    "category": "other",
-    "options": [
-      { "zh-tw": "Apple", "en": "Apple" },
-      { "zh-tw": "Tesla", "en": "Tesla" },
-      { "zh-tw": "Nvidia", "en": "Nvidia" },
-      { "zh-tw": "Meta", "en": "Meta" },
-      { "zh-tw": "Google", "en": "Google" },
-      { "zh-tw": "Microsoft", "en": "Microsoft" },
-      { "zh-tw": "Amazon", "en": "Amazon" },
-      { "zh-tw": "Netflix", "en": "Netflix" },
-      { "zh-tw": "Spotify", "en": "Spotify" },
-      { "zh-tw": "Nike", "en": "Nike" }
+  luxury_hobby_items: {
+    label: { "zh-tw": "個人愛好/奢華", en: "Hobby & Luxury" },
+    category: "item",
+    options: [
+      { "zh-tw": "珠寶：項鍊、耳環、戒指（寶石帶色散效果）", en: "Jewelry: Necklace, earrings, ring (gemstone dispersion)" },
+      { "zh-tw": "藝術：畫筆、調色盤、素描本、顏料軟管", en: "Art: Brushes, palette, sketchbook, paint tubes" },
+      { "zh-tw": "生活：咖啡機、磨豆機、高檔手辦元件、限量書籍", en: "Life: Coffee machine, grinder, high-end figure parts, limited books" },
+      { "zh-tw": "運動：網球拍、滑板、滑雪鏡、運動相機、水壺", en: "Sports: Tennis racket, skateboard, ski goggles, action cam, bottle" }
     ]
   }
 };
@@ -1239,37 +896,14 @@ export const INITIAL_DEFAULTS = {
   show_name: { "zh-tw": "龍貓", en: "My Neighbor Totoro" },
   character_name: { "zh-tw": "龍貓", en: "Totoro" },
   fruit: { "zh-tw": "檸檬", en: "Lemon" },
+  xmas_theme: { "zh-tw": "抽象聖誕樹", en: "an abstract Christmas Tree" },
   jewelry_style: { "zh-tw": "精美的金色背鏈", en: "Fine gold back necklace" },
   flower_type: { "zh-tw": "一束深紅色玫瑰", en: "A bouquet of deep red roses" },
-
-  // Nanobanana 模板詞庫預設值
-  business_type: { "zh-tw": "咖啡廳", en: "Café" },
-  pet_type: { "zh-tw": "狗", en: "Dog" },
-  garment_type: { "zh-tw": "T恤", en: "T-shirt" },
-  source_language: { "zh-tw": "日文", en: "Japanese" },
-  target_language: { "zh-tw": "繁體中文", en: "Traditional Chinese" },
-  product: { "zh-tw": "星巴克咖啡杯", en: "Starbucks Coffee Cup" },
-  bottle_shape: { "zh-tw": "經典方瓶", en: "Classic Square Bottle" },
-  liquid_color: { "zh-tw": "琥珀色", en: "Amber" },
-  label_description: { "zh-tw": "金色標籤", en: "Gold Label" },
-  product_name: { "zh-tw": "N°5 香水", en: "N°5 Perfume" },
-  caption: { "zh-tw": "好傻喔", en: "So silly" },
-  main_title: { "zh-tw": "秋季限定", en: "Autumn Limited Edition" },
-  offer: { "zh-tw": "買一送一", en: "Buy One Get One Free" },
-  footer: { "zh-tw": "限時優惠", en: "Limited Time Offer" },
-  number_of_days: { "zh-tw": "3", en: "3" },
-  scene_description: { "zh-tw": "一隻可愛的巨大小貓俏皮地用爪子撥弄經過的行人", en: "A cute giant kitten playfully batting at passing pedestrians with its paw" },
-  slogan: { "zh-tw": "3分鐘搞定！", en: "Done in 3 Minutes!" },
-
-  // 新增詞庫預設值
-  country: { "zh-tw": "日本", en: "Japan" },
-  city: { "zh-tw": "東京", en: "Tokyo" },
-  phone_model: { "zh-tw": "iPhone 16 Pro", en: "iPhone 16 Pro" },
-  camera_model: { "zh-tw": "Canon EOS R5", en: "Canon EOS R5" },
-  anime_character: { "zh-tw": "路飛 (海賊王)", en: "Luffy (One Piece)" },
-  holiday: { "zh-tw": "聖誕節", en: "Christmas" },
-  room_type: { "zh-tw": "居家辦公室", en: "Home Office" },
-  novel_genre: { "zh-tw": "奇幻冒險", en: "Fantasy Adventure" },
-  novel_title: { "zh-tw": "哈利波特", en: "Harry Potter" },
-  brand_name: { "zh-tw": "Apple", en: "Apple" }
+  character_type_pixar: { "zh-tw": "單人角色：聚焦於個人生活方式", en: "Single: Focus on personal lifestyle" },
+  theme_pixar: { "zh-tw": "女性/時尚主題：香檳金、玫瑰金、奶油色、櫻花粉", en: "Female/Fashion: Champagne Gold, Rose Gold, Cream, Cherry Pink" },
+  item_layout_pixar: { "zh-tw": "90度直角整齊排列 (Knolling)", en: "90-degree Knolling layout" },
+  fashion_parts: { "zh-tw": "風衣拆解：翻領、肩章、腰帶、袖口束帶、主衣身", en: "Trench coat: Lapel, epaulets, belt, cuffs, main body" },
+  beauty_items: { "zh-tw": "彩妝：口紅（帶切面）、眼影盤、粉餅、腮紅刷", en: "Makeup: Lipstick (cut), eyeshadow palette, compact, blush brush" },
+  digital_items: { "zh-tw": "手機拆解：手機殼、螢幕內容、攝像頭模組、主板元件", en: "Phone: Case, screen content, camera module, motherboard" },
+  luxury_hobby_items: { "zh-tw": "珠寶：項鍊、耳環、戒指（寶石帶色散效果）", en: "Jewelry: Necklace, earrings, ring (gemstone dispersion)" }
 };
