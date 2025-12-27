@@ -2632,7 +2632,7 @@ const App = () => {
                       language={templateLanguage}
                       setLanguage={setTemplateLanguage}
                       // 標籤編輯相關
-                      TEMPLATE_TAGS={[...TEMPLATE_TAGS, '社群']}
+                      TEMPLATE_TAGS={['社群', ...TEMPLATE_TAGS]}
                       handleUpdateTemplateTags={handleUpdateTemplateTags}
                       editingTemplateTags={editingTemplateTags}
                       setEditingTemplateTags={setEditingTemplateTags}

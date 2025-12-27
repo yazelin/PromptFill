@@ -115,6 +115,7 @@ export const CATEGORY_STYLES = {
 };
 
 export const TAG_STYLES = {
+  "社群": "bg-cyan-50 text-cyan-600 border border-cyan-200",
   "建築": "bg-stone-50 text-stone-600 border border-stone-200",
   "人物": "bg-rose-50 text-rose-600 border border-rose-200",
   "攝影": "bg-orange-50 text-orange-600 border border-orange-200",
@@ -125,12 +126,12 @@ export const TAG_STYLES = {
   "寵物": "bg-orange-50 text-orange-600 border border-orange-200",
   "遊戲": "bg-violet-50 text-violet-600 border border-violet-200",
   "創意": "bg-fuchsia-50 text-fuchsia-600 border border-fuchsia-200",
-  "社群": "bg-cyan-50 text-cyan-600 border border-cyan-200",
   "default": "bg-gray-50 text-gray-500 border border-gray-200"
 };
 
 export const TAG_LABELS = {
   "zh-tw": {
+    "社群": "社群",
     "建築": "建築",
     "人物": "人物",
     "攝影": "攝影",
@@ -140,10 +141,10 @@ export const TAG_LABELS = {
     "卡通": "卡通",
     "寵物": "寵物",
     "遊戲": "遊戲",
-    "創意": "創意",
-    "社群": "社群"
+    "創意": "創意"
   },
   en: {
+    "社群": "Community",
     "建築": "Architecture",
     "人物": "Character",
     "攝影": "Photography",
@@ -153,7 +154,6 @@ export const TAG_LABELS = {
     "卡通": "Cartoon",
     "寵物": "Pets",
     "遊戲": "Gaming",
-    "創意": "Creative",
-    "社群": "Community"
+    "創意": "Creative"
   }
 };
