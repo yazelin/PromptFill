@@ -36,6 +36,7 @@ import {
   Sparkles,
   Share2,
   Loader2,
+  ImageDown,
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import LZString from 'lz-string';
@@ -52,6 +53,7 @@ import { MASONRY_STYLES } from './constants/masonryStyles';
 // ====== 匯入工具函式 ======
 import { deepClone, makeUniqueKey, waitForImageLoad, getLocalized } from './utils/helpers';
 import { compressImage } from './utils/imageUtils';
+import { generateShareSvg, downloadSvg, parseSvgShareData, imageUrlToBase64 } from './utils/svgShareUtils';
 import { mergeTemplatesWithSystem, mergeBanksWithSystem } from './utils/merge';
 import { SCENE_WORDS, STYLE_WORDS } from './constants/slogan';
 
@@ -2029,8 +2031,8 @@ const App = () => {
     return Array.from(keys);
   };
 
-  // 生成分享 URL（圖片直接用 lzstring 編碼，不上傳）
-  const generateShareUrl = () => {
+  // 生成分享資料物件
+  const generateShareData = () => {
     const templateToShare = isShareMode && sharedTemplate ? sharedTemplate : activeTemplate;
 
     // 提取模板使用到的變數 keys
@@ -2055,7 +2057,7 @@ const App = () => {
     }
 
     // 構建分享資料（圖片直接包含 base64）
-    const shareData = {
+    return {
       name: templateToShare.name,
       content: templateToShare.content,
       selections: templateToShare.selections || {},
@@ -2066,8 +2068,12 @@ const App = () => {
       ...(templateToShare.imageUrl && { imageUrl: templateToShare.imageUrl }),
       ...(templateToShare.imageUrls && { imageUrls: templateToShare.imageUrls }),
     };
+  };
 
+  // 生成分享 URL（圖片直接用 lzstring 編碼，不上傳）
+  const generateShareUrl = () => {
     try {
+      const shareData = generateShareData();
       const jsonStr = JSON.stringify(shareData);
       // 使用 LZ-String 壓縮
       const compressed = LZString.compressToEncodedURIComponent(jsonStr);
@@ -2079,15 +2085,37 @@ const App = () => {
     }
   };
 
-  // 解析分享 URL
+  // 解析分享 URL（支援 #template= 和 #svg= 兩種格式）
   const parseShareUrl = () => {
     const hash = window.location.hash;
-    if (!hash || !hash.includes('template=')) {
-      return null;
-    }
+    if (!hash) return null;
 
     try {
       const params = new URLSearchParams(hash.substring(1));
+
+      // 優先檢查 SVG 分享參數
+      const svgParam = params.get('svg');
+      if (svgParam) {
+        const templateData = parseSvgShareData(svgParam);
+        if (!templateData) return null;
+
+        return {
+          template: {
+            id: `shared_${Date.now()}`,
+            name: templateData.name || t('shared_template') || '分享的模板',
+            content: templateData.content || '',
+            selections: templateData.selections || {},
+            author: templateData.author || t('from_share') || '分享',
+            tags: templateData.tags || [],
+            ...(templateData.imageUrl && { imageUrl: templateData.imageUrl }),
+            ...(templateData.imageUrls && { imageUrls: templateData.imageUrls }),
+          },
+          banks: templateData.banks || {},
+          defaults: templateData.defaults || {},
+        };
+      }
+
+      // 檢查傳統的 template 參數
       const templateParam = params.get('template');
       if (!templateParam) return null;
 
@@ -2131,6 +2159,35 @@ const App = () => {
     } catch (err) {
       console.error('Share failed:', err);
       addToast(t('share_failed') || '分享失敗', 'error');
+    }
+  };
+
+  // 處理下載分享 SVG 圖檔
+  const handleDownloadShareSvg = async () => {
+    try {
+      addToast(t('generating_share_image') || '🖼️ 正在生成分享圖片...', 'info');
+
+      const shareData = generateShareData();
+      const templateToShare = isShareMode && sharedTemplate ? sharedTemplate : activeTemplate;
+
+      // 取得預覽圖 URL（優先使用第一張圖）
+      const previewImageUrl = templateToShare.imageUrls?.[0] || templateToShare.imageUrl || null;
+
+      // 嘗試將圖片轉換為 base64，如果失敗則使用原始 URL
+      // （SVG 作為檔案開啟時可以載入外部圖片）
+      const previewImage = await imageUrlToBase64(previewImageUrl) || previewImageUrl;
+
+      // 生成 SVG（name 需要本地化處理）
+      const localizedName = getLocalized(shareData.name, language) || 'PromptFill-template';
+      const svgContent = generateShareSvg({ ...shareData, name: localizedName }, previewImage);
+
+      // 下載 SVG
+      downloadSvg(svgContent, localizedName);
+
+      addToast(t('share_svg_downloaded') || '✅ 分享圖片已下載');
+    } catch (err) {
+      console.error('Download SVG failed:', err);
+      addToast(t('share_failed') || '下載失敗', 'error');
     }
   };
 
@@ -2545,13 +2602,22 @@ const App = () => {
                       )}
                     </PremiumButton>
                   ) : (
-                    <PremiumButton
-                      onClick={handleShare}
-                      title={t('share') || '分享'}
-                      color="blue"
-                    >
-                      <Share2 size={16} />
-                    </PremiumButton>
+                    <>
+                      <PremiumButton
+                        onClick={handleShare}
+                        title={t('share') || '分享連結'}
+                        color="blue"
+                      >
+                        <Share2 size={16} />
+                      </PremiumButton>
+                      <PremiumButton
+                        onClick={handleDownloadShareSvg}
+                        title={t('share_svg') || '下載分享圖片'}
+                        color="violet"
+                      >
+                        <ImageDown size={16} />
+                      </PremiumButton>
+                    </>
                   )}
                 </div>
               </div>
