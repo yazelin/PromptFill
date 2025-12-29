@@ -101,12 +101,14 @@ const tryImageCanvas = (url) => {
   });
 };
 
+// 自有 CORS 代理服務
+const CORS_PROXY_URL = 'https://shorturl.yazelinj303.workers.dev/api/proxy';
+
 /**
  * 使用 CORS 代理獲取圖片
  */
 const tryWithCorsProxy = async (url) => {
-  // 使用 corsproxy.io 代理服務
-  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+  const proxyUrl = `${CORS_PROXY_URL}?url=${encodeURIComponent(url)}`;
 
   try {
     const response = await fetch(proxyUrl);
