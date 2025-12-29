@@ -20,10 +20,10 @@
 
 - [x] 3.1 建立 `parseShareUrl()` 函式
   - 解析 `window.location.hash`
-  - 解碼 Base64 模板內容
+  - 解碼 Base64 範本內容
   - **新增：提取詞庫和預設值**
 - [x] 3.2 新增 useEffect 在頁面載入時解析 URL
-- [x] 3.3 建立 `sharedTemplate` state 儲存分享的模板資料
+- [x] 3.3 建立 `sharedTemplate` state 儲存分享的範本資料
 - [x] 3.4 **新增：建立 `sharedBanks` 和 `sharedDefaults` state**
 
 ## 4. 匯入功能實作
@@ -33,7 +33,7 @@
   - 將 sharedTemplate 加入 templates
   - **新增：合併詞庫到本地（只加入不存在的）**
   - **新增：合併預設值到本地（只加入不存在的）**
-  - 切換 activeTemplateId 到新匯入的模板
+  - 切換 activeTemplateId 到新匯入的範本
   - 清除 URL hash
   - 退出分享模式
 
@@ -42,8 +42,8 @@
 - [x] 5.1 新增翻譯項目
   - `share`: 分享 / Share
   - `share_copied`: 分享連結已複製 / Share link copied
-  - `import_shared`: 匯入模板 / Import Template
-  - `import_success`: 模板已匯入 / Template imported
+  - `import_shared`: 匯入範本 / Import Template
+  - `import_success`: 範本已匯入 / Template imported
 - [x] 5.2 新增相關 Toast 提示訊息
 
 ## 6. 分享模式支援

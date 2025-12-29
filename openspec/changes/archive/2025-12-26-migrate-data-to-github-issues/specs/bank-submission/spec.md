@@ -18,7 +18,7 @@
 系統 SHALL 提供 GitHub Issue Template 用於詞庫提交。
 
 #### Scenario: Issue Template 格式
-- **WHEN** 用戶選擇「詞庫提交」模板
+- **WHEN** 用戶選擇「詞庫提交」範本
 - **THEN** 表單包含以下欄位：
   - 詞庫名稱 (中文)
   - Bank Name (English)
@@ -56,4 +56,4 @@
 
 #### Scenario: 按鈕樣式
 - **WHEN** 顯示「提交詞庫」按鈕
-- **THEN** 使用綠色系樣式（與「提交模板」一致）
+- **THEN** 使用綠色系樣式（與「提交範本」一致）

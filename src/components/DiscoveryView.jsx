@@ -12,7 +12,7 @@ import {
 import { getLocalized } from '../utils/helpers';
 
 /**
- * DiscoveryView 元件 - 瀑布流展示所有模板
+ * DiscoveryView 元件 - 瀑布流展示所有範本
  */
 export const DiscoveryView = React.memo(
   ({

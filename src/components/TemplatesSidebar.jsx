@@ -26,7 +26,7 @@ import { PremiumButton } from './PremiumButton';
 import { getLocalized } from '../utils/helpers';
 
 /**
- * TemplatesSidebar 元件 - 負責展示左側模板清單
+ * TemplatesSidebar 元件 - 負責展示左側範本清單
  */
 export const TemplatesSidebar = React.memo(
   ({
@@ -192,7 +192,7 @@ export const TemplatesSidebar = React.memo(
                   >
                     {t('all_templates')}
                   </button>
-                  {/* 多奇按鈕：只有當有模板包含「多奇」標籤時才顯示 */}
+                  {/* 多奇按鈕：只有當有範本包含「多奇」標籤時才顯示 */}
                   {templates?.some(tpl => tpl.tags?.includes('多奇')) && (
                     <button
                       onClick={() => setSelectedTags(selectedTags === '多奇' ? '' : '多奇')}
@@ -202,7 +202,7 @@ export const TemplatesSidebar = React.memo(
                       多奇
                     </button>
                   )}
-                  {/* 社群按鈕：只有當有模板包含「社群」標籤時才顯示 */}
+                  {/* 社群按鈕：只有當有範本包含「社群」標籤時才顯示 */}
                   {templates?.some(tpl => tpl.tags?.includes('社群')) && (
                     <button
                       onClick={() => setSelectedTags(selectedTags === '社群' ? '' : '社群')}

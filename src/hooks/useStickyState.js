@@ -28,7 +28,7 @@ export const useStickyState = (defaultValue, key) => {
         // 僅瀏覽器儲存模式下提示，資料夾模式直接跳過
         const storageMode = window.localStorage.getItem('app_storage_mode') || 'browser';
         if (storageMode === 'browser') {
-          addToast('儲存空間不足！圖片過大或資料過多。建議：\n1. 使用更小的圖片（建議小於500KB）\n2. 刪除一些不需要的模板\n3. 清理瀏覽器快取');
+          addToast('儲存空間不足！圖片過大或資料過多。建議：\n1. 使用更小的圖片（建議小於500KB）\n2. 刪除一些不需要的範本\n3. 清理瀏覽器快取');
         }
       } else {
         console.error(`保存到 localStorage 失敗 (${key}):`, error);

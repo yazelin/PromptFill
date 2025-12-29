@@ -1,7 +1,7 @@
 # Design: SVG 圖檔分享機制
 
 ## Context
-使用者在 LINE、Discord 等平台分享模板時，因 URL 過長被擋。需要一種可以在社群平台正常分享，且能攜帶完整模板資料的方式。
+使用者在 LINE、Discord 等平台分享範本時，因 URL 過長被擋。需要一種可以在社群平台正常分享，且能攜帶完整範本資料的方式。
 
 ## Goals / Non-Goals
 **Goals:**
@@ -18,30 +18,30 @@
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <title>PromptFill 模板分享</title>
+  <title>PromptFill 範本分享</title>
 
   <!-- 視覺層：預覽圖與提示文字 -->
   <rect width="100%" height="100%" fill="#f8f9fa"/>
 
-  <!-- 模板預覽圖（如有） -->
+  <!-- 範本預覽圖（如有） -->
   <image x="16" y="16" width="480" height="320"
          href="data:image/jpeg;base64,..." />
 
-  <!-- 模板名稱 -->
+  <!-- 範本名稱 -->
   <text x="50%" y="380" text-anchor="middle"
         font-family="Arial, sans-serif" font-size="24" fill="#333">
-    {{模板名稱}}
+    {{範本名稱}}
   </text>
 
   <!-- 提示文字（非瀏覽器環境顯示） -->
   <text x="50%" y="420" text-anchor="middle"
         font-family="Arial, sans-serif" font-size="14" fill="#666">
-    請使用瀏覽器開啟此檔案以匯入模板
+    請使用瀏覽器開啟此檔案以匯入範本
   </text>
 
-  <!-- 資料層：隱藏的模板資料 -->
+  <!-- 資料層：隱藏的範本資料 -->
   <desc id="promptfill-data" style="display:none;">
-    {"version":1,"data":"LZ壓縮後的模板JSON"}
+    {"version":1,"data":"LZ壓縮後的範本JSON"}
   </desc>
 
   <!-- 腳本層：自動跳轉邏輯 -->
@@ -81,8 +81,8 @@
 ### shareData 結構（與現有相同）
 ```javascript
 {
-  name: string,           // 模板名稱
-  content: string|object, // 模板內容
+  name: string,           // 範本名稱
+  content: string|object, // 範本內容
   selections: object,     // 變數選擇
   tags: string[],         // 標籤
   author: string,         // 作者

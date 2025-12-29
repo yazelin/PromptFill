@@ -52,7 +52,7 @@ import { MASONRY_STYLES } from './constants/masonryStyles';
 // ====== 匯入工具函式 ======
 import { deepClone, makeUniqueKey, waitForImageLoad, getLocalized } from './utils/helpers';
 import { compressImage } from './utils/imageUtils';
-import { generateShareSvg, downloadSvg, parseSvgShareData, imageUrlToBase64 } from './utils/svgShareUtils';
+import { generateShareSvg, downloadSvg, parseSvgShareData, imageUrlToBase64, getImageDimensions } from './utils/svgShareUtils';
 import { mergeTemplatesWithSystem, mergeBanksWithSystem } from './utils/merge';
 import { SCENE_WORDS, STYLE_WORDS } from './constants/slogan';
 
@@ -506,7 +506,7 @@ const ImagePreviewModal = React.memo(
                     active={true}
                     className={`w-full font-black shadow-2xl transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-3 !py-5 !rounded-2xl !text-lg hover:-translate-y-1`}
                   >
-                    {t('use_template') || '使用此模板'}
+                    {t('use_template') || '使用此範本'}
                   </PremiumButton>
 
                   <div className="flex items-center justify-between px-2">
@@ -677,7 +677,7 @@ const App = () => {
   const [banks, setBanks] = useStickyState(INITIAL_BANKS, 'app_banks_v9');
   const [defaults, setDefaults] = useStickyState(INITIAL_DEFAULTS, 'app_defaults_v9');
   const [language, setLanguage] = useStickyState('zh-tw', 'app_language_v1'); // 全域 UI 語言
-  const [templateLanguage, setTemplateLanguage] = useStickyState('zh-tw', 'app_template_language_v1'); // 模板內容語言
+  const [templateLanguage, setTemplateLanguage] = useStickyState('zh-tw', 'app_template_language_v1'); // 範本內容語言
   const [categories, setCategories] = useStickyState(INITIAL_CATEGORIES, 'app_categories_v1'); // 新狀態
 
   const [templates, setTemplates] = useStickyState(INITIAL_TEMPLATES_CONFIG, 'app_templates_v10');
@@ -739,14 +739,14 @@ const App = () => {
   const [directoryHandle, setDirectoryHandle] = useState(null);
   const [isFileSystemSupported, setIsFileSystemSupported] = useState(false);
 
-  // 模板標籤管理狀態
+  // 範本標籤管理狀態
   const [selectedTags, setSelectedTags] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingTemplateTags, setEditingTemplateTags] = useState(null); // {id, tags}
   const [isDiscoveryView, setDiscoveryView] = useState(true); // 首次載入預設顯示發現（海報）視圖
 
   // 分享/匯入功能狀態
-  const [sharedTemplate, setSharedTemplate] = useState(null); // 儲存從 URL 解析的模板
+  const [sharedTemplate, setSharedTemplate] = useState(null); // 儲存從 URL 解析的範本
   const [sharedBanks, setSharedBanks] = useState({}); // 儲存從 URL 解析的詞庫
   const [sharedDefaults, setSharedDefaults] = useState({}); // 儲存從 URL 解析的預設值
   const [isShareMode, setIsShareMode] = useState(false); // 分享模式狀態
@@ -789,8 +789,8 @@ const App = () => {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [randomSeed, setRandomSeed] = useState(Date.now()); // 用於隨機排序的種子
 
-  // 檢查系統模板更新
-  // 檢測資料版本更新（模板與詞庫）
+  // 檢查系統範本更新
+  // 檢測資料版本更新（範本與詞庫）
   useEffect(() => {
     if (SYSTEM_DATA_VERSION && lastAppliedDataVersion !== SYSTEM_DATA_VERSION) {
       // 檢查是否已有儲存資料。若為首次使用（無資料），直接靜默更新版本號
@@ -818,7 +818,7 @@ const App = () => {
             setShowAppUpdateNotice(true);
           }
 
-          // 檢查資料版本更新（模板與詞庫）
+          // 檢查資料版本更新（範本與詞庫）
           if (data.dataVersion && data.dataVersion !== lastAppliedDataVersion) {
             setShowDataUpdateNotice(true);
           }
@@ -863,14 +863,14 @@ const App = () => {
     [language]
   );
 
-  // 確保有有效的 activeTemplateId - 自動選擇第一個模板
+  // 確保有有效的 activeTemplateId - 自動選擇第一個範本
   useEffect(() => {
     if (templates.length > 0) {
       // 檢查當前 activeTemplateId 是否有效
       const currentTemplateExists = templates.some((t) => t.id === activeTemplateId);
       if (!currentTemplateExists || !activeTemplateId) {
-        // 若當前選中的模板不存在或為空，選擇第一個模板
-        console.log('[自動選擇] 選擇第一個模板:', templates[0].id);
+        // 若當前選中的範本不存在或為空，選擇第一個範本
+        console.log('[自動選擇] 選擇第一個範本:', templates[0].id);
         setActiveTemplateId(templates[0].id);
       }
     }
@@ -878,18 +878,18 @@ const App = () => {
 
   // 行動端：切換 Tab 時的狀態保障
   useEffect(() => {
-    // 模板 Tab：強制收起模式 + 清單視圖
+    // 範本 Tab：強制收起模式 + 清單視圖
     if (mobileTab === 'templates') {
       setMasonryStyleKey('list');
     }
 
-    // 編輯／詞庫 Tab：確保有選中的模板
+    // 編輯／詞庫 Tab：確保有選中的範本
     if (
       (mobileTab === 'editor' || mobileTab === 'banks') &&
       templates.length > 0 &&
       !activeTemplateId
     ) {
-      console.log('[tab 切換] 自動選擇第一個模板:', templates[0].id);
+      console.log('[tab 切換] 自動選擇第一個範本:', templates[0].id);
       setActiveTemplateId(templates[0].id);
     }
   }, [mobileTab, templates, activeTemplateId]);
@@ -1208,7 +1208,7 @@ const App = () => {
     setEditingTemplateNameId(null);
   };
 
-  // 刷新系統模板與詞庫，保留使用者資料
+  // 刷新系統範本與詞庫，保留使用者資料
   const handleRefreshSystemData = React.useCallback(() => {
     const backupSuffix = t('refreshed_backup_suffix') || '';
 
@@ -1282,7 +1282,7 @@ const App = () => {
         // Tag filter
         const matchesTags = selectedTags === '' || (t.tags && t.tags.includes(selectedTags));
 
-        // 語言過濾：若模板指定語言且不包含當前語言則隱藏
+        // 語言過濾：若範本指定語言且不包含當前語言則隱藏
         // 若未指定語言屬性，預設顯示（向下相容）
         const templateLangs = t.language
           ? Array.isArray(t.language)
@@ -1308,7 +1308,7 @@ const App = () => {
           case 'z-a':
             return nameB.localeCompare(nameA, language === 'zh-tw' ? 'zh-TW' : 'en');
           case 'random':
-            // 使用模板 ID 與隨機種子生成偽隨機數排序
+            // 使用範本 ID 與隨機種子生成偽隨機數排序
             const hashA = (a.id + randomSeed)
               .split('')
               .reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -1444,9 +1444,9 @@ const App = () => {
             await navigator.share({
               files: [file],
               title: templateName,
-              text: '匯出的提示詞模板',
+              text: '匯出的提示詞範本',
             });
-            showToastMessage('✅ 模板已分享／儲存');
+            showToastMessage('✅ 範本已分享／儲存');
             return;
           }
         } catch (shareError) {
@@ -1474,7 +1474,7 @@ const App = () => {
         URL.revokeObjectURL(url);
       }, 100);
 
-      showToastMessage('✅ 模板已匯出');
+      showToastMessage('✅ 範本已匯出');
     } catch (error) {
       console.error('匯出失敗:', error);
       addToast('匯出失敗，請重試', 'error');
@@ -1509,7 +1509,7 @@ const App = () => {
             await navigator.share({
               files: [file],
               title: '提示詞填空器備份',
-              text: '所有模板和詞庫的完整備份',
+              text: '所有範本和詞庫的完整備份',
             });
             showToastMessage('✅ 備份已分享／儲存');
             return;
@@ -1555,7 +1555,7 @@ const App = () => {
       try {
         const data = JSON.parse(e.target.result);
 
-        // 檢查是單個模板還是完整備份
+        // 檢查是單個範本還是完整備份
         if (data.templates && Array.isArray(data.templates)) {
           // 完整備份
           if (window.confirm('偵測到完整備份檔案。是否要覆蓋目前所有資料？')) {
@@ -1565,12 +1565,12 @@ const App = () => {
             addToast('匯入成功！', 'success');
           }
         } else if (data.id && data.name) {
-          // 單個模板
+          // 單個範本
           const newId = `tpl_${Date.now()}`;
           const newTemplate = { ...data, id: newId };
           setTemplates((prev) => [...prev, newTemplate]);
           setActiveTemplateId(newId);
-          addToast('模板匯入成功！', 'success');
+          addToast('範本匯入成功！', 'success');
         } else {
           addToast('檔案格式不正確', 'error');
         }
@@ -1711,7 +1711,7 @@ const App = () => {
   }
 
   function handleResetSystemData() {
-    if (window.confirm('確定要重置系統資料嗎？這將清除所有本地修改並重新載入初始模板。')) {
+    if (window.confirm('確定要重置系統資料嗎？這將清除所有本地修改並重新載入初始範本。')) {
       localStorage.removeItem('app_templates');
       localStorage.removeItem('app_banks');
       localStorage.removeItem('app_categories');
@@ -1985,7 +1985,7 @@ const App = () => {
   };
 
   const handleCopy = () => {
-    // 获取当前模板语言的内容
+    // 取得當前範本語言的內容
     let finalString = getLocalized(activeTemplate.content, templateLanguage);
     const counters = {};
 
@@ -2016,7 +2016,7 @@ const App = () => {
 
   // ====== 分享/匯入功能 ======
 
-  // 提取模板中使用的變數 keys
+  // 提取範本中使用的變數 keys
   const extractVariableKeys = (content) => {
     const keys = new Set();
     const localizedContent = typeof content === 'object'
@@ -2034,7 +2034,7 @@ const App = () => {
   const generateShareData = () => {
     const templateToShare = isShareMode && sharedTemplate ? sharedTemplate : activeTemplate;
 
-    // 提取模板使用到的變數 keys
+    // 提取範本使用到的變數 keys
     const usedKeys = extractVariableKeys(templateToShare.content);
 
     // 只包含使用到的詞庫和預設值
@@ -2049,7 +2049,7 @@ const App = () => {
       }
     });
 
-    // 確保分享資料包含「社群」標籤（複製陣列避免修改原樣板）
+    // 確保分享資料包含「社群」標籤（複製陣列避免修改原範本）
     const shareTags = [...(templateToShare.tags || [])];
     if (!shareTags.includes('社群')) {
       shareTags.push('社群');
@@ -2093,7 +2093,7 @@ const App = () => {
         return {
           template: {
             id: `shared_${Date.now()}`,
-            name: data.template.name || t('shared_template') || '分享的模板',
+            name: data.template.name || t('shared_template') || '分享的範本',
             content: data.template.content || '',
             selections: data.template.selections || {},
             author: data.template.author || t('from_share') || '分享',
@@ -2123,7 +2123,7 @@ const App = () => {
       return {
         template: {
           id: `shared_${Date.now()}`,
-          name: templateData.name || t('shared_template') || '分享的模板',
+          name: templateData.name || t('shared_template') || '分享的範本',
           content: templateData.content || '',
           selections: templateData.selections || {},
           author: templateData.author || t('from_share') || '分享',
@@ -2149,7 +2149,7 @@ const App = () => {
         return;
       }
 
-      // 發送完整模板資料到短網址服務
+      // 發送完整範本資料到短網址服務
       const res = await fetch(`${SHORTURL_API}/api/short-url`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2200,9 +2200,21 @@ const App = () => {
       // （SVG 作為檔案開啟時可以載入外部圖片）
       const previewImage = await imageUrlToBase64(previewImageUrl) || previewImageUrl;
 
+      // 取得圖片尺寸（用於決定橫式或直式版型）
+      const imageDimensions = await getImageDimensions(previewImage || previewImageUrl);
+
       // 生成 SVG（name 需要本地化處理）
       const localizedName = getLocalized(shareData.name, language) || 'PromptFill-template';
-      const svgContent = generateShareSvg({ ...shareData, name: localizedName }, previewImage);
+      const svgContent = generateShareSvg(
+        { ...shareData, name: localizedName },
+        previewImage,
+        {
+          imageWidth: imageDimensions.width,
+          imageHeight: imageDimensions.height,
+          tags: templateToShare.tags || [],
+          version: `V${SYSTEM_DATA_VERSION}`,
+        }
+      );
 
       // 下載 SVG
       downloadSvg(svgContent, localizedName);
@@ -2214,12 +2226,12 @@ const App = () => {
     }
   };
 
-  // 處理匯入分享的模板
+  // 處理匯入分享的範本
   const handleImportShared = async () => {
     if (!sharedTemplate) return;
 
     setIsImporting(true);
-    addToast(t('importing_template') || '📥 匯入模板中...', 'info');
+    addToast(t('importing_template') || '📥 匯入範本中...', 'info');
 
     try {
       const newTemplate = {
@@ -2227,7 +2239,7 @@ const App = () => {
         id: `tpl_${Date.now()}`,
       };
 
-      // 提取模板中使用的所有變數 keys
+      // 提取範本中使用的所有變數 keys
       const usedKeys = extractVariableKeys(sharedTemplate.content);
 
       // 合併詞庫（只加入本地不存在的）
@@ -2285,7 +2297,7 @@ const App = () => {
       setBanks(mergedBanks);
       setDefaults(mergedDefaults);
 
-      // 新增模板並切換到該模板
+      // 新增範本並切換到該範本
       setTemplates([...templates, newTemplate]);
       setActiveTemplateId(newTemplate.id);
 
@@ -2296,7 +2308,7 @@ const App = () => {
       setIsShareMode(false);
       window.history.replaceState(null, '', window.location.pathname);
 
-      addToast(t('import_success') || '✅ 模板已匯入');
+      addToast(t('import_success') || '✅ 範本已匯入');
     } catch (err) {
       console.error('Import failed:', err);
       addToast(t('import_failed') || '匯入失敗', 'error');
@@ -2331,7 +2343,7 @@ const App = () => {
     loadSharedTemplate();
   }, []);
 
-  // 當使用者選擇其他模板時，退出分享模式
+  // 當使用者選擇其他範本時，退出分享模式
   useEffect(() => {
     if (isShareMode) {
       exitShareMode();
@@ -2618,7 +2630,7 @@ const App = () => {
                     <PremiumButton
                       onClick={handleImportShared}
                       disabled={isImporting}
-                      title={isImporting ? (t('importing_template') || '匯入中...') : (t('import_shared') || '匯入模板')}
+                      title={isImporting ? (t('importing_template') || '匯入中...') : (t('import_shared') || '匯入範本')}
                       color="emerald"
                     >
                       {isImporting ? (
@@ -3133,14 +3145,14 @@ const App = () => {
           </div>
         </button>
 
-        {/* 模板詳情 (編輯器) */}
+        {/* 範本詳情 (編輯器) */}
         <button
           onClick={() => {
             setDiscoveryView(false);
             setZoomedImage(null);
             setIsTemplatesDrawerOpen(false);
             setIsBanksDrawerOpen(false);
-            // 強制確保有模板被選中
+            // 強制確保有範本被選中
             if (templates.length > 0 && !activeTemplateId) {
               const firstId = templates[0].id;
               setActiveTemplateId(firstId);
@@ -3201,7 +3213,7 @@ const App = () => {
         t={t}
       />
 
-      {/* --- 資料更新提示（模板與詞庫） --- */}
+      {/* --- 資料更新提示（範本與詞庫） --- */}
       {showDataUpdateNotice && (
         <div className="fixed inset-0 z-[200] bg-black/70 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 transition-all">

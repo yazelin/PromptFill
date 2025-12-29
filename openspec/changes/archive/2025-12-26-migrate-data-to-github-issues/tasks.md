@@ -2,7 +2,7 @@
 
 ## 1. Issue Template 與 Label 建設
 
-- [x] 1.1 建立 `.github/ISSUE_TEMPLATE/template-submission.yml`（模板提交表單）
+- [x] 1.1 建立 `.github/ISSUE_TEMPLATE/template-submission.yml`（範本提交表單）
 - [x] 1.2 建立 `.github/ISSUE_TEMPLATE/bank-submission.yml`（詞庫提交表單）
 - [x] 1.3 建立 GitHub Labels：`template`、`bank`、`approved`、`pending`
 
@@ -26,15 +26,15 @@
 
 - [x] 4.1 新增 `handleSubmitTemplate()` 函數，使用 Issue Template 格式
 - [x] 4.2 新增 `handleSubmitBank()` 函數
-- [x] 4.3 在模板側邊欄新增「提交模板」按鈕（Send icon）
+- [x] 4.3 在範本側邊欄新增「提交範本」按鈕（Send icon）
 - [x] 4.4 在詞庫側邊欄新增「提交詞庫」按鈕（Send icon）
 - [x] 4.5 更新翻譯字串
 
 ## 5. 測試與驗證
 
-- [ ] 5.1 測試模板從 Issue 載入
+- [ ] 5.1 測試範本從 Issue 載入
 - [ ] 5.2 測試詞庫從 Issue 載入
-- [ ] 5.3 測試提交模板功能
+- [ ] 5.3 測試提交範本功能
 - [ ] 5.4 測試提交詞庫功能
 - [ ] 5.5 測試離線模式（只有本機資料）
 - [ ] 5.6 測試 API 限制處理

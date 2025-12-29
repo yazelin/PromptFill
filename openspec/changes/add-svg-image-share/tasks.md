@@ -4,7 +4,7 @@
 - [x] 1.1 建立 `src/utils/svgShareUtils.js` 工具模組
 - [x] 1.2 實作 `generateShareSvg(shareData, previewImage)` 函式
 - [x] 1.3 實作預覽圖嵌入（base64 編碼）
-- [x] 1.4 實作模板資料嵌入（LZString 壓縮）
+- [x] 1.4 實作範本資料嵌入（LZString 壓縮）
 
 ## 2. SVG 下載功能
 - [x] 2.1 在 App.jsx 新增 `handleDownloadShareSvg()` 函式

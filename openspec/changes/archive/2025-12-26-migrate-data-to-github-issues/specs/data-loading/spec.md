@@ -19,12 +19,12 @@
 
 ### Requirement: GitHub Issues Data Fetching
 
-系統 SHALL 從 GitHub Issues 載入模板和詞庫資料。
+系統 SHALL 從 GitHub Issues 載入範本和詞庫資料。
 
-#### Scenario: 載入模板
+#### Scenario: 載入範本
 - **WHEN** 呼叫 GitHub API
 - **THEN** 系統查詢帶有 `approved` 和 `template` labels 的 open issues
-- **AND** 解析 Issue body 為模板物件
+- **AND** 解析 Issue body 為範本物件
 
 #### Scenario: 載入詞庫
 - **WHEN** 呼叫 GitHub API

@@ -2,7 +2,7 @@
 
 ## Context
 
-PromptFill 是一個 AI 繪圖提示詞管理工具，目前資料（模板、詞庫）儲存在本地 JS 檔案中。為了讓社群能夠貢獻內容，需要將資料管理遷移到 GitHub Issues，類似於 [prompts-vault](https://github.com/mukiwu/prompts-vault) 專案的做法。
+PromptFill 是一個 AI 繪圖提示詞管理工具，目前資料（範本、詞庫）儲存在本地 JS 檔案中。為了讓社群能夠貢獻內容，需要將資料管理遷移到 GitHub Issues，類似於 [prompts-vault](https://github.com/mukiwu/prompts-vault) 專案的做法。
 
 ### 現有架構
 ```
@@ -25,7 +25,7 @@ GitHub Issues (approved label)
 ## Goals / Non-Goals
 
 ### Goals
-- 讓任何人都能透過 GitHub Issue 提交模板和詞庫
+- 讓任何人都能透過 GitHub Issue 提交範本和詞庫
 - 保持離線可用性（本機預設資料）
 - 支援審核機制（Label 系統）
 - 雙語支援（中文/英文）
@@ -55,21 +55,21 @@ GitHub Issues (approved label)
 **選擇**：使用環境變數 `VITE_GITHUB_REPO` 設定的 repo
 
 **理由**：
-- 與現有「提交模板」功能一致
+- 與現有「提交範本」功能一致
 - 每個 fork 可以獨立管理自己的資料
 - 不需要額外設定
 
 ### 決策 3：Issue Template 格式
 
-**模板 Issue 格式**：
+**範本 Issue 格式**：
 ```markdown
-### 模板名稱 (中文)
+### 範本名稱 (中文)
 角色概念圖
 
 ### Template Name (English)
 Character Concept Sheet
 
-### 模板內容 (中文)
+### 範本內容 (中文)
 你是一位 {{role}}...
 
 ### Template Content (English)
@@ -114,7 +114,7 @@ character
 
 | Label | 用途 |
 |-------|------|
-| `template` | 標記為模板提交 |
+| `template` | 標記為範本提交 |
 | `bank` | 標記為詞庫提交 |
 | `approved` | 審核通過，前端會載入 |
 | `pending` | 待審核（預設） |
@@ -153,7 +153,7 @@ character
 │  第二階段：非同步載入 GitHub Issues                            │
 │  - GET /repos/{owner}/{repo}/issues?labels=approved,template │
 │  - GET /repos/{owner}/{repo}/issues?labels=approved,bank     │
-│  - 解析 Issue body → 模板/詞庫物件                            │
+│  - 解析 Issue body → 範本/詞庫物件                            │
 │  - 合併到現有資料                                             │
 │  - 快取到 localStorage                                        │
 └─────────────────────────────────────────────────────────────┘
@@ -176,7 +176,7 @@ character
 const githubRepo = import.meta.env.VITE_GITHUB_REPO || 'doggy8088/PromptFill';
 const [owner, repo] = githubRepo.split('/');
 
-// 載入模板
+// 載入範本
 GET https://api.github.com/repos/{owner}/{repo}/issues
   ?labels=approved,template
   &state=open
@@ -208,11 +208,11 @@ function parseTemplateIssue(issue) {
   return {
     id: `issue_${issue.number}`,
     name: {
-      'zh-tw': getValue('模板名稱 (中文)', 'Template Name (Chinese)'),
+      'zh-tw': getValue('範本名稱 (中文)', 'Template Name (Chinese)'),
       'en': getValue('Template Name (English)', 'Template Name')
     },
     content: {
-      'zh-tw': getValue('模板內容 (中文)', 'Template Content (Chinese)'),
+      'zh-tw': getValue('範本內容 (中文)', 'Template Content (Chinese)'),
       'en': getValue('Template Content (English)', 'Template Content')
     },
     // ... 其他欄位
@@ -234,7 +234,7 @@ function parseTemplateIssue(issue) {
 1. **Phase 1**：建立 Issue Template 和 Label 系統
 2. **Phase 2**：實作 GitHub API 整合模組
 3. **Phase 3**：修改資料載入邏輯為兩階段
-4. **Phase 4**：修改「提交模板」功能為新格式
+4. **Phase 4**：修改「提交範本」功能為新格式
 5. **Phase 5**：新增「提交詞庫」功能
 6. **Phase 6**：測試和文件
 

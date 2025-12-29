@@ -4,8 +4,8 @@ import { Home, List, Edit3, Database } from 'lucide-react';
 const MobileTabBar = ({ activeTab, onTabChange, t }) => {
   const tabs = [
     { id: 'home', icon: Home, label: t('home') || '首頁' },
-    { id: 'templates', icon: List, label: t('templates') || '模板列表' },
-    { id: 'editor', icon: Edit3, label: t('editor') || '模板編輯' },
+    { id: 'templates', icon: List, label: t('templates') || '範本列表' },
+    { id: 'editor', icon: Edit3, label: t('editor') || '範本編輯' },
     { id: 'banks', icon: Database, label: t('banks') || '詞庫' },
   ];
 
