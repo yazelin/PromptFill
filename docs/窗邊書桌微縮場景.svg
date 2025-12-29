@@ -134,7 +134,7 @@
           var payloadStr = el.textContent.trim();
           var payload = JSON.parse(payloadStr);
           if (!payload.data) return;
-          var targetUrl = 'http://localhost:1420/#svg=' + payload.data;
+          var targetUrl = 'https://yazelin.github.io/PromptFill/#svg=' + payload.data;
           window.location.href = targetUrl;
         } catch (e) {
           console.error('PromptFill SVG 跳轉失敗:', e);
