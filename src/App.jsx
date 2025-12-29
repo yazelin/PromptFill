@@ -39,7 +39,6 @@ import {
   ImageDown,
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
-import LZString from 'lz-string';
 
 // ====== 匯入資料設定 ======
 import { INITIAL_TEMPLATES_CONFIG, TEMPLATE_TAGS, SYSTEM_DATA_VERSION } from './data/templates';
@@ -2070,60 +2069,56 @@ const App = () => {
     };
   };
 
-  // 生成分享 URL（圖片直接用 lzstring 編碼，不上傳）
-  const generateShareUrl = () => {
+  // 短網址 API
+  const SHORTURL_API = 'https://shorturl.yazelinj303.workers.dev';
+
+  // 解析分享 URL（支援 ?id= 短網址 和 #svg= 離線分享）
+  const parseShareUrl = async () => {
     try {
-      const shareData = generateShareData();
-      const jsonStr = JSON.stringify(shareData);
-      // 使用 LZ-String 壓縮
-      const compressed = LZString.compressToEncodedURIComponent(jsonStr);
-      const baseUrl = window.location.origin + window.location.pathname;
-      return `${baseUrl}#template=${compressed}`;
-    } catch (err) {
-      console.error('Failed to generate share URL:', err);
-      return null;
-    }
-  };
+      // 檢查 ?id= 參數（短網址服務）
+      const urlParams = new URLSearchParams(window.location.search);
+      const idParam = urlParams.get('id');
+      if (idParam) {
+        const res = await fetch(`${SHORTURL_API}/api/template/${idParam}`);
+        if (!res.ok) {
+          console.error('Failed to fetch template:', res.status);
+          return null;
+        }
+        const data = await res.json();
+        if (!data.template) return null;
 
-  // 解析分享 URL（支援 #template= 和 #svg= 兩種格式）
-  const parseShareUrl = () => {
-    const hash = window.location.hash;
-    if (!hash) return null;
-
-    try {
-      const params = new URLSearchParams(hash.substring(1));
-
-      // 優先檢查 SVG 分享參數
-      const svgParam = params.get('svg');
-      if (svgParam) {
-        const templateData = parseSvgShareData(svgParam);
-        if (!templateData) return null;
+        // 清除 URL 參數
+        window.history.replaceState(null, '', window.location.pathname);
 
         return {
           template: {
             id: `shared_${Date.now()}`,
-            name: templateData.name || t('shared_template') || '分享的模板',
-            content: templateData.content || '',
-            selections: templateData.selections || {},
-            author: templateData.author || t('from_share') || '分享',
-            tags: templateData.tags || [],
-            ...(templateData.imageUrl && { imageUrl: templateData.imageUrl }),
-            ...(templateData.imageUrls && { imageUrls: templateData.imageUrls }),
+            name: data.template.name || t('shared_template') || '分享的模板',
+            content: data.template.content || '',
+            selections: data.template.selections || {},
+            author: data.template.author || t('from_share') || '分享',
+            tags: data.template.tags || [],
+            ...(data.template.imageUrl && { imageUrl: data.template.imageUrl }),
+            ...(data.template.imageUrls && { imageUrls: data.template.imageUrls }),
           },
-          banks: templateData.banks || {},
-          defaults: templateData.defaults || {},
+          banks: data.banks || {},
+          defaults: data.defaults || {},
         };
       }
 
-      // 檢查傳統的 template 參數
-      const templateParam = params.get('template');
-      if (!templateParam) return null;
+      // 檢查 #svg= 參數（SVG 離線分享）
+      const hash = window.location.hash;
+      if (!hash) return null;
 
-      // 使用 LZ-String 解壓縮
-      const jsonStr = LZString.decompressFromEncodedURIComponent(templateParam);
-      if (!jsonStr) return null;
+      const params = new URLSearchParams(hash.substring(1));
+      const svgParam = params.get('svg');
+      if (!svgParam) return null;
 
-      const templateData = JSON.parse(jsonStr);
+      const templateData = parseSvgShareData(svgParam);
+      if (!templateData) return null;
+
+      // 清除 URL hash
+      window.history.replaceState(null, '', window.location.pathname);
 
       return {
         template: {
@@ -2148,13 +2143,41 @@ const App = () => {
   // 處理分享按鈕點擊
   const handleShare = async () => {
     try {
-      const shareUrl = generateShareUrl();
-      if (!shareUrl) {
+      const shareData = generateShareData();
+      if (!shareData) {
         addToast(t('share_failed') || '分享失敗', 'error');
         return;
       }
 
-      await navigator.clipboard.writeText(shareUrl);
+      // 發送完整模板資料到短網址服務
+      const res = await fetch(`${SHORTURL_API}/api/short-url`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          template: {
+            name: shareData.name,
+            content: shareData.content,
+            selections: shareData.selections,
+            tags: shareData.tags,
+            author: shareData.author,
+            ...(shareData.imageUrl && { imageUrl: shareData.imageUrl }),
+            ...(shareData.imageUrls && { imageUrls: shareData.imageUrls }),
+          },
+          banks: shareData.banks,
+          defaults: shareData.defaults,
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error('Short URL API request failed');
+      }
+
+      const data = await res.json();
+      if (!data.shortUrl) {
+        throw new Error('No shortUrl in response');
+      }
+
+      await navigator.clipboard.writeText(data.shortUrl);
       addToast(t('share_copied') || '✅ 分享連結已複製');
     } catch (err) {
       console.error('Share failed:', err);
@@ -2295,14 +2318,17 @@ const App = () => {
 
   // 頁面載入時解析分享 URL
   useEffect(() => {
-    const parsed = parseShareUrl();
-    if (parsed) {
-      setSharedTemplate(parsed.template);
-      setSharedBanks(parsed.banks);
-      setSharedDefaults(parsed.defaults);
-      setIsShareMode(true);
-      setDiscoveryView(false);
-    }
+    const loadSharedTemplate = async () => {
+      const parsed = await parseShareUrl();
+      if (parsed) {
+        setSharedTemplate(parsed.template);
+        setSharedBanks(parsed.banks);
+        setSharedDefaults(parsed.defaults);
+        setIsShareMode(true);
+        setDiscoveryView(false);
+      }
+    };
+    loadSharedTemplate();
   }, []);
 
   // 當使用者選擇其他模板時，退出分享模式
