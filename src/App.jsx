@@ -213,7 +213,7 @@ const ImagePreviewModal = React.memo(
           {/* Background Layer - Light Version */}
           <div
             className="absolute inset-0 z-[-1] bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: 'url(/background1.png)' }}
+            style={{ backgroundImage: 'url(./background1.png)' }}
           >
             <div className="absolute inset-0 bg-white/60 backdrop-blur-2xl"></div>
           </div>
@@ -380,7 +380,7 @@ const ImagePreviewModal = React.memo(
         <div
           className="absolute inset-0 z-[-1] bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: 'url(/background1.png)',
+            backgroundImage: 'url(./background1.png)',
           }}
         >
           <div className="absolute inset-0 bg-black/85 backdrop-blur-3xl"></div>
