@@ -71,11 +71,6 @@ export const Variable = ({
     return valStr === optStr;
   };
 
-// 如果是資料來源變數，渲染 DatasourceVariable
-  if (id === '__datasource__') {
-    return null; // 這裡不處理，由 DatasourceVariable 處理
-  }
-
   return (
     <div className="relative inline-block mx-1.5 align-baseline group text-base">
       <span

@@ -1,7 +1,7 @@
 # datasource Specification
 
 ## Purpose
-TBD - created by archiving change add-datasource. Update Purpose after archive.
+提供「資料來源」功能，讓使用者可以儲存大量文本資料（如會議記錄、文章、程式碼等），並在不同範本間重複使用，實現「同一資料 + 不同範本 = 不同輸出」的靈活工作流程。
 ## Requirements
 ### Requirement: 資料來源資料結構
 系統 SHALL 定義資料來源的資料結構，包含唯一識別符、名稱、內容及時間戳記。
