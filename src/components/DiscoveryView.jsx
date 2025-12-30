@@ -117,7 +117,7 @@ export const DiscoveryView = React.memo(
               </button>
 
               <a
-                href="https://github.com/doggy8088/PromptFill"
+                href="https://github.com/yazelin/PromptFill"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center gap-1.5 group"
@@ -315,7 +315,7 @@ export const DiscoveryView = React.memo(
               </button>
 
               <a
-                  href="https://github.com/doggy8088/PromptFill"
+                  href="https://github.com/yazelin/PromptFill"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2.5 rounded-xl transition-all text-gray-500 hover:text-gray-900 hover:bg-white/50 shadow-sm flex items-center gap-2"

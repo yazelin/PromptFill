@@ -372,7 +372,7 @@ export const TemplatesSidebar = React.memo(
               >
                 <div className="flex items-center justify-center gap-2">
                   <a
-                    href="https://github.com/doggy8088/PromptFill"
+                    href="https://github.com/yazelin/PromptFill"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-1.5 rounded-lg transition-colors text-gray-400 hover:text-gray-900 hover:bg-gray-50"
