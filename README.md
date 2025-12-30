@@ -285,4 +285,6 @@ Prompt Fill 已更新至 **v0.5.1**。專案初衷是解決 AI 繪圖時提示�
 
 本專案原始出處為 [TanShilongMario/PromptFill](https://github.com/TanShilongMario/PromptFill)，感謝原作者的開源貢獻。
 
+特別感謝 [Will 保哥](https://github.com/doggy8088) 的 [doggy8088/PromptFill](https://github.com/doggy8088/PromptFill) fork，提供了繁體中文化與諸多改進。
+
 **Made with ❤️ by 角落工作室**
