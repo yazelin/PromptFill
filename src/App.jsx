@@ -43,6 +43,7 @@ import html2canvas from 'html2canvas';
 // ====== 匯入資料設定 ======
 import { INITIAL_TEMPLATES_CONFIG, TEMPLATE_TAGS, SYSTEM_DATA_VERSION } from './data/templates';
 import { INITIAL_BANKS, INITIAL_DEFAULTS, INITIAL_CATEGORIES } from './data/banks';
+import { INITIAL_DATASOURCES, createDatasource, truncateContent } from './data/datasources';
 
 // ====== 匯入常數設定 ======
 import { TRANSLATIONS } from './constants/translations';
@@ -685,6 +686,10 @@ const App = () => {
     'tpl_default',
     'app_active_template_id_v4'
   );
+
+  // 資料來源 State
+  const [datasources, setDatasources] = useStickyState(INITIAL_DATASOURCES, 'app_datasources_v1');
+  const [selectedDatasourceId, setSelectedDatasourceId] = useState(null);
 
   const [lastAppliedDataVersion, setLastAppliedDataVersion] = useStickyState(
     '',
@@ -1916,6 +1921,35 @@ const App = () => {
     }));
   };
 
+  // --- Datasource Actions ---
+
+  const handleAddDatasource = (name, content) => {
+    const newDatasource = createDatasource(name, content);
+    setDatasources((prev) => [...prev, newDatasource]);
+    setSelectedDatasourceId(newDatasource.id);
+  };
+
+  const handleUpdateDatasource = (id, name, content) => {
+    setDatasources((prev) =>
+      prev.map((ds) =>
+        ds.id === id
+          ? { ...ds, name, content, updatedAt: Date.now() }
+          : ds
+      )
+    );
+  };
+
+  const handleDeleteDatasource = (id) => {
+    setDatasources((prev) => prev.filter((ds) => ds.id !== id));
+    if (selectedDatasourceId === id) {
+      setSelectedDatasourceId(null);
+    }
+  };
+
+  const handleSelectDatasource = (id) => {
+    setSelectedDatasourceId(selectedDatasourceId === id ? null : id);
+  };
+
   // --- Editor Actions ---
 
   const insertVariableToTemplate = (key, dropPoint = null) => {
@@ -1989,8 +2023,18 @@ const App = () => {
     let finalString = getLocalized(activeTemplate.content, templateLanguage);
     const counters = {};
 
+    // 取得選中的資料來源內容
+    const selectedDatasource = datasources.find(ds => ds.id === selectedDatasourceId);
+    const datasourceContent = selectedDatasource?.content || '';
+
     finalString = finalString.replace(/{{(.*?)}}/g, (match, key) => {
       const k = key.trim();
+
+      // 處理資料來源特殊變數
+      if (k === '__datasource__') {
+        return datasourceContent || match;
+      }
+
       const idx = counters[k] || 0;
       counters[k] = idx + 1;
 
@@ -2359,8 +2403,18 @@ const App = () => {
       let finalString = getLocalized(activeTemplate.content, templateLanguage);
       const counters = {};
 
+      // 取得選中的資料來源內容
+      const selectedDatasource = datasources.find(ds => ds.id === selectedDatasourceId);
+      const datasourceContent = selectedDatasource?.content || '';
+
       finalString = finalString.replace(/{{(.*?)}}/g, (match, key) => {
         const k = key.trim();
+
+        // 處理資料來源特殊變數
+        if (k === '__datasource__') {
+          return datasourceContent || match;
+        }
+
         const idx = counters[k] || 0;
         counters[k] = idx + 1;
 
@@ -2750,6 +2804,10 @@ const App = () => {
                       saveTemplateName={saveTemplateName}
                       startRenamingTemplate={startRenamingTemplate}
                       setEditingTemplateNameId={setEditingTemplateNameId}
+                      // 資料來源相關
+                      datasources={datasources}
+                      selectedDatasourceId={selectedDatasourceId}
+                      onSelectDatasource={handleSelectDatasource}
                     />
                   )}
                 </>
@@ -2824,6 +2882,12 @@ const App = () => {
             t={t}
             language={templateLanguage}
             onTouchDragStart={onTouchDragStart}
+            datasources={datasources}
+            selectedDatasourceId={selectedDatasourceId}
+            onSelectDatasource={handleSelectDatasource}
+            onAddDatasource={handleAddDatasource}
+            onUpdateDatasource={handleUpdateDatasource}
+            onDeleteDatasource={handleDeleteDatasource}
           />
         </>
       )}
