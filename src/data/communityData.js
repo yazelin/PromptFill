@@ -6698,3 +6698,6 @@ export const COMMUNITY_CATEGORIES = {
     "color": "slate"
   }
 };
+
+// 社群預設值 (空)
+export const COMMUNITY_DEFAULTS = {};

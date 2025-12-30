@@ -13,3 +13,6 @@ export const DOGGY_BANKS = {};
 
 // 多奇分類 (空)
 export const DOGGY_CATEGORIES = {};
+
+// 多奇預設值 (空)
+export const DOGGY_DEFAULTS = {};
