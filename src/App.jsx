@@ -41,8 +41,14 @@ import html2canvas from 'html2canvas';
 import LZString from 'lz-string';
 
 // ====== 匯入資料設定 ======
-import { INITIAL_TEMPLATES_CONFIG, TEMPLATE_TAGS, SYSTEM_DATA_VERSION } from './data/templates';
-import { INITIAL_BANKS, INITIAL_DEFAULTS, INITIAL_CATEGORIES } from './data/banks';
+import {
+  INITIAL_TEMPLATES_CONFIG,
+  TEMPLATE_TAGS,
+  SYSTEM_DATA_VERSION,
+  INITIAL_BANKS,
+  INITIAL_DEFAULTS,
+  INITIAL_CATEGORIES
+} from './data/initData';
 
 // ====== 匯入常數設定 ======
 import { TRANSLATIONS } from './constants/translations';
