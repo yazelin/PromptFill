@@ -1,7 +1,7 @@
 // 元件統一匯出檔
 // 這個檔案集中管理所有元件的匯出，方便管理與匯入
 
-export { Variable } from './Variable';
+export { Variable, DatasourceVariable } from './Variable';
 export { VisualEditor } from './VisualEditor';
 export { PremiumButton } from './PremiumButton';
 export { EditorToolbar } from './EditorToolbar';

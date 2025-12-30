@@ -1,36 +1,36 @@
 /**
  * @typedef {Object} TemplateConfig
  * @property {string} id - 唯一識別符號，建議使用 'tpl_' 前綴
- * @property {string|Object} name - 樣板顯示名稱，支援雙語物件 {"zh-tw": string, en: string} 或單語言字串
- * @property {string|Object} content - 樣板內容，支援 markdown 和 {{variable}} 變數，支援雙語物件 {"zh-tw": string, en: string} 或單語言字串
+ * @property {string|Object} name - 範本顯示名稱，支援雙語物件 {"zh-tw": string, en: string} 或單語言字串
+ * @property {string|Object} content - 範本內容，支援 markdown 和 {{variable}} 變數，支援雙語物件 {"zh-tw": string, en: string} 或單語言字串
  * @property {string} imageUrl - 預覽縮略圖 URL
  * @property {string[]} [imageUrls] - 多圖預覽陣列
  * @property {Object.<string, string|Object>} selections - 預設選中的變數值 map，支援雙語物件或字串
- * @property {string[]} tags - 樣板標記陣列，可選值：建築、人物、攝影、產品、圖表、卡通、寵物、遊戲、創意
- * @property {string|string[]} language - 樣板語言，可選值：
+ * @property {string[]} tags - 範本標記陣列，可選值：建築、人物、攝影、產品、圖表、卡通、寵物、遊戲、創意
+ * @property {string|string[]} language - 範本語言，可選值：
  *   - "zh-tw" - 僅支援中文
  *   - 'en' - 僅支援英文
  *   - ["zh-tw", 'en'] - 支援雙語（預設值）
  * 
- * @example 雙語樣板
+ * @example 雙語範本
  * {
  *   id: "tpl_example",
- *   name: { "zh-tw": "範例樣板", en: "Example Template" },
+ *   name: { "zh-tw": "範例範本", en: "Example Template" },
  *   content: { "zh-tw": "中文內容...", en: "English content..." },
  *   language: ["zh-tw", "en"]
  * }
  * 
- * @example 單語言樣板（僅中文）
+ * @example 單語言範本（僅中文）
  * {
  *   id: "tpl_cn_only",
- *   name: "僅中文樣板",
+ *   name: "僅中文範本",
  *   content: "中文內容...",
  *   language: "zh-tw"  // 或 ["zh-tw"]
  * }
  */
 
 /**
- * 樣板系統版本號，每次更新 templates.js 或 banks.js 時請更新此版本號
+ * 範本系統版本號，每次更新 templates.js 或 banks.js 時請更新此版本號
  */
 export const SYSTEM_DATA_VERSION = "0.7.4";
 
@@ -795,7 +795,7 @@ export const TEMPLATE_STREET_DIALOGUE = {
 };
 
 /**
- * 可用的樣板標記
+ * 可用的範本標記
  */
 export const TEMPLATE_TAGS = [
   "建築",
@@ -810,10 +810,10 @@ export const TEMPLATE_TAGS = [
 ];
 
 /**
- * 系統內建樣板列表
- * 
- * 如何新增新樣板：
- * 1. 在上方定義樣板內容常量 (可選，但推薦)
+ * 系統內建範本列表
+ *
+ * 如何新增新範本：
+ * 1. 在上方定義範本內容常量 (可選，但推薦)
  * 2. 在陣列中新增一個新的組態物件
  * 3. 確保 id 唯一
  * 4. imageUrl 可以是外部連結，也可以是專案內的 import 資源

@@ -1,23 +1,27 @@
-import { Converter } from '@willh/opencc-js';
-import { readFile, writeFile } from 'fs/promises';
+import { writeFile } from 'fs/promises';
 
 const FILES = [
   {
-    url: 'https://github.com/TanShilongMario/PromptFill/raw/refs/heads/main/src/data/banks.js',
+    url: 'https://github.com/doggy8088/PromptFill/raw/refs/heads/main/src/data/banks.js',
     dest: 'src/data/banks.js'
   },
   {
-    url: 'https://github.com/TanShilongMario/PromptFill/raw/refs/heads/main/src/data/templates.js',
+    url: 'https://github.com/doggy8088/PromptFill/raw/refs/heads/main/src/data/templates.js',
     dest: 'src/data/templates.js'
   }
+];
+
+// 自訂詞彙修正：保哥用的詞 → 我們用的詞
+const TERM_REPLACEMENTS = [
+  ['模板', '範本'],
+  // 可以繼續新增其他需要修正的詞彙
 ];
 
 async function downloadFile(url, dest) {
   console.log(`下載 ${url} ...`);
   try {
-    // 使用 fetch API 下載，默認會 follow redirect
     const response = await fetch(url, {
-      redirect: 'follow' // 明確指定跟隨重定向
+      redirect: 'follow'
     });
 
     if (!response.ok) {
@@ -26,12 +30,10 @@ async function downloadFile(url, dest) {
 
     const content = await response.text();
 
-    // 驗證內容是否為空
     if (!content || content.trim().length === 0) {
       throw new Error(`下載的檔案為空: ${dest}`);
     }
 
-    // 將內容寫入檔案
     await writeFile(dest, content, 'utf8');
 
     console.log(`✓ 成功下載到 ${dest}`);
@@ -46,17 +48,18 @@ async function downloadFile(url, dest) {
 async function processFile(filePath, content) {
   console.log(`處理檔案 ${filePath} ...`);
 
-  // 1. 字串替換: "cn" -> "zh-tw"
-  let processedContent = content.replace(/['"]cn['"]/g, '"zh-tw"');
+  let processedContent = content;
 
-  // 處理 cn: 的情況
-  processedContent = processedContent.replace(/cn:/g, '"zh-tw":');
+  // 自訂詞彙修正
+  for (const [from, to] of TERM_REPLACEMENTS) {
+    const regex = new RegExp(from, 'g');
+    const count = (processedContent.match(regex) || []).length;
+    if (count > 0) {
+      processedContent = processedContent.replace(regex, to);
+      console.log(`  修正詞彙: "${from}" → "${to}" (${count} 處)`);
+    }
+  }
 
-  // 2. 簡繁轉換
-  const converter = Converter({ from: 'cn', to: 'tw2' });
-  processedContent = converter(processedContent);
-
-  // 寫回檔案
   await writeFile(filePath, processedContent, 'utf8');
   console.log(`✓ 成功處理 ${filePath}`);
 }

@@ -3,7 +3,7 @@ import { INITIAL_TEMPLATES_CONFIG } from '../data/templates';
 import { INITIAL_BANKS, INITIAL_DEFAULTS } from '../data/banks';
 import { deepClone, makeUniqueKey } from './helpers';
 
-// 合併系統模板，系統模板強制更新，用戶改動備份
+// 合併系統範本，系統範本強制更新，用戶改動備份
 export const mergeTemplatesWithSystem = (currentTemplates, { backupSuffix }) => {
   const systemMap = new Map(INITIAL_TEMPLATES_CONFIG.map(t => [t.id, deepClone(t)]));
   const merged = INITIAL_TEMPLATES_CONFIG.map(t => deepClone(t));
@@ -18,7 +18,7 @@ export const mergeTemplatesWithSystem = (currentTemplates, { backupSuffix }) => 
       const isDifferent = JSON.stringify(t.name) !== JSON.stringify(sys.name) || 
                           JSON.stringify(t.content) !== JSON.stringify(sys.content);
       
-      // 在 merged 列表中找到對應的系統模板進行狀態合併
+      // 在 merged 列表中找到對應的系統範本進行狀態合併
       const targetInMerged = merged.find(m => m.id === t.id);
       if (targetInMerged && t.selections) {
         // 遷移用戶的填空選擇 (selections)，保留用戶已填的內容
@@ -42,13 +42,13 @@ export const mergeTemplatesWithSystem = (currentTemplates, { backupSuffix }) => 
         };
 
         merged.push({ ...deepClone(t), id: backupId, name: duplicateName(t.name) });
-        notes.push(`模板 ${t.id} 已更新，舊版備份為 ${backupId}`);
+        notes.push(`範本 ${t.id} 已更新，舊版備份為 ${backupId}`);
       }
     } else {
       let newId = t.id;
       if (existingIds.has(newId)) {
         newId = makeUniqueKey(newId, existingIds, "custom");
-        notes.push(`自訂義模板 ${t.id} 與系統衝突，已重命名為 ${newId}`);
+        notes.push(`自訂義範本 ${t.id} 與系統衝突，已重命名為 ${newId}`);
       }
       existingIds.add(newId);
       merged.push({ ...deepClone(t), id: newId });

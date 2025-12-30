@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: 檢出代碼
@@ -20,18 +21,37 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 檢查是否有未合併的同步 PR
+        id: check-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXISTING_PR=$(gh pr list --state open --search "同步上游資料檔" --json number --jq '.[0].number')
+          if [ -n "$EXISTING_PR" ]; then
+            echo "已存在未合併的同步 PR #$EXISTING_PR，跳過本次同步"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: 設定 Node.js
+        if: steps.check-pr.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: 安裝依賴
+        if: steps.check-pr.outputs.skip != 'true'
         run: npm install
 
       - name: 執行同步腳本
+        if: steps.check-pr.outputs.skip != 'true'
         run: node .github/workflows/sync-upstream.mjs
 
-      - name: 提交變更
+      - name: 檢查變更並創建 PR
+        if: steps.check-pr.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -46,6 +66,23 @@ jobs:
           # 創建新分支
           BRANCH_NAME="sync-upstream-$(date +%Y%m%d)"
           git checkout -b "$BRANCH_NAME"
-          
-          git commit -m "chore: 同步上游資料檔 (自動更新)"
+
+          git commit -m "chore: 同步 doggy8088/PromptFill 上游資料檔"
           git push origin "$BRANCH_NAME"
+
+          # 創建 PR
+          gh pr create \
+            --title "chore: 同步上游資料檔 $(date +%Y-%m-%d)" \
+            --body "$(cat <<'EOF'
+## 自動同步上游資料檔
+
+此 PR 由 GitHub Actions 自動建立，同步來自 [doggy8088/PromptFill](https://github.com/doggy8088/PromptFill) 的資料檔：
+
+- `src/data/templates.js`
+- `src/data/banks.js`
+
+同步過程已自動執行詞彙修正（如：模板 → 範本）。
+
+請檢視變更後合併。
+EOF
+)"

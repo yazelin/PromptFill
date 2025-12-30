@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Variable } from './Variable';
+import { Variable, DatasourceVariable } from './Variable';
 import {
   ImageIcon,
   ArrowUpRight,
@@ -17,7 +17,7 @@ import {
 import { getLocalized } from '../utils/helpers';
 
 /**
- * TemplatePreview 元件 - 負責渲染模板的預覽內容，包含變數互動
+ * TemplatePreview 元件 - 負責渲染範本的預覽內容，包含變數互動
  */
 export const TemplatePreview = React.memo(
   ({
@@ -54,6 +54,10 @@ export const TemplatePreview = React.memo(
     saveTemplateName,
     startRenamingTemplate,
     setEditingTemplateNameId,
+    // 資料來源相關
+    datasources = [],
+    selectedDatasourceId,
+    onSelectDatasource,
   }) => {
     const [editImageIndex, setEditImageIndex] = React.useState(0);
 
@@ -70,7 +74,7 @@ export const TemplatePreview = React.memo(
 
     const currentImageUrl = allImages[editImageIndex] || activeTemplate?.imageUrl;
 
-    // 當模板切換或圖片索引切換時，同步編輯索引給父層元件
+    // 當範本切換或圖片索引切換時，同步編輯索引給父層元件
     React.useEffect(() => {
       setCurrentImageEditIndex(editImageIndex);
     }, [editImageIndex, setCurrentImageEditIndex]);
@@ -88,10 +92,10 @@ export const TemplatePreview = React.memo(
     const supportsChinese = templateLangs.includes('zh-tw');
     const supportsEnglish = templateLangs.includes('en');
 
-    // 自動切換到模板支援的語言
+    // 自動切換到範本支援的語言
     React.useEffect(() => {
       if (!templateLangs.includes(language)) {
-        // 若當前語言不支援，切換到模板支援的第一個語言
+        // 若當前語言不支援，切換到範本支援的第一個語言
         setLanguage(templateLangs[0]);
       }
     }, [activeTemplate.id, templateLangs, language]);
@@ -101,6 +105,27 @@ export const TemplatePreview = React.memo(
       return parts.map((part, idx) => {
         if (part.startsWith('{{') && part.endsWith('}}')) {
           const key = part.slice(2, -2).trim();
+
+          // 處理資料來源特殊變數
+          if (key === '__datasource__') {
+            const dsKey = '__datasource__';
+            return (
+              <DatasourceVariable
+                key={`${lineKeyPrefix}-${idx}-ds`}
+                datasources={datasources}
+                selectedDatasourceId={selectedDatasourceId}
+                onSelectDatasource={onSelectDatasource}
+                isOpen={activePopover === dsKey}
+                onToggle={(e) => {
+                  e.stopPropagation();
+                  setActivePopover(activePopover === dsKey ? null : dsKey);
+                }}
+                popoverRef={popoverRef}
+                t={t}
+              />
+            );
+          }
+
           const varIndex = counters[key] || 0;
           counters[key] = varIndex + 1;
 
@@ -215,6 +240,8 @@ export const TemplatePreview = React.memo(
       categories,
       t,
       language,
+      datasources,
+      selectedDatasourceId,
     ]);
 
     return (
@@ -240,7 +267,7 @@ export const TemplatePreview = React.memo(
                 {/* Language Toggle */}
                 {showLanguageToggle && (
                   <div className="flex items-center gap-3 mb-4 p-2 bg-gray-50 rounded-lg border border-gray-200 inline-flex">
-                    <span className="text-xs text-gray-500 font-medium">模板語言：</span>
+                    <span className="text-xs text-gray-500 font-medium">範本語言：</span>
                     <button
                       onClick={() => supportsChinese && setLanguage('zh-tw')}
                       disabled={!supportsChinese}
@@ -251,7 +278,7 @@ export const TemplatePreview = React.memo(
                             ? 'text-orange-600 bg-white shadow-sm'
                             : 'text-gray-400 hover:text-gray-600 hover:bg-white/50'
                       }`}
-                      title={!supportsChinese ? '此模板不支援中文' : ''}
+                      title={!supportsChinese ? '此範本不支援中文' : ''}
                     >
                       中文
                     </button>
