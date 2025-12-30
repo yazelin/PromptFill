@@ -287,4 +287,6 @@ Prompt Fill 已更新至 **v0.5.1**。專案初衷是解決 AI 繪圖時提示�
 
 特別感謝 [Will 保哥](https://github.com/doggy8088) 的 [doggy8088/PromptFill](https://github.com/doggy8088/PromptFill) fork，提供了繁體中文化與諸多改進。
 
+感謝 [ZeroLu](https://github.com/ZeroLu) 的 [awesome-nanobanana-pro](https://github.com/ZeroLu/awesome-nanobanana-pro)，本專案的社群範本皆整理自該 repo。
+
 **Made with ❤️ by 角落工作室**
