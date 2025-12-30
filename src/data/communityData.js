@@ -21,6 +21,7 @@
 
 
 
+
 // 社群範本 (70 個)
 export const COMMUNITY_TEMPLATES = [
   {
@@ -4920,7 +4921,7 @@ export const COMMUNITY_BANKS = {
     "category": "cat_1766541433618",
     "options": [
       {
-        "zh-tw": "cute, cheerful, pastel colors",
+        "zh-tw": "可愛、歡快、粉彩色調",
         "en": "cute, cheerful, pastel colors"
       },
       {
