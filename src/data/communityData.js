@@ -19,6 +19,7 @@
  * 此檔案由工具自動產生，請勿手動編輯
  */
 
+
 // 社群範本 (70 個)
 export const COMMUNITY_TEMPLATES = [
   {
@@ -3425,7 +3426,7 @@ export const COMMUNITY_TEMPLATES = [
   }
 ];
 
-// 社群詞庫
+// 社群詞庫 (83 個)
 export const COMMUNITY_BANKS = {
   "lighting": {
     "label": {
@@ -4411,12 +4412,30 @@ export const COMMUNITY_BANKS = {
     "label": "正向形容",
     "category": "cat_1766541433618",
     "options": [
-      "專業",
-      "易於理解",
-      "細節豐富",
-      "高解析度",
-      "柔和光線",
-      "最佳品質"
+      {
+        "zh-tw": "專業",
+        "en": "專業"
+      },
+      {
+        "zh-tw": "易於理解",
+        "en": "易於理解"
+      },
+      {
+        "zh-tw": "細節豐富",
+        "en": "細節豐富"
+      },
+      {
+        "zh-tw": "高解析度",
+        "en": "高解析度"
+      },
+      {
+        "zh-tw": "柔和光線",
+        "en": "柔和光線"
+      },
+      {
+        "zh-tw": "最佳品質",
+        "en": "最佳品質"
+      }
     ]
   },
   "connectors": {
@@ -4588,7 +4607,10 @@ export const COMMUNITY_BANKS = {
         "zh-tw": "鋼鐵人",
         "en": "Iron Man"
       },
-      "吉伊卡哇"
+      {
+        "zh-tw": "吉伊卡哇",
+        "en": "吉伊卡哇"
+      }
     ]
   },
   "digital_items": {
@@ -4809,14 +4831,38 @@ export const COMMUNITY_BANKS = {
     "label": "手繪與創意概念風格",
     "category": "cat_1766541433618",
     "options": [
-      "Hand-drawn sketch (手繪素描)",
-      "Marker drawing (麥克筆筆觸)",
-      "Rough lines (粗糙線條)",
-      "Crayon texture (蠟筆質感)",
-      "Doodle style (塗鴉風)",
-      "Paper background (紙張背景)",
-      "Organic shapes (有機形狀)",
-      "Retro style (復古風)"
+      {
+        "zh-tw": "手繪素描",
+        "en": "Hand-drawn sketch"
+      },
+      {
+        "zh-tw": "麥克筆筆觸",
+        "en": "Marker drawing"
+      },
+      {
+        "zh-tw": "粗糙線條",
+        "en": "Rough lines"
+      },
+      {
+        "zh-tw": "蠟筆質感",
+        "en": "Crayon texture"
+      },
+      {
+        "zh-tw": "塗鴉風",
+        "en": "Doodle style"
+      },
+      {
+        "zh-tw": "紙張背景",
+        "en": "Paper background"
+      },
+      {
+        "zh-tw": "有機形狀",
+        "en": "Organic shapes"
+      },
+      {
+        "zh-tw": "復古風",
+        "en": "Retro style"
+      }
     ]
   },
   "lens_param": {
@@ -4872,15 +4918,42 @@ export const COMMUNITY_BANKS = {
     "label": "圖表風格",
     "category": "cat_1766541433618",
     "options": [
-      "cute, cheerful, pastel colors",
-      "2D Flat vector (2D 扁平向量)",
-      "Corporate Memphis (企業插畫風)",
-      "Bold outlines (粗輪廓線)",
-      "Solid colors (純色塊)",
-      "Sans-serif typography labels (無襯線文字標籤)",
-      "White background (純白背景)",
-      "Clean lines (俐落線條)",
-      "Apple's liquid glass (蘋果流體玻璃風)"
+      {
+        "zh-tw": "cute, cheerful, pastel colors",
+        "en": "cute, cheerful, pastel colors"
+      },
+      {
+        "zh-tw": "2D 扁平向量",
+        "en": "2D Flat vector"
+      },
+      {
+        "zh-tw": "企業插畫風",
+        "en": "Corporate Memphis"
+      },
+      {
+        "zh-tw": "粗輪廓線",
+        "en": "Bold outlines"
+      },
+      {
+        "zh-tw": "純色塊",
+        "en": "Solid colors"
+      },
+      {
+        "zh-tw": "無襯線文字標籤",
+        "en": "Sans-serif typography labels"
+      },
+      {
+        "zh-tw": "純白背景",
+        "en": "White background"
+      },
+      {
+        "zh-tw": "俐落線條",
+        "en": "Clean lines"
+      },
+      {
+        "zh-tw": "蘋果流體玻璃風",
+        "en": "Apple's liquid glass"
+      }
     ]
   },
   "theme_pixar": {
@@ -4945,20 +5018,62 @@ export const COMMUNITY_BANKS = {
     "label": "專業科技與架構",
     "category": "cat_1766541433618",
     "options": [
-      "Isometric (等距視角)",
-      "Blueprint style (藍圖感)",
-      "Technical illustration (技術插圖)",
-      "Monochromatic (單色調)",
-      "Circuit board patterns (電路紋路)",
-      "Cylindrical icons (圓柱體圖示)",
-      "Vector wireframe (向量線稿)",
-      "Glow effects (發光特效)",
-      "UML Class Diagram structures (UML 類別圖結構)",
-      "Object-Oriented Design Patterns (物件導向設計模式)",
-      "Layered System Architecture (分層系統架構)",
-      "Character-led Storytelling (角色引導敘事)",
-      "tatistical Trend Analysis (統計趨勢分析)",
-      "Anomalies Detection Mapping (異常檢測映射)"
+      {
+        "zh-tw": "等距視角",
+        "en": "Isometric"
+      },
+      {
+        "zh-tw": "藍圖感",
+        "en": "Blueprint style"
+      },
+      {
+        "zh-tw": "技術插圖",
+        "en": "Technical illustration"
+      },
+      {
+        "zh-tw": "單色調",
+        "en": "Monochromatic"
+      },
+      {
+        "zh-tw": "電路紋路",
+        "en": "Circuit board patterns"
+      },
+      {
+        "zh-tw": "圓柱體圖示",
+        "en": "Cylindrical icons"
+      },
+      {
+        "zh-tw": "向量線稿",
+        "en": "Vector wireframe"
+      },
+      {
+        "zh-tw": "發光特效",
+        "en": "Glow effects"
+      },
+      {
+        "zh-tw": "UML 類別圖結構",
+        "en": "UML Class Diagram structures"
+      },
+      {
+        "zh-tw": "物件導向設計模式",
+        "en": "Object-Oriented Design Patterns"
+      },
+      {
+        "zh-tw": "分層系統架構",
+        "en": "Layered System Architecture"
+      },
+      {
+        "zh-tw": "角色引導敘事",
+        "en": "Character-led Storytelling"
+      },
+      {
+        "zh-tw": "統計趨勢分析",
+        "en": "tatistical Trend Analysis"
+      },
+      {
+        "zh-tw": "異常檢測映射",
+        "en": "Anomalies Detection Mapping"
+      }
     ]
   },
   "building_cluster": {
@@ -5377,19 +5492,58 @@ export const COMMUNITY_BANKS = {
     "label": "數據視覺化與儀表板風格",
     "category": "cat_1766541433618",
     "options": [
-      "Data visualization UI (數據視覺化介面)",
-      "HUD elements (抬頭顯示器元素)",
-      "Neon glowing lines (霓虹發光線條)",
-      "Infographic elements (資訊圖表元素)",
-      "Pie charts and bar graphs (圓餅圖與長條圖)",
-      "Translucent layers (半透明圖層)",
-      "Dark mode (深色模式)",
-      "Process flow nodes (程序流節點)",
-      "Timeline (時間軸)",
-      "Scatter Plot (散點圖)",
-      "Tree Diagram (樹狀圖)",
-      "Hierarchical Treemaps (層級比例圖)",
-      "Small Multiples Grid (多重小圖網格)"
+      {
+        "zh-tw": "數據視覺化介面",
+        "en": "Data visualization UI"
+      },
+      {
+        "zh-tw": "抬頭顯示器元素",
+        "en": "HUD elements"
+      },
+      {
+        "zh-tw": "霓虹發光線條",
+        "en": "Neon glowing lines"
+      },
+      {
+        "zh-tw": "資訊圖表元素",
+        "en": "Infographic elements"
+      },
+      {
+        "zh-tw": "圓餅圖與長條圖",
+        "en": "Pie charts and bar graphs"
+      },
+      {
+        "zh-tw": "半透明圖層",
+        "en": "Translucent layers"
+      },
+      {
+        "zh-tw": "深色模式",
+        "en": "Dark mode"
+      },
+      {
+        "zh-tw": "程序流節點",
+        "en": "Process flow nodes"
+      },
+      {
+        "zh-tw": "時間軸",
+        "en": "Timeline"
+      },
+      {
+        "zh-tw": "散點圖",
+        "en": "Scatter Plot"
+      },
+      {
+        "zh-tw": "樹狀圖",
+        "en": "Tree Diagram"
+      },
+      {
+        "zh-tw": "層級比例圖",
+        "en": "Hierarchical Treemaps"
+      },
+      {
+        "zh-tw": "多重小圖網格",
+        "en": "Small Multiples Grid"
+      }
     ]
   },
   "layout_focus": {
@@ -5450,16 +5604,46 @@ export const COMMUNITY_BANKS = {
     "label": "負向形容",
     "category": "cat_1766541433618",
     "options": [
-      "醜陋",
-      "變形",
-      "噪點",
-      "模糊",
-      "低品質",
-      "解剖結構錯誤",
-      "比例失調",
-      "出框",
-      "浮水印",
-      "簽名"
+      {
+        "zh-tw": "醜陋",
+        "en": "醜陋"
+      },
+      {
+        "zh-tw": "變形",
+        "en": "變形"
+      },
+      {
+        "zh-tw": "噪點",
+        "en": "噪點"
+      },
+      {
+        "zh-tw": "模糊",
+        "en": "模糊"
+      },
+      {
+        "zh-tw": "低品質",
+        "en": "低品質"
+      },
+      {
+        "zh-tw": "解剖結構錯誤",
+        "en": "解剖結構錯誤"
+      },
+      {
+        "zh-tw": "比例失調",
+        "en": "比例失調"
+      },
+      {
+        "zh-tw": "出框",
+        "en": "出框"
+      },
+      {
+        "zh-tw": "浮水印",
+        "en": "浮水印"
+      },
+      {
+        "zh-tw": "簽名",
+        "en": "簽名"
+      }
     ]
   },
   "item_layout_pixar": {
@@ -5939,29 +6123,98 @@ export const COMMUNITY_BANKS = {
         "zh-tw": "極簡純色背景",
         "en": "Minimalist solid color background"
       },
-      "Cork Board Background (軟木板背景)",
-      "Blackboard (黑板背景)",
-      "Whiteboard (白板背景)",
-      "Kraft Paper Texture (牛皮紙質感)",
-      "Graph Paper Background (方格紙背景)",
-      "Crumpled Paper Texture (皺褶紙質感)",
-      "Old Parchment Paper (復古羊皮紙)",
-      "Rice Paper Texture (宣紙/和紙質感)",
-      "Dot Grid Notebook (點陣筆記本)",
-      "Concrete Wall Texture (清水模/水泥質感)",
-      "Linen Fabric Texture (亞麻布質感)",
-      "Watercolor Splash Background (水彩暈染背景)",
-      "Morandi Color Background (莫蘭迪色系背景)",
-      "Bokeh Effect Background (光斑散景背景)",
-      "Holographic Gradient (雷射全像漸層)",
-      "Isometric Grid (等距立體網格)",
-      "Hexagon Pattern (蜂巢/六角形紋理)",
-      "Memphis Design Pattern (孟菲斯風格圖樣)",
-      "Wool Paper Background (羊毛紙材質背景)",
-      "Character Design Illustrations (角色設定圖)",
-      "暗色背景",
-      "工業藍圖風格",
-      "粗獷現代主義"
+      {
+        "zh-tw": "軟木板背景",
+        "en": "Cork Board Background"
+      },
+      {
+        "zh-tw": "黑板背景",
+        "en": "Blackboard"
+      },
+      {
+        "zh-tw": "白板背景",
+        "en": "Whiteboard"
+      },
+      {
+        "zh-tw": "牛皮紙質感",
+        "en": "Kraft Paper Texture"
+      },
+      {
+        "zh-tw": "方格紙背景",
+        "en": "Graph Paper Background"
+      },
+      {
+        "zh-tw": "皺褶紙質感",
+        "en": "Crumpled Paper Texture"
+      },
+      {
+        "zh-tw": "復古羊皮紙",
+        "en": "Old Parchment Paper"
+      },
+      {
+        "zh-tw": "宣紙/和紙質感",
+        "en": "Rice Paper Texture"
+      },
+      {
+        "zh-tw": "點陣筆記本",
+        "en": "Dot Grid Notebook"
+      },
+      {
+        "zh-tw": "清水模/水泥質感",
+        "en": "Concrete Wall Texture"
+      },
+      {
+        "zh-tw": "亞麻布質感",
+        "en": "Linen Fabric Texture"
+      },
+      {
+        "zh-tw": "水彩暈染背景",
+        "en": "Watercolor Splash Background"
+      },
+      {
+        "zh-tw": "莫蘭迪色系背景",
+        "en": "Morandi Color Background"
+      },
+      {
+        "zh-tw": "光斑散景背景",
+        "en": "Bokeh Effect Background"
+      },
+      {
+        "zh-tw": "雷射全像漸層",
+        "en": "Holographic Gradient"
+      },
+      {
+        "zh-tw": "等距立體網格",
+        "en": "Isometric Grid"
+      },
+      {
+        "zh-tw": "蜂巢/六角形紋理",
+        "en": "Hexagon Pattern"
+      },
+      {
+        "zh-tw": "孟菲斯風格圖樣",
+        "en": "Memphis Design Pattern"
+      },
+      {
+        "zh-tw": "羊毛紙材質背景",
+        "en": "Wool Paper Background"
+      },
+      {
+        "zh-tw": "角色設定圖",
+        "en": "Character Design Illustrations"
+      },
+      {
+        "zh-tw": "暗色背景",
+        "en": "暗色背景"
+      },
+      {
+        "zh-tw": "工業藍圖風格",
+        "en": "工業藍圖風格"
+      },
+      {
+        "zh-tw": "粗獷現代主義",
+        "en": "粗獷現代主義"
+      }
     ]
   },
   "monster_element": {
@@ -6172,7 +6425,10 @@ export const COMMUNITY_BANKS = {
         "zh-tw": "賽博龐克機械狗",
         "en": "Cyberpunk Robo-Dog"
       },
-      "擬人化的可愛動物"
+      {
+        "zh-tw": "擬人化的可愛動物",
+        "en": "擬人化的可愛動物"
+      }
     ]
   },
   "shadow_contrast": {
