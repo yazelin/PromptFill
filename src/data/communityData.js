@@ -1,7 +1,21 @@
 /**
  * 社群貢獻的範本與詞庫集合
- * 來源: awesome-nanobanana-pro 整理的 70 個社群範本
- * 
+ *
+ * 特別感謝 ZeroLu 整理的 awesome-nanobanana-pro 專案
+ * https://github.com/ZeroLu/awesome-nanobanana-pro
+ *
+ * 本檔案包含 70 個精選社群範本，涵蓋：
+ * - Photorealism & Aesthetics (寫實與美學)
+ * - Creative Experiments (創意實驗)
+ * - Education & Knowledge (教育與知識)
+ * - E-commerce & Virtual Studio (電商與虛擬攝影棚)
+ * - Workplace & Productivity (職場與生產力)
+ * - Photo Editing & Restoration (照片編輯與修復)
+ * - Interior Design (室內設計)
+ * - Social Media & Marketing (社群媒體與行銷)
+ * - Daily Life & Translation (日常生活與翻譯)
+ * - Social Networking & Avatars (社交與頭像)
+ *
  * 此檔案由工具自動產生，請勿手動編輯
  */
 
