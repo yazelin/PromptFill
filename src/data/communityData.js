@@ -20,6 +20,7 @@
  */
 
 
+
 // 社群範本 (70 個)
 export const COMMUNITY_TEMPLATES = [
   {
@@ -4414,27 +4415,27 @@ export const COMMUNITY_BANKS = {
     "options": [
       {
         "zh-tw": "專業",
-        "en": "專業"
+        "en": "professional"
       },
       {
         "zh-tw": "易於理解",
-        "en": "易於理解"
+        "en": "easy to understand"
       },
       {
         "zh-tw": "細節豐富",
-        "en": "細節豐富"
+        "en": "rich in details"
       },
       {
         "zh-tw": "高解析度",
-        "en": "高解析度"
+        "en": "high resolution"
       },
       {
         "zh-tw": "柔和光線",
-        "en": "柔和光線"
+        "en": "soft lighting"
       },
       {
         "zh-tw": "最佳品質",
-        "en": "最佳品質"
+        "en": "best quality"
       }
     ]
   },
@@ -4609,7 +4610,7 @@ export const COMMUNITY_BANKS = {
       },
       {
         "zh-tw": "吉伊卡哇",
-        "en": "吉伊卡哇"
+        "en": "Chiikawa"
       }
     ]
   },
@@ -5606,43 +5607,43 @@ export const COMMUNITY_BANKS = {
     "options": [
       {
         "zh-tw": "醜陋",
-        "en": "醜陋"
+        "en": "ugly"
       },
       {
         "zh-tw": "變形",
-        "en": "變形"
+        "en": "deformed"
       },
       {
         "zh-tw": "噪點",
-        "en": "噪點"
+        "en": "noise"
       },
       {
         "zh-tw": "模糊",
-        "en": "模糊"
+        "en": "blurry"
       },
       {
         "zh-tw": "低品質",
-        "en": "低品質"
+        "en": "low quality"
       },
       {
         "zh-tw": "解剖結構錯誤",
-        "en": "解剖結構錯誤"
+        "en": "bad anatomy"
       },
       {
         "zh-tw": "比例失調",
-        "en": "比例失調"
+        "en": "bad proportions"
       },
       {
         "zh-tw": "出框",
-        "en": "出框"
+        "en": "out of frame"
       },
       {
         "zh-tw": "浮水印",
-        "en": "浮水印"
+        "en": "watermark"
       },
       {
         "zh-tw": "簽名",
-        "en": "簽名"
+        "en": "signature"
       }
     ]
   },
@@ -6205,15 +6206,15 @@ export const COMMUNITY_BANKS = {
       },
       {
         "zh-tw": "暗色背景",
-        "en": "暗色背景"
+        "en": "dark background"
       },
       {
         "zh-tw": "工業藍圖風格",
-        "en": "工業藍圖風格"
+        "en": "industrial blueprint style"
       },
       {
         "zh-tw": "粗獷現代主義",
-        "en": "粗獷現代主義"
+        "en": "brutalist modernism"
       }
     ]
   },
@@ -6427,7 +6428,7 @@ export const COMMUNITY_BANKS = {
       },
       {
         "zh-tw": "擬人化的可愛動物",
-        "en": "擬人化的可愛動物"
+        "en": "anthropomorphic cute animal"
       }
     ]
   },
