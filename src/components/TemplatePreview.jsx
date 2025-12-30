@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Variable } from './Variable';
+import { Variable, DatasourceVariable } from './Variable';
 import {
   ImageIcon,
   ArrowUpRight,
@@ -54,6 +54,10 @@ export const TemplatePreview = React.memo(
     saveTemplateName,
     startRenamingTemplate,
     setEditingTemplateNameId,
+    // 資料來源相關
+    datasources = [],
+    selectedDatasourceId,
+    onSelectDatasource,
   }) => {
     const [editImageIndex, setEditImageIndex] = React.useState(0);
 
@@ -101,6 +105,27 @@ export const TemplatePreview = React.memo(
       return parts.map((part, idx) => {
         if (part.startsWith('{{') && part.endsWith('}}')) {
           const key = part.slice(2, -2).trim();
+
+          // 處理資料來源特殊變數
+          if (key === '__datasource__') {
+            const dsKey = '__datasource__';
+            return (
+              <DatasourceVariable
+                key={`${lineKeyPrefix}-${idx}-ds`}
+                datasources={datasources}
+                selectedDatasourceId={selectedDatasourceId}
+                onSelectDatasource={onSelectDatasource}
+                isOpen={activePopover === dsKey}
+                onToggle={(e) => {
+                  e.stopPropagation();
+                  setActivePopover(activePopover === dsKey ? null : dsKey);
+                }}
+                popoverRef={popoverRef}
+                t={t}
+              />
+            );
+          }
+
           const varIndex = counters[key] || 0;
           counters[key] = varIndex + 1;
 
@@ -215,6 +240,8 @@ export const TemplatePreview = React.memo(
       categories,
       t,
       language,
+      datasources,
+      selectedDatasourceId,
     ]);
 
     return (

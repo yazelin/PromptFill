@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Settings, List, Check, ChevronRight, ChevronDown, Plus, Trash2, X, ChevronUp, Pencil } from 'lucide-react';
+import { Settings, List, Check, ChevronRight, ChevronDown, Plus, Trash2, X, ChevronUp, Pencil, Database, FileText, Save } from 'lucide-react';
 import { CATEGORY_STYLES, PREMIUM_STYLES } from '../constants/styles';
 import { getLocalized } from '../utils/helpers';
+import { createDatasource, truncateContent } from '../data/datasources';
 
 /**
  * 元件：詞庫分類塊
@@ -538,30 +539,225 @@ export const AddBankModal = ({ isOpen, onClose, t, categories, newBankLabel, set
 };
 
 /**
- * BanksSidebar 元件 - 負責展示右側詞庫配置
+ * 元件：資料來源列表項
  */
-export const BanksSidebar = React.memo(({ 
-  mobileTab, 
+const DatasourceItem = ({ datasource, isSelected, onSelect, onEdit, onDelete, t }) => {
+  return (
+    <div
+      className={`
+        relative group/ds p-4 rounded-xl border transition-all duration-200 cursor-pointer
+        ${isSelected
+          ? 'bg-gradient-to-br from-orange-50 to-orange-100/50 border-orange-200 shadow-md'
+          : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-sm'
+        }
+      `}
+      onClick={() => onSelect(datasource.id)}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <FileText size={14} className={isSelected ? 'text-orange-600' : 'text-gray-400'} />
+            <span className={`text-sm font-semibold truncate ${isSelected ? 'text-orange-700' : 'text-gray-700'}`}>
+              {datasource.name}
+            </span>
+          </div>
+          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+            {truncateContent(datasource.content, 80)}
+          </p>
+        </div>
+        <div className="flex gap-1 opacity-0 group-hover/ds:opacity-100 transition-opacity">
+          <button
+            onClick={(e) => { e.stopPropagation(); onEdit(datasource); }}
+            className="p-1.5 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+            title={t('edit_datasource')}
+          >
+            <Pencil size={14} />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete(datasource); }}
+            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+            title={t('delete_datasource')}
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
+      </div>
+      {isSelected && (
+        <div className="absolute -left-px top-3 bottom-3 w-1 bg-orange-500 rounded-r-full" />
+      )}
+    </div>
+  );
+};
+
+/**
+ * 元件：資料來源編輯器
+ */
+const DatasourceEditor = ({ datasource, onSave, onCancel, t }) => {
+  const [name, setName] = useState(datasource?.name || '');
+  const [content, setContent] = useState(datasource?.content || '');
+
+  const handleSave = () => {
+    if (!name.trim()) return;
+    onSave({ name: name.trim(), content });
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="p-4 border-b border-gray-100">
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder={t('datasource_name_placeholder')}
+          className="w-full text-sm font-semibold border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-200 focus:border-orange-500 outline-none bg-gray-50/50 transition-all"
+          autoFocus
+        />
+      </div>
+      <div className="flex-1 p-4 overflow-hidden">
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder={t('datasource_content_placeholder')}
+          className="w-full h-full text-sm border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-200 focus:border-orange-500 outline-none bg-gray-50/50 transition-all resize-none"
+        />
+      </div>
+      <div className="p-4 border-t border-gray-100 flex gap-3">
+        <button
+          onClick={onCancel}
+          className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-50 transition-all"
+        >
+          {t('cancel')}
+        </button>
+        <button
+          onClick={handleSave}
+          disabled={!name.trim()}
+          className="flex-1 px-4 py-2.5 bg-orange-600 text-white text-sm font-medium rounded-xl hover:bg-orange-700 shadow-lg shadow-orange-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          <Save size={16} />
+          {t('confirm')}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * 元件：資料來源管理面板
+ */
+const DatasourcePanel = ({
+  datasources,
+  selectedDatasourceId,
+  onSelectDatasource,
+  onAddDatasource,
+  onUpdateDatasource,
+  onDeleteDatasource,
+  t
+}) => {
+  const [editingDatasource, setEditingDatasource] = useState(null);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleSave = (data) => {
+    if (isAdding) {
+      onAddDatasource(data.name, data.content);
+      setIsAdding(false);
+    } else if (editingDatasource) {
+      onUpdateDatasource(editingDatasource.id, data.name, data.content);
+      setEditingDatasource(null);
+    }
+  };
+
+  const handleDelete = (datasource) => {
+    if (window.confirm(t('confirm_delete_datasource').replace('{{name}}', datasource.name))) {
+      onDeleteDatasource(datasource.id);
+    }
+  };
+
+  // 編輯或新增模式
+  if (isAdding || editingDatasource) {
+    return (
+      <DatasourceEditor
+        datasource={editingDatasource}
+        onSave={handleSave}
+        onCancel={() => {
+          setIsAdding(false);
+          setEditingDatasource(null);
+        }}
+        t={t}
+      />
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* 新增按鈕 */}
+      <div className="p-4 border-b border-gray-100">
+        <button
+          onClick={() => setIsAdding(true)}
+          className="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-500 hover:text-orange-600 hover:border-orange-300 hover:bg-gradient-to-br hover:from-orange-50/80 hover:to-orange-50/40 transition-all duration-300 flex items-center justify-center gap-2 group"
+        >
+          <Plus size={18} className="text-gray-300 group-hover:text-orange-500 transition-colors" />
+          <span className="text-sm font-semibold">{t('add_datasource')}</span>
+        </button>
+      </div>
+
+      {/* 資料來源列表 */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {datasources.length === 0 ? (
+          <div className="text-center py-12 text-gray-400">
+            <Database size={40} className="mx-auto mb-3 opacity-30" />
+            <p className="text-sm">{t('no_datasource')}</p>
+          </div>
+        ) : (
+          datasources.map((ds) => (
+            <DatasourceItem
+              key={ds.id}
+              datasource={ds}
+              isSelected={selectedDatasourceId === ds.id}
+              onSelect={onSelectDatasource}
+              onEdit={setEditingDatasource}
+              onDelete={handleDelete}
+              t={t}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+/**
+ * BanksSidebar 元件 - 負責展示右側詞庫配置與資料來源
+ */
+export const BanksSidebar = React.memo(({
+  mobileTab,
   isBanksDrawerOpen,
   setIsBanksDrawerOpen,
-  bankSidebarWidth, 
-  sidebarRef, 
-  startResizing, 
-  setIsCategoryManagerOpen, 
-  categories, 
-  banks, 
-  insertVariableToTemplate, 
-  handleDeleteOption, 
-  handleAddOption, 
-  handleDeleteBank, 
-  handleUpdateBankCategory, 
-  handleStartAddBank, 
+  bankSidebarWidth,
+  sidebarRef,
+  startResizing,
+  setIsCategoryManagerOpen,
+  categories,
+  banks,
+  insertVariableToTemplate,
+  handleDeleteOption,
+  handleAddOption,
+  handleDeleteBank,
+  handleUpdateBankCategory,
+  handleStartAddBank,
   t,
   language,
   // 移动端模拟拖拽 props
-  onTouchDragStart
+  onTouchDragStart,
+  // 資料來源 props
+  datasources = [],
+  selectedDatasourceId,
+  onSelectDatasource,
+  onAddDatasource,
+  onUpdateDatasource,
+  onDeleteDatasource,
 }) => {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const [activeTab, setActiveTab] = useState('banks'); // 'banks' | 'datasources'
 
   return (
     <>
@@ -594,89 +790,140 @@ export const BanksSidebar = React.memo(({
           </div>
 
       <div className="p-5 border-b border-white/30 bg-white sticky top-0 z-30 shadow-sm">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2.5 text-gray-800">
-              <div className="p-2 bg-gradient-to-br from-white to-gray-50 rounded-xl text-gray-600 shadow-md border border-white">
-                  <Settings size={17} />
-              </div>
-              <h2 className="text-base font-bold tracking-tight">{t('bank_config')}</h2>
-          </div>
-          <button 
-              onClick={() => setIsCategoryManagerOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-br from-white/80 to-white/60 hover:from-white hover:to-white text-gray-600 hover:text-gray-800 rounded-xl transition-all duration-300 text-xs font-semibold shadow-sm hover:shadow border border-white/60 hover:border-gray-200"
-              title={t('manage_categories')}
+        {/* Tab 切換 */}
+        <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-xl mb-4">
+          <button
+            onClick={() => setActiveTab('banks')}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+              activeTab === 'banks'
+                ? 'bg-white text-gray-800 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
           >
-              <List size={14} />
-              {t('manage_categories')}
+            <Database size={16} />
+            {t('banks_tab')}
+          </button>
+          <button
+            onClick={() => setActiveTab('datasources')}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+              activeTab === 'datasources'
+                ? 'bg-white text-gray-800 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <FileText size={16} />
+            {t('datasources_tab')}
           </button>
         </div>
-        <p className="text-xs text-gray-600 leading-relaxed">{t('bank_subtitle')}</p>
-      </div>
 
-      <div className="flex-1 overflow-y-auto p-5 pb-24 md:pb-20 custom-scrollbar">
-        {bankSidebarWidth >= 520 || window.innerWidth < 768 ? (
-           <div className="flex flex-col md:flex-row gap-4 items-start">
-             <div className="flex-1 flex flex-col gap-4 min-w-0 w-full">
-                {Object.keys(categories).filter((_, i) => i % 2 === 0).map(catId => (
-                    <CategorySection 
-                        key={catId}
-                        catId={catId}
-                        categories={categories}
-                        banks={banks}
-                        onInsert={insertVariableToTemplate}
-                        onDeleteOption={handleDeleteOption}
-                        onAddOption={handleAddOption}
-                        onDeleteBank={handleDeleteBank}
-                        onUpdateBankCategory={handleUpdateBankCategory}
-                        onStartAddBank={handleStartAddBank}
-                        t={t}
-                        language={language}
-                        onTouchDragStart={onTouchDragStart}
-                    />
-                ))}
-             </div>
-             <div className="flex-1 flex flex-col gap-4 min-w-0 w-full">
-                {Object.keys(categories).filter((_, i) => i % 2 === 1).map(catId => (
-                    <CategorySection 
-                        key={catId}
-                        catId={catId}
-                        categories={categories}
-                        banks={banks}
-                        onInsert={insertVariableToTemplate}
-                        onDeleteOption={handleDeleteOption}
-                        onAddOption={handleAddOption}
-                        onDeleteBank={handleDeleteBank}
-                        onUpdateBankCategory={handleUpdateBankCategory}
-                        onStartAddBank={handleStartAddBank}
-                        t={t}
-                        language={language}
-                        onTouchDragStart={onTouchDragStart}
-                    />
-                ))}
-             </div>
-           </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-              {Object.keys(categories).map(catId => (
-                  <CategorySection 
-                      key={catId}
-                      catId={catId}
-                      categories={categories}
-                      banks={banks}
-                      onInsert={insertVariableToTemplate}
-                      onDeleteOption={handleDeleteOption}
-                      onAddOption={handleAddOption}
-                      onDeleteBank={handleDeleteBank}
-                      onUpdateBankCategory={handleUpdateBankCategory}
-                      onStartAddBank={handleStartAddBank}
-                      t={t}
-                      language={language}
-                      onTouchDragStart={onTouchDragStart}
-                  />
-              ))}
+        {activeTab === 'banks' && (
+          <>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2.5 text-gray-800">
+                  <div className="p-2 bg-gradient-to-br from-white to-gray-50 rounded-xl text-gray-600 shadow-md border border-white">
+                      <Settings size={17} />
+                  </div>
+                  <h2 className="text-base font-bold tracking-tight">{t('bank_config')}</h2>
+              </div>
+              <button
+                  onClick={() => setIsCategoryManagerOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-br from-white/80 to-white/60 hover:from-white hover:to-white text-gray-600 hover:text-gray-800 rounded-xl transition-all duration-300 text-xs font-semibold shadow-sm hover:shadow border border-white/60 hover:border-gray-200"
+                  title={t('manage_categories')}
+              >
+                  <List size={14} />
+                  {t('manage_categories')}
+              </button>
+            </div>
+            <p className="text-xs text-gray-600 leading-relaxed">{t('bank_subtitle')}</p>
+          </>
+        )}
+
+        {activeTab === 'datasources' && (
+          <div className="flex items-center gap-2.5 text-gray-800">
+            <div className="p-2 bg-gradient-to-br from-white to-gray-50 rounded-xl text-gray-600 shadow-md border border-white">
+                <FileText size={17} />
+            </div>
+            <h2 className="text-base font-bold tracking-tight">{t('datasources')}</h2>
           </div>
         )}
       </div>
+
+      {activeTab === 'banks' ? (
+        <div className="flex-1 overflow-y-auto p-5 pb-24 md:pb-20 custom-scrollbar">
+          {bankSidebarWidth >= 520 || window.innerWidth < 768 ? (
+             <div className="flex flex-col md:flex-row gap-4 items-start">
+               <div className="flex-1 flex flex-col gap-4 min-w-0 w-full">
+                  {Object.keys(categories).filter((_, i) => i % 2 === 0).map(catId => (
+                      <CategorySection
+                          key={catId}
+                          catId={catId}
+                          categories={categories}
+                          banks={banks}
+                          onInsert={insertVariableToTemplate}
+                          onDeleteOption={handleDeleteOption}
+                          onAddOption={handleAddOption}
+                          onDeleteBank={handleDeleteBank}
+                          onUpdateBankCategory={handleUpdateBankCategory}
+                          onStartAddBank={handleStartAddBank}
+                          t={t}
+                          language={language}
+                          onTouchDragStart={onTouchDragStart}
+                      />
+                  ))}
+               </div>
+               <div className="flex-1 flex flex-col gap-4 min-w-0 w-full">
+                  {Object.keys(categories).filter((_, i) => i % 2 === 1).map(catId => (
+                      <CategorySection
+                          key={catId}
+                          catId={catId}
+                          categories={categories}
+                          banks={banks}
+                          onInsert={insertVariableToTemplate}
+                          onDeleteOption={handleDeleteOption}
+                          onAddOption={handleAddOption}
+                          onDeleteBank={handleDeleteBank}
+                          onUpdateBankCategory={handleUpdateBankCategory}
+                          onStartAddBank={handleStartAddBank}
+                          t={t}
+                          language={language}
+                          onTouchDragStart={onTouchDragStart}
+                      />
+                  ))}
+               </div>
+             </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+                {Object.keys(categories).map(catId => (
+                    <CategorySection
+                        key={catId}
+                        catId={catId}
+                        categories={categories}
+                        banks={banks}
+                        onInsert={insertVariableToTemplate}
+                        onDeleteOption={handleDeleteOption}
+                        onAddOption={handleAddOption}
+                        onDeleteBank={handleDeleteBank}
+                        onUpdateBankCategory={handleUpdateBankCategory}
+                        onStartAddBank={handleStartAddBank}
+                        t={t}
+                        language={language}
+                        onTouchDragStart={onTouchDragStart}
+                    />
+                ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <DatasourcePanel
+          datasources={datasources}
+          selectedDatasourceId={selectedDatasourceId}
+          onSelectDatasource={onSelectDatasource}
+          onAddDatasource={onAddDatasource}
+          onUpdateDatasource={onUpdateDatasource}
+          onDeleteDatasource={onDeleteDatasource}
+          t={t}
+        />
+      )}
     </div>
   </div>
   </>
