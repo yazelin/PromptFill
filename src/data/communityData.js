@@ -23,6 +23,7 @@
 
 
 
+
 // 社群範本 (70 個)
 export const COMMUNITY_TEMPLATES = [
   {
@@ -4419,7 +4420,7 @@ export const COMMUNITY_BANKS = {
       "zh-tw": "正向形容",
       "en": "Positive"
     },
-    "category": "cat_1766541433618",
+    "category": "infographic",
     "options": [
       {
         "zh-tw": "專業",
@@ -4535,7 +4536,7 @@ export const COMMUNITY_BANKS = {
       "zh-tw": "語言",
       "en": "Language"
     },
-    "category": "cat_1766541433618",
+    "category": "infographic",
     "options": [
       {
         "zh-tw": "中文",
@@ -4844,7 +4845,7 @@ export const COMMUNITY_BANKS = {
       "zh-tw": "手繪與創意概念風格",
       "en": "Hand-drawn & Conceptual"
     },
-    "category": "cat_1766541433618",
+    "category": "infographic",
     "options": [
       {
         "zh-tw": "手繪素描",
@@ -4934,7 +4935,7 @@ export const COMMUNITY_BANKS = {
       "zh-tw": "圖表風格",
       "en": "Chart Style"
     },
-    "category": "cat_1766541433618",
+    "category": "infographic",
     "options": [
       {
         "zh-tw": "可愛、歡快、粉彩色調",
@@ -5037,7 +5038,7 @@ export const COMMUNITY_BANKS = {
       "zh-tw": "專業科技與架構",
       "en": "Tech & Architecture"
     },
-    "category": "cat_1766541433618",
+    "category": "infographic",
     "options": [
       {
         "zh-tw": "等距視角",
@@ -5135,7 +5136,7 @@ export const COMMUNITY_BANKS = {
       "zh-tw": "顏色",
       "en": "Color"
     },
-    "category": "cat_1766541433618",
+    "category": "infographic",
     "options": [
       {
         "zh-tw": "棕色",
@@ -5517,7 +5518,7 @@ export const COMMUNITY_BANKS = {
       "zh-tw": "數據視覺化與儀表板風格",
       "en": "Data Viz & Dashboard"
     },
-    "category": "cat_1766541433618",
+    "category": "infographic",
     "options": [
       {
         "zh-tw": "數據視覺化介面",
@@ -5632,7 +5633,7 @@ export const COMMUNITY_BANKS = {
       "zh-tw": "負向形容",
       "en": "Negative"
     },
-    "category": "cat_1766541433618",
+    "category": "infographic",
     "options": [
       {
         "zh-tw": "醜陋",
