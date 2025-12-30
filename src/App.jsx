@@ -2799,7 +2799,6 @@ const App = () => {
                       id="import-template-input-modal"
                     />
                     <div
-                      onClick={() => document.getElementById('import-template-input-modal').click()}
                       className="cursor-pointer w-full text-center px-5 py-4 text-sm font-semibold bg-gradient-to-br from-white to-gray-50 hover:from-gray-50 hover:to-gray-100 text-gray-700 rounded-2xl transition-all duration-300 border-2 border-gray-200 hover:border-gray-300 flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg hover:scale-[1.02]"
                     >
                       <Download size={18} />
