@@ -22,6 +22,7 @@
 
 
 
+
 // 社群範本 (70 個)
 export const COMMUNITY_TEMPLATES = [
   {
@@ -4229,7 +4230,10 @@ export const COMMUNITY_BANKS = {
     ]
   },
   "country": {
-    "label": "國家",
+    "label": {
+      "zh-tw": "國家",
+      "en": "Country"
+    },
     "category": "other",
     "options": [
       {
@@ -4411,7 +4415,10 @@ export const COMMUNITY_BANKS = {
     ]
   },
   "positive": {
-    "label": "正向形容",
+    "label": {
+      "zh-tw": "正向形容",
+      "en": "Positive"
+    },
     "category": "cat_1766541433618",
     "options": [
       {
@@ -4524,7 +4531,10 @@ export const COMMUNITY_BANKS = {
     ]
   },
   "language": {
-    "label": "語言",
+    "label": {
+      "zh-tw": "語言",
+      "en": "Language"
+    },
     "category": "cat_1766541433618",
     "options": [
       {
@@ -4830,7 +4840,10 @@ export const COMMUNITY_BANKS = {
     ]
   },
   "hand_drawn___conceptual": {
-    "label": "手繪與創意概念風格",
+    "label": {
+      "zh-tw": "手繪與創意概念風格",
+      "en": "Hand-drawn & Conceptual"
+    },
     "category": "cat_1766541433618",
     "options": [
       {
@@ -4917,7 +4930,10 @@ export const COMMUNITY_BANKS = {
     ]
   },
   "chart_style": {
-    "label": "圖表風格",
+    "label": {
+      "zh-tw": "圖表風格",
+      "en": "Chart Style"
+    },
     "category": "cat_1766541433618",
     "options": [
       {
@@ -5017,7 +5033,10 @@ export const COMMUNITY_BANKS = {
     ]
   },
   "tech___architecture": {
-    "label": "專業科技與架構",
+    "label": {
+      "zh-tw": "專業科技與架構",
+      "en": "Tech & Architecture"
+    },
     "category": "cat_1766541433618",
     "options": [
       {
@@ -5112,7 +5131,10 @@ export const COMMUNITY_BANKS = {
     ]
   },
   "color": {
-    "label": "顏色",
+    "label": {
+      "zh-tw": "顏色",
+      "en": "Color"
+    },
     "category": "cat_1766541433618",
     "options": [
       {
@@ -5491,7 +5513,10 @@ export const COMMUNITY_BANKS = {
     ]
   },
   "data_viz___dashboard": {
-    "label": "數據視覺化與儀表板風格",
+    "label": {
+      "zh-tw": "數據視覺化與儀表板風格",
+      "en": "Data Viz & Dashboard"
+    },
     "category": "cat_1766541433618",
     "options": [
       {
@@ -5603,7 +5628,10 @@ export const COMMUNITY_BANKS = {
     ]
   },
   "negative": {
-    "label": "負向形容",
+    "label": {
+      "zh-tw": "負向形容",
+      "en": "Negative"
+    },
     "category": "cat_1766541433618",
     "options": [
       {
