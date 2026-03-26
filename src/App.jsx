@@ -684,7 +684,6 @@ const App = () => {
   const [banks, setBanks] = useStickyState(INITIAL_BANKS, 'app_banks_v9');
   const [defaults, setDefaults] = useStickyState(INITIAL_DEFAULTS, 'app_defaults_v9');
   const [language, setLanguage] = useStickyState('zh-tw', 'app_language_v1'); // 全域 UI 語言
-  const [templateLanguage, setTemplateLanguage] = useStickyState('zh-tw', 'app_template_language_v1'); // 範本內容語言
   const [categories, setCategories] = useStickyState(INITIAL_CATEGORIES, 'app_categories_v1'); // 新狀態
 
   const [templates, setTemplates] = useStickyState(INITIAL_TEMPLATES_CONFIG, 'app_templates_v10');
@@ -1293,16 +1292,7 @@ const App = () => {
         // Tag filter
         const matchesTags = selectedTags === '' || (t.tags && t.tags.includes(selectedTags));
 
-        // 語言過濾：若範本指定語言且不包含當前語言則隱藏
-        // 若未指定語言屬性，預設顯示（向下相容）
-        const templateLangs = t.language
-          ? Array.isArray(t.language)
-            ? t.language
-            : [t.language]
-          : ['zh-tw', 'en'];
-        const matchesLanguage = templateLangs.includes(language);
-
-        return matchesSearch && matchesTags && matchesLanguage;
+        return matchesSearch && matchesTags;
       })
       .sort((a, b) => {
         // Sort templates based on sortOrder
@@ -1960,19 +1950,13 @@ const App = () => {
 
   const insertVariableToTemplate = (key, dropPoint = null) => {
     const textToInsert = ` {{${key}}} `;
-    const currentContent = activeTemplate.content || '';
-    const isMultilingual = typeof currentContent === 'object';
-    const text = isMultilingual ? currentContent[templateLanguage] || '' : currentContent;
+    const text = activeTemplate.content || '';
 
     if (!isEditing) {
       setIsEditing(true);
       setTimeout(() => {
         const updatedText = text + textToInsert;
-        if (isMultilingual) {
-          updateActiveTemplateContent({ ...currentContent, [templateLanguage]: updatedText }, true);
-        } else {
-          updateActiveTemplateContent(updatedText, true);
-        }
+        updateActiveTemplateContent(updatedText, true);
         if (textareaRef.current) textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
       }, 50);
       return;
@@ -2011,11 +1995,7 @@ const App = () => {
     const after = safeText.substring(end, safeText.length);
     const updatedText = `${before}${textToInsert}${after}`;
 
-    if (isMultilingual) {
-      updateActiveTemplateContent({ ...currentContent, [templateLanguage]: updatedText }, true);
-    } else {
-      updateActiveTemplateContent(updatedText, true);
-    }
+    updateActiveTemplateContent(updatedText, true);
 
     setTimeout(() => {
       textarea.focus();
@@ -2025,8 +2005,7 @@ const App = () => {
   };
 
   const handleCopy = () => {
-    // 取得當前範本語言的內容
-    let finalString = getLocalized(activeTemplate.content, templateLanguage);
+    let finalString = activeTemplate.content || '';
     const counters = {};
 
     // 取得選中的資料來源內容
@@ -2045,9 +2024,8 @@ const App = () => {
       counters[k] = idx + 1;
 
       const uniqueKey = `${k}-${idx}`;
-      // Prioritize selection, then default, and get localized value
       const value = activeTemplate.selections[uniqueKey] || defaults[k];
-      return getLocalized(value, templateLanguage) || match;
+      return getLocalized(value, language) || match;
     });
 
     const cleanText = finalString
@@ -2069,9 +2047,7 @@ const App = () => {
   // 提取範本中使用的變數 keys
   const extractVariableKeys = (content) => {
     const keys = new Set();
-    const localizedContent = typeof content === 'object'
-      ? Object.values(content).join(' ')
-      : content;
+    const localizedContent = content || '';
     const regex = /{{(.*?)}}/g;
     let match;
     while ((match = regex.exec(localizedContent)) !== null) {
@@ -2406,7 +2382,7 @@ const App = () => {
 
     try {
       // 生成最終提示詞
-      let finalString = getLocalized(activeTemplate.content, templateLanguage);
+      let finalString = activeTemplate.content || '';
       const counters = {};
 
       // 取得選中的資料來源內容
@@ -2426,7 +2402,7 @@ const App = () => {
 
         const uniqueKey = `${k}-${idx}`;
         const value = activeTemplate.selections[uniqueKey] || defaults[k];
-        return getLocalized(value, templateLanguage) || match;
+        return getLocalized(value, language) || match;
       });
 
       const cleanText = finalString
@@ -2759,17 +2735,9 @@ const App = () => {
                     <div className="flex-1 relative overflow-hidden">
                       <VisualEditor
                         ref={textareaRef}
-                        value={getLocalized(activeTemplate.content, templateLanguage)}
+                        value={activeTemplate.content || ''}
                         onChange={(e) => {
-                          const newText = e.target.value;
-                          if (typeof activeTemplate.content === 'object') {
-                            updateActiveTemplateContent({
-                              ...activeTemplate.content,
-                              [templateLanguage]: newText,
-                            });
-                          } else {
-                            updateActiveTemplateContent(newText);
-                          }
+                          updateActiveTemplateContent(e.target.value);
                         }}
                         banks={banks}
                         categories={categories}
@@ -2793,8 +2761,7 @@ const App = () => {
                       fileInputRef={fileInputRef}
                       setShowImageUrlInput={setShowImageUrlInput}
                       handleResetImage={handleResetImage}
-                      language={templateLanguage}
-                      setLanguage={setTemplateLanguage}
+                      language={language}
                       // 標籤編輯相關
                       TEMPLATE_TAGS={['社群', ...TEMPLATE_TAGS]}
                       handleUpdateTemplateTags={handleUpdateTemplateTags}
@@ -2886,7 +2853,7 @@ const App = () => {
             handleUpdateBankCategory={handleUpdateBankCategory}
             handleStartAddBank={handleStartAddBank}
             t={t}
-            language={templateLanguage}
+            language={language}
             onTouchDragStart={onTouchDragStart}
             datasources={datasources}
             selectedDatasourceId={selectedDatasourceId}

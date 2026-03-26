@@ -38,7 +38,6 @@ export const TemplatePreview = React.memo(
     setShowImageUrlInput,
     handleResetImage,
     language,
-    setLanguage,
     // 標籤編輯相關
     TEMPLATE_TAGS,
     handleUpdateTemplateTags,
@@ -83,22 +82,6 @@ export const TemplatePreview = React.memo(
       setEditImageIndex(0);
     }, [activeTemplate.id]);
 
-    const templateLangs = activeTemplate.language
-      ? Array.isArray(activeTemplate.language)
-        ? activeTemplate.language
-        : [activeTemplate.language]
-      : ['zh-tw', 'en'];
-    const showLanguageToggle = templateLangs.length > 0;
-    const supportsChinese = templateLangs.includes('zh-tw');
-    const supportsEnglish = templateLangs.includes('en');
-
-    // 自動切換到範本支援的語言
-    React.useEffect(() => {
-      if (!templateLangs.includes(language)) {
-        // 若當前語言不支援，切換到範本支援的第一個語言
-        setLanguage(templateLangs[0]);
-      }
-    }, [activeTemplate.id, templateLangs, language]);
 
     const parseLineWithVariables = (text, lineKeyPrefix, counters) => {
       const parts = text.split(/({{[^}]+}})/g);
@@ -264,40 +247,6 @@ export const TemplatePreview = React.memo(
             <div className="flex flex-col md:flex-row justify-between items-start mb-6 md:mb-10 relative">
               {/* Left: Title & Meta Info */}
               <div className="flex-1 min-w-0 pr-4 z-10 pt-2">
-                {/* Language Toggle */}
-                {showLanguageToggle && (
-                  <div className="flex items-center gap-3 mb-4 p-2 bg-gray-50 rounded-lg border border-gray-200 inline-flex">
-                    <span className="text-xs text-gray-500 font-medium">範本語言：</span>
-                    <button
-                      onClick={() => supportsChinese && setLanguage('zh-tw')}
-                      disabled={!supportsChinese}
-                      className={`text-sm font-bold transition-all relative py-1 px-2 rounded ${
-                        !supportsChinese
-                          ? 'text-gray-300 cursor-not-allowed'
-                          : language === 'zh-tw'
-                            ? 'text-orange-600 bg-white shadow-sm'
-                            : 'text-gray-400 hover:text-gray-600 hover:bg-white/50'
-                      }`}
-                      title={!supportsChinese ? '此範本不支援中文' : ''}
-                    >
-                      中文
-                    </button>
-                    <button
-                      onClick={() => supportsEnglish && setLanguage('en')}
-                      disabled={!supportsEnglish}
-                      className={`text-sm font-bold transition-all relative py-1 px-2 rounded ${
-                        !supportsEnglish
-                          ? 'text-gray-300 cursor-not-allowed'
-                          : language === 'en'
-                            ? 'text-orange-600 bg-white shadow-sm'
-                            : 'text-gray-400 hover:text-gray-600 hover:bg-white/50'
-                      }`}
-                      title={!supportsEnglish ? 'This template does not support English' : ''}
-                    >
-                      EN
-                    </button>
-                  </div>
-                )}
                 {editingTemplateNameId === activeTemplate.id ? (
                   <div className="mb-4 flex flex-col gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
                     <input
