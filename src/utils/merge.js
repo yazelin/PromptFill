@@ -1,6 +1,6 @@
 // 合併策略函數
-import { INITIAL_TEMPLATES_CONFIG } from '../data/templates';
-import { INITIAL_BANKS, INITIAL_DEFAULTS } from '../data/banks';
+// 必須用合併後的 initData（上上游+多奇+社群），直接 import templates/banks 會漏掉社群資料
+import { INITIAL_TEMPLATES_CONFIG, INITIAL_BANKS, INITIAL_DEFAULTS } from '../data/initData';
 import { deepClone, makeUniqueKey } from './helpers';
 
 // 合併系統範本，系統範本強制更新，用戶改動備份
