@@ -1950,7 +1950,7 @@ const App = () => {
 
   const insertVariableToTemplate = (key, dropPoint = null) => {
     const textToInsert = ` {{${key}}} `;
-    const text = activeTemplate.content || '';
+    const text = getLocalized(activeTemplate.content, language);
 
     if (!isEditing) {
       setIsEditing(true);
@@ -2005,7 +2005,8 @@ const App = () => {
   };
 
   const handleCopy = () => {
-    let finalString = activeTemplate.content || '';
+    // 舊版 localStorage 範本的 content 可能仍是 {zh-tw, en} 物件，需經 getLocalized 取字串
+    let finalString = getLocalized(activeTemplate.content, language);
     const counters = {};
 
     // 取得選中的資料來源內容
@@ -2047,7 +2048,10 @@ const App = () => {
   // 提取範本中使用的變數 keys
   const extractVariableKeys = (content) => {
     const keys = new Set();
-    const localizedContent = content || '';
+    const localizedContent =
+      typeof content === 'object' && content !== null
+        ? Object.values(content).join(' ')
+        : content || '';
     const regex = /{{(.*?)}}/g;
     let match;
     while ((match = regex.exec(localizedContent)) !== null) {
@@ -2382,7 +2386,7 @@ const App = () => {
 
     try {
       // 生成最終提示詞
-      let finalString = activeTemplate.content || '';
+      let finalString = getLocalized(activeTemplate.content, language);
       const counters = {};
 
       // 取得選中的資料來源內容
@@ -2735,7 +2739,7 @@ const App = () => {
                     <div className="flex-1 relative overflow-hidden">
                       <VisualEditor
                         ref={textareaRef}
-                        value={activeTemplate.content || ''}
+                        value={getLocalized(activeTemplate.content, language)}
                         onChange={(e) => {
                           updateActiveTemplateContent(e.target.value);
                         }}
