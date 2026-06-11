@@ -1,11 +1,9 @@
 name: 同步上游資料檔
 
+# 已停用自動排程（CLAUDE.md：不自動同步上游的上游），只保留手動觸發。
+# 注意：上游 templates.js 是雙語結構，0.8.0 起本 repo 已繁中特化（攤平為純字串），
+# 手動執行前先確認 sync-upstream.mjs 會處理攤平，否則會把資料檔打回雙語、弄壞站台。
 on:
-  # 每天 00:00 UTC 自動執行
-  schedule:
-    - cron: '0 0 * * *'
-
-  # 允許手動觸發
   workflow_dispatch:
 
 jobs:
@@ -70,19 +68,19 @@ jobs:
           git commit -m "chore: 同步 doggy8088/PromptFill 上游資料檔"
           git push origin "$BRANCH_NAME"
 
-          # 創建 PR
+          # 創建 PR（heredoc 內容必須縮排，貼齊 run 區塊，否則 YAML 解析失敗）
           gh pr create \
             --title "chore: 同步上游資料檔 $(date +%Y-%m-%d)" \
             --body "$(cat <<'EOF'
-## 自動同步上游資料檔
+          ## 自動同步上游資料檔
 
-此 PR 由 GitHub Actions 自動建立，同步來自 [doggy8088/PromptFill](https://github.com/doggy8088/PromptFill) 的資料檔：
+          此 PR 由 GitHub Actions 自動建立，同步來自 doggy8088/PromptFill 的資料檔：
 
-- `src/data/templates.js`
-- `src/data/banks.js`
+          - src/data/templates.js
+          - src/data/banks.js
 
-同步過程已自動執行詞彙修正（如：模板 → 範本）。
+          同步過程已自動執行詞彙修正（如：模板 → 範本）。
 
-請檢視變更後合併。
-EOF
-)"
+          請檢視變更後合併。
+          EOF
+          )"
