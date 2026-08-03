@@ -123,7 +123,6 @@ export const TRANSLATIONS = {
     what_is_new: "更新日誌",
     backup_data: "備份資料",
     connect_author: "聯絡與關於",
-    toolbox_chatgpt: "ChatGPT 萬能工具箱",
     gemini_muji: "圖個清白｜Gemini 圖片清理工具",
     // 分享/匯入功能
     share: "分享連結",
@@ -280,7 +279,6 @@ export const TRANSLATIONS = {
     what_is_new: "What's New",
     backup_data: "Backup Data",
     connect_author: "Connect & About",
-    toolbox_chatgpt: "ChatGPT All-in-One Toolbox",
     gemini_muji: "圖個清白 | Gemini image cleaner",
     // Share/Import
     share: "Share Link",

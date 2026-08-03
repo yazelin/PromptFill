@@ -18,7 +18,6 @@ import {
   ArrowUpDown,
   Home,
   Github,
-  Toolbox,
   Banana,
   Crown,
 } from 'lucide-react';
@@ -379,15 +378,6 @@ export const TemplatesSidebar = React.memo(
                     title={t('github_link')}
                   >
                     <Github size={16} />
-                  </a>
-                  <a
-                    href="https://chromewebstore.google.com/detail/chatgpt-%E8%90%AC%E8%83%BD%E5%B7%A5%E5%85%B7%E7%AE%B1/fmijcafgekkphdijpclfgnjhchmiokgp?authuser=0&hl=zh-TW&pli=1"
-                    target="_blank"
-                    rel="ChatGPT 萬能工具箱"
-                    className="p-1.5 rounded-lg transition-colors text-gray-400 hover:text-gray-900 hover:bg-gray-50"
-                    title={t('toolbox_chatgpt')}
-                  >
-                    <Toolbox size={16} />
                   </a>
                   <a
                     href="https://yazelin.github.io/gemini-watermark-cleaner/"
