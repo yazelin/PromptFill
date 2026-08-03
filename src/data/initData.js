@@ -1,6 +1,6 @@
 /**
  * 初始化資料匯出
- * 合併上游、作者作品與社群範本/詞庫
+ * 合併上游與社群範本/詞庫
  *
  * App.jsx 應從此檔案 import，而非直接從各資料檔
  */
@@ -18,9 +18,6 @@ import {
   INITIAL_CATEGORIES as UPSTREAM_CATEGORIES
 } from './banks';
 
-// 作者作品展示範本
-import { CREATOR_SHOWCASE_TEMPLATES } from './creatorShowcaseData';
-
 // 社群資料
 import {
   COMMUNITY_TEMPLATES,
@@ -31,11 +28,10 @@ import {
 
 /**
  * 合併後的範本配置
- * 順序：上游 → 作者作品 → 社群
+ * 順序：上游 → 社群
  */
 export const INITIAL_TEMPLATES_CONFIG = [
   ...UPSTREAM_TEMPLATES,
-  ...CREATOR_SHOWCASE_TEMPLATES,
   ...COMMUNITY_TEMPLATES
 ];
 

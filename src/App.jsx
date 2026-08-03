@@ -30,7 +30,6 @@ import {
   Search,
   ArrowRight,
   User,
-  ArrowUpRight,
   ArrowUpDown,
   RefreshCw,
   Sparkles,
@@ -50,7 +49,10 @@ import {
   INITIAL_CATEGORIES
 } from './data/initData';
 import { INITIAL_DATASOURCES, createDatasource, truncateContent } from './data/datasources';
-import { migrateLegacyCreatorTemplate } from './data/creatorShowcaseData';
+import {
+  archiveRetiredCreatorTemplates,
+  retireCreatorTemplates,
+} from './data/retiredCreatorTemplates';
 
 // ====== 匯入常數設定 ======
 import { TRANSLATIONS } from './constants/translations';
@@ -994,30 +996,41 @@ const App = () => {
   // Ensure all templates have tags field and sync default templates' tags (migration safety)
   useEffect(() => {
     let needsUpdate = false;
-    const updatedTemplates = templates.map((t) => {
-      const migratedTemplate = migrateLegacyCreatorTemplate(t);
+    const { activeTemplates: templatesWithoutCreator, retiredTemplates } =
+      retireCreatorTemplates(templates);
+
+    if (retiredTemplates.length > 0) {
+      archiveRetiredCreatorTemplates(retiredTemplates);
+      setActiveTemplateId((currentId) =>
+        templatesWithoutCreator.some((template) => template.id === currentId)
+          ? currentId
+          : templatesWithoutCreator[0]?.id || 'tpl_default'
+      );
+      needsUpdate = true;
+    }
+
+    const updatedTemplates = templatesWithoutCreator.map((t) => {
       // Find if this is a default template
-      const defaultTemplate = INITIAL_TEMPLATES_CONFIG.find((dt) => dt.id === migratedTemplate.id);
-      const tagsWithoutLegacyCategory = (migratedTemplate.tags || []).filter((tag) => tag !== '多奇');
+      const defaultTemplate = INITIAL_TEMPLATES_CONFIG.find((dt) => dt.id === t.id);
+      const tagsWithoutLegacyCategory = (t.tags || []).filter((tag) => tag !== '多奇');
 
       if (defaultTemplate) {
         // Sync tags from default template if it's a built-in one
-        if (JSON.stringify(migratedTemplate.tags) !== JSON.stringify(defaultTemplate.tags)) {
+        if (JSON.stringify(t.tags) !== JSON.stringify(defaultTemplate.tags)) {
           needsUpdate = true;
-          return { ...migratedTemplate, tags: defaultTemplate.tags || [] };
+          return { ...t, tags: defaultTemplate.tags || [] };
         }
-      } else if (!migratedTemplate.tags) {
+      } else if (!t.tags) {
         // User-created template without tags
         needsUpdate = true;
-        return { ...migratedTemplate, tags: [] };
-      } else if (tagsWithoutLegacyCategory.length !== migratedTemplate.tags.length) {
+        return { ...t, tags: [] };
+      } else if (tagsWithoutLegacyCategory.length !== t.tags.length) {
         // 舊版「多奇」標籤不再作為分類，移除但保留其餘使用者標籤
         needsUpdate = true;
-        return { ...migratedTemplate, tags: tagsWithoutLegacyCategory };
+        return { ...t, tags: tagsWithoutLegacyCategory };
       }
 
-      if (migratedTemplate !== t) needsUpdate = true;
-      return migratedTemplate;
+      return t;
     });
 
     if (needsUpdate) {
@@ -1234,12 +1247,14 @@ const App = () => {
   // 刷新系統範本與詞庫，保留使用者資料
   const handleRefreshSystemData = React.useCallback(() => {
     const backupSuffix = t('refreshed_backup_suffix') || '';
+    const { activeTemplates: templatesWithoutCreator, retiredTemplates } =
+      retireCreatorTemplates(templates);
+    archiveRetiredCreatorTemplates(retiredTemplates);
 
     // 遷移舊格式的 selections：將字串值轉換為物件格式
-    const migratedTemplates = templates.map((tpl) => {
-      const migratedTemplate = migrateLegacyCreatorTemplate(tpl);
+    const migratedTemplates = templatesWithoutCreator.map((tpl) => {
       const newSelections = {};
-      Object.entries(migratedTemplate.selections || {}).forEach(([key, value]) => {
+      Object.entries(tpl.selections || {}).forEach(([key, value]) => {
         if (typeof value === 'string' && banks[key.split('-')[0]]) {
           // 查找對應的詞庫選項
           const bankKey = key.split('-')[0];
@@ -1259,10 +1274,10 @@ const App = () => {
         }
       });
       return {
-        ...migratedTemplate,
+        ...tpl,
         selections: newSelections,
         // 舊版特殊分類已退休，避免使用者資料重新帶回「多奇」標籤
-        tags: (migratedTemplate.tags || []).filter((tag) => tag !== '多奇'),
+        tags: (tpl.tags || []).filter((tag) => tag !== '多奇'),
       };
     });
 
@@ -2116,8 +2131,6 @@ const App = () => {
       defaults: usedDefaults,
       ...(templateToShare.imageUrl && { imageUrl: templateToShare.imageUrl }),
       ...(templateToShare.imageUrls && { imageUrls: templateToShare.imageUrls }),
-      ...(templateToShare.showcase && { showcase: templateToShare.showcase }),
-      ...(templateToShare.source && { source: templateToShare.source }),
     };
   };
 
@@ -2152,8 +2165,6 @@ const App = () => {
             tags: data.template.tags || [],
             ...(data.template.imageUrl && { imageUrl: data.template.imageUrl }),
             ...(data.template.imageUrls && { imageUrls: data.template.imageUrls }),
-            ...(data.template.showcase && { showcase: data.template.showcase }),
-            ...(data.template.source && { source: data.template.source }),
           },
           banks: data.banks || {},
           defaults: data.defaults || {},
@@ -2184,8 +2195,6 @@ const App = () => {
           tags: templateData.tags || [],
           ...(templateData.imageUrl && { imageUrl: templateData.imageUrl }),
           ...(templateData.imageUrls && { imageUrls: templateData.imageUrls }),
-          ...(templateData.showcase && { showcase: templateData.showcase }),
-          ...(templateData.source && { source: templateData.source }),
         },
         banks: templateData.banks || {},
         defaults: templateData.defaults || {},
@@ -2218,8 +2227,6 @@ const App = () => {
             author: shareData.author,
             ...(shareData.imageUrl && { imageUrl: shareData.imageUrl }),
             ...(shareData.imageUrls && { imageUrls: shareData.imageUrls }),
-            ...(shareData.showcase && { showcase: shareData.showcase }),
-            ...(shareData.source && { source: shareData.source }),
           },
           banks: shareData.banks,
           defaults: shareData.defaults,

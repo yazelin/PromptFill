@@ -114,10 +114,7 @@ export const CATEGORY_STYLES = {
   }
 };
 
-export const CREATOR_SHOWCASE_TAG = "我的作品";
-
 export const TAG_STYLES = {
-  [CREATOR_SHOWCASE_TAG]: "bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600 border border-amber-200",
   "社群": "bg-cyan-50 text-cyan-600 border border-cyan-200",
   "建築": "bg-stone-50 text-stone-600 border border-stone-200",
   "人物": "bg-rose-50 text-rose-600 border border-rose-200",
@@ -134,7 +131,6 @@ export const TAG_STYLES = {
 
 export const TAG_LABELS = {
   "zh-tw": {
-    [CREATOR_SHOWCASE_TAG]: "我的作品",
     "社群": "社群",
     "建築": "建築",
     "人物": "人物",
@@ -148,7 +144,6 @@ export const TAG_LABELS = {
     "創意": "創意"
   },
   en: {
-    [CREATOR_SHOWCASE_TAG]: "My Works",
     "社群": "Community",
     "建築": "Architecture",
     "人物": "Character",
