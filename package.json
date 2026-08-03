@@ -8,7 +8,7 @@
     "dev:open": "vite --host --open",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "verify:creator-showcase": "node scripts/verify-creator-showcase.mjs",
+    "verify:creator-retirement": "node scripts/verify-creator-retirement.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
