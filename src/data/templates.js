@@ -8,6 +8,7 @@
  * @property {Object.<string, string>} selections - 預設選中的變數值 map
  * @property {string[]} tags - 範本標記陣列，可選值：我的作品、社群、建築、人物、攝影、產品、圖表、卡通、寵物、遊戲、創意
  * @property {Object} [showcase] - 作者作品展示資訊，包含 label、url、cta
+ * @property {Object} [source] - 來源 prompt provenance，包含 repository、file、function 或 section、url
  * @property {string} language - 範本語言，固定為 "zh-tw"
  *
  * @example
@@ -22,7 +23,7 @@
 /**
  * 範本系統版本號，每次更新 templates.js 或 banks.js 時請更新此版本號
  */
-export const SYSTEM_DATA_VERSION = "0.9.0";
+export const SYSTEM_DATA_VERSION = "0.10.0";
 
 export const TEMPLATE_WOODEN_ART_XMAS = `### 雷射切割木質層疊藝術 (Wood Art & Xmas)
 一件通過雷射切割工藝製作的、細節豐富的多層木質藝術品插畫。
