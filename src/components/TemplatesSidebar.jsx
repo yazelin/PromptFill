@@ -18,7 +18,6 @@ import {
   ArrowUpDown,
   Home,
   Github,
-  Banana,
   Crown,
 } from 'lucide-react';
 import { PremiumButton } from './PremiumButton';
@@ -387,7 +386,9 @@ export const TemplatesSidebar = React.memo(
                     title={t('gemini_muji')}
                     aria-label={t('gemini_muji')}
                   >
-                    <Banana size={16} />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 3.75c.75 4.875 3.375 7.5 8.25 8.25-4.875.75-7.5 3.375-8.25 8.25-.75-4.875-3.375-7.5-8.25-8.25 4.875-.75 7.5-3.375 8.25-8.25Z" />
+                    </svg>
                   </a>
                   <span className="text-gray-400 text-xs font-normal ml-1">V0.5.1</span>
                 </div>
