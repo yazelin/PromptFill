@@ -390,11 +390,12 @@ export const TemplatesSidebar = React.memo(
                     <Toolbox size={16} />
                   </a>
                   <a
-                    href="https://gwr.gh.miniasp.com/"
+                    href="https://yazelin.github.io/gemini-watermark-cleaner/"
                     target="_blank"
-                    rel="Gemini 🍌 無印良品"
+                    rel="noopener noreferrer"
                     className="p-1.5 rounded-lg transition-colors text-gray-400 hover:text-yellow-500 hover:bg-yellow-50"
                     title={t('gemini_muji')}
+                    aria-label={t('gemini_muji')}
                   >
                     <Banana size={16} />
                   </a>
@@ -410,4 +411,3 @@ export const TemplatesSidebar = React.memo(
 );
 
 TemplatesSidebar.displayName = 'TemplatesSidebar';
-
