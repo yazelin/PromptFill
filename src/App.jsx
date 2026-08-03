@@ -53,7 +53,12 @@ import { INITIAL_DATASOURCES, createDatasource, truncateContent } from './data/d
 
 // ====== 匯入常數設定 ======
 import { TRANSLATIONS } from './constants/translations';
-import { PREMIUM_STYLES, CATEGORY_STYLES, TAG_STYLES, TAG_LABELS } from './constants/styles';
+import {
+  PREMIUM_STYLES,
+  CATEGORY_STYLES,
+  TAG_STYLES,
+  TAG_LABELS,
+} from './constants/styles';
 import { MASONRY_STYLES } from './constants/masonryStyles';
 
 // ====== 匯入工具函式 ======
@@ -991,6 +996,7 @@ const App = () => {
     const updatedTemplates = templates.map((t) => {
       // Find if this is a default template
       const defaultTemplate = INITIAL_TEMPLATES_CONFIG.find((dt) => dt.id === t.id);
+      const tagsWithoutLegacyCategory = (t.tags || []).filter((tag) => tag !== '多奇');
 
       if (defaultTemplate) {
         // Sync tags from default template if it's a built-in one
@@ -1002,6 +1008,10 @@ const App = () => {
         // User-created template without tags
         needsUpdate = true;
         return { ...t, tags: [] };
+      } else if (tagsWithoutLegacyCategory.length !== t.tags.length) {
+        // 舊版「多奇」標籤不再作為分類，移除但保留其餘使用者標籤
+        needsUpdate = true;
+        return { ...t, tags: tagsWithoutLegacyCategory };
       }
 
       return t;
@@ -1244,7 +1254,12 @@ const App = () => {
           newSelections[key] = value;
         }
       });
-      return { ...tpl, selections: newSelections };
+      return {
+        ...tpl,
+        selections: newSelections,
+        // 舊版特殊分類已退休，避免使用者資料重新帶回「多奇」標籤
+        tags: (tpl.tags || []).filter((tag) => tag !== '多奇'),
+      };
     });
 
     const templateResult = mergeTemplatesWithSystem(migratedTemplates, { backupSuffix });
@@ -1308,7 +1323,7 @@ const App = () => {
             return nameA.localeCompare(nameB, language === 'zh-tw' ? 'zh-TW' : 'en');
           case 'z-a':
             return nameB.localeCompare(nameA, language === 'zh-tw' ? 'zh-TW' : 'en');
-          case 'random':
+          case 'random': {
             // 使用範本 ID 與隨機種子生成偽隨機數排序
             const hashA = (a.id + randomSeed)
               .split('')
@@ -1317,6 +1332,7 @@ const App = () => {
               .split('')
               .reduce((acc, char) => acc + char.charCodeAt(0), 0);
             return hashA - hashB;
+          }
           default:
             return 0;
         }
@@ -1447,7 +1463,7 @@ const App = () => {
               title: templateName,
               text: '匯出的提示詞範本',
             });
-            showToastMessage('✅ 範本已分享／儲存');
+            addToast('✅ 範本已分享／儲存');
             return;
           }
         } catch (shareError) {
@@ -1475,7 +1491,7 @@ const App = () => {
         URL.revokeObjectURL(url);
       }, 100);
 
-      showToastMessage('✅ 範本已匯出');
+      addToast('✅ 範本已匯出');
     } catch (error) {
       console.error('匯出失敗:', error);
       addToast('匯出失敗，請重試', 'error');
@@ -1512,7 +1528,7 @@ const App = () => {
               title: '提示詞填空器備份',
               text: '所有範本和詞庫的完整備份',
             });
-            showToastMessage('✅ 備份已分享／儲存');
+            addToast('✅ 備份已分享／儲存');
             return;
           }
         } catch (shareError) {
@@ -1540,7 +1556,7 @@ const App = () => {
         URL.revokeObjectURL(url);
       }, 100);
 
-      showToastMessage('✅ 備份已匯出');
+      addToast('✅ 備份已匯出');
     } catch (error) {
       console.error('匯出失敗:', error);
       addToast('匯出失敗，請重試', 'error');
@@ -1677,7 +1693,7 @@ const App = () => {
     try {
       let total = 0;
       for (let key in localStorage) {
-        if (localStorage.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
           total += localStorage[key].length + key.length;
         }
       }
@@ -2378,7 +2394,6 @@ const App = () => {
     if (isShareMode) {
       exitShareMode();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTemplateId]);
 
   const handleExportImage = async () => {
@@ -3317,4 +3332,3 @@ const App = () => {
 };
 
 export default App;
-
