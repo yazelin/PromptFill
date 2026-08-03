@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { PremiumButton } from './PremiumButton';
 import { getLocalized } from '../utils/helpers';
+import { CREATOR_SHOWCASE_TAG } from '../constants/styles';
 
 /**
  * TemplatesSidebar 元件 - 負責展示左側範本清單
@@ -190,16 +191,24 @@ export const TemplatesSidebar = React.memo(
                   >
                     {t('all_templates')}
                   </button>
-                  {/* 多奇按鈕：只有當有範本包含「多奇」標籤時才顯示 */}
-                  {templates?.some(tpl => tpl.tags?.includes('多奇')) && (
-                    <button
-                      onClick={() => setSelectedTags(selectedTags === '多奇' ? '' : '多奇')}
-                      className={`flex-shrink-0 px-3 py-1 rounded-full text-[10px] font-bold transition-all border flex items-center gap-1 ${selectedTags === '多奇' ? 'bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-500/20' : 'bg-white text-gray-500 border-gray-200 hover:border-amber-200 hover:text-amber-500'}`}
-                    >
-                      <Crown size={10} className={selectedTags === '多奇' ? 'text-white' : 'text-amber-500'} />
-                      多奇
-                    </button>
-                  )}
+                  {/* 作者作品按鈕：固定顯示，作為 PromptFill 的作品展示入口 */}
+                  <button
+                    onClick={() =>
+                      setSelectedTags(
+                        selectedTags === CREATOR_SHOWCASE_TAG ? '' : CREATOR_SHOWCASE_TAG
+                      )
+                    }
+                    className={`flex-shrink-0 px-3 py-1 rounded-full text-[10px] font-bold transition-all border flex items-center gap-1 ${selectedTags === CREATOR_SHOWCASE_TAG ? 'bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-500/20' : 'bg-white text-gray-500 border-gray-200 hover:border-amber-200 hover:text-amber-500'}`}
+                    aria-pressed={selectedTags === CREATOR_SHOWCASE_TAG}
+                  >
+                    <Crown
+                      size={10}
+                      className={
+                        selectedTags === CREATOR_SHOWCASE_TAG ? 'text-white' : 'text-amber-500'
+                      }
+                    />
+                    {displayTag(CREATOR_SHOWCASE_TAG)}
+                  </button>
                   {/* 社群按鈕：只有當有範本包含「社群」標籤時才顯示 */}
                   {templates?.some(tpl => tpl.tags?.includes('社群')) && (
                     <button
@@ -274,7 +283,7 @@ export const TemplatesSidebar = React.memo(
                           </div>
                         ) : (
                           <div className="flex items-center gap-1.5 min-w-0 flex-1">
-                            {(t_item.tags || []).includes('多奇') && (
+                            {(t_item.tags || []).includes(CREATOR_SHOWCASE_TAG) && (
                               <Crown size={14} className="text-amber-500 flex-shrink-0" />
                             )}
                             <span

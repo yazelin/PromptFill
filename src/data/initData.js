@@ -1,6 +1,6 @@
 /**
  * 初始化資料匯出
- * 合併 上上游 + 多奇 + 社群 範本/詞庫
+ * 合併上游、作者作品與社群範本/詞庫
  *
  * App.jsx 應從此檔案 import，而非直接從各資料檔
  */
@@ -18,13 +18,8 @@ import {
   INITIAL_CATEGORIES as UPSTREAM_CATEGORIES
 } from './banks';
 
-// 多奇資料 (保哥)
-import {
-  DOGGY_TEMPLATES,
-  DOGGY_BANKS,
-  DOGGY_CATEGORIES,
-  DOGGY_DEFAULTS
-} from './doggyData';
+// 作者作品展示範本
+import { CREATOR_SHOWCASE_TEMPLATES } from './creatorShowcaseData';
 
 // 社群資料
 import {
@@ -36,11 +31,11 @@ import {
 
 /**
  * 合併後的範本配置
- * 順序：上上游 → 多奇 → 社群
+ * 順序：上游 → 作者作品 → 社群
  */
 export const INITIAL_TEMPLATES_CONFIG = [
   ...UPSTREAM_TEMPLATES,
-  ...DOGGY_TEMPLATES,
+  ...CREATOR_SHOWCASE_TEMPLATES,
   ...COMMUNITY_TEMPLATES
 ];
 
@@ -50,7 +45,6 @@ export const INITIAL_TEMPLATES_CONFIG = [
  */
 export const INITIAL_BANKS = {
   ...UPSTREAM_BANKS,
-  ...DOGGY_BANKS,
   ...COMMUNITY_BANKS
 };
 
@@ -59,7 +53,6 @@ export const INITIAL_BANKS = {
  */
 export const INITIAL_CATEGORIES = {
   ...UPSTREAM_CATEGORIES,
-  ...DOGGY_CATEGORIES,
   ...COMMUNITY_CATEGORIES
 };
 
@@ -68,7 +61,6 @@ export const INITIAL_CATEGORIES = {
  */
 export const INITIAL_DEFAULTS = {
   ...UPSTREAM_DEFAULTS,
-  ...DOGGY_DEFAULTS,
   ...COMMUNITY_DEFAULTS
 };
 

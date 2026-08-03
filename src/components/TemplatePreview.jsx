@@ -15,6 +15,7 @@ import {
   Crown,
 } from 'lucide-react';
 import { getLocalized } from '../utils/helpers';
+import { CREATOR_SHOWCASE_TAG } from '../constants/styles';
 
 /**
  * TemplatePreview 元件 - 負責渲染範本的預覽內容，包含變數互動
@@ -72,6 +73,15 @@ export const TemplatePreview = React.memo(
     }, [activeTemplate.imageUrls, activeTemplate.imageUrl]);
 
     const currentImageUrl = allImages[editImageIndex] || activeTemplate?.imageUrl;
+    const showcase = activeTemplate?.showcase;
+    const showcaseUrl =
+      typeof showcase?.url === 'string' && /^https:\/\//i.test(showcase.url)
+        ? showcase.url
+        : null;
+    const showcaseLabel = getLocalized(showcase?.label || activeTemplate?.name, language);
+    const showcaseDescription = getLocalized(showcase?.description, language);
+    const showcaseCta = getLocalized(showcase?.cta, language) ||
+      (language === 'zh-tw' ? '前往作品' : 'Open project');
 
     // 當範本切換或圖片索引切換時，同步編輯索引給父層元件
     React.useEffect(() => {
@@ -302,7 +312,9 @@ export const TemplatePreview = React.memo(
                       key={tag}
                       className={`px-2.5 py-1 rounded-md text-xs font-bold tracking-wide border flex items-center gap-1 ${TAG_STYLES[tag] || TAG_STYLES['default']}`}
                     >
-                      {tag === '多奇' && <Crown size={12} className="text-amber-500" />}
+                      {tag === CREATOR_SHOWCASE_TAG && (
+                        <Crown size={12} className="text-amber-500" />
+                      )}
                       {displayTag(tag)}
                     </span>
                   ))}
@@ -394,6 +406,32 @@ export const TemplatePreview = React.memo(
                     : activeTemplate.author || t('official')}
                 </p>
                 <p className="text-gray-400 text-sm font-medium mt-1">{t('made_by')}</p>
+
+                {activeTemplate.tags?.includes(CREATOR_SHOWCASE_TAG) && showcaseUrl && (
+                  <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-amber-100 bg-gradient-to-r from-amber-50/90 to-orange-50/80 p-4">
+                    <div className="flex items-start gap-2.5 min-w-0">
+                      <Crown size={17} className="mt-0.5 flex-shrink-0 text-amber-500" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-amber-800 truncate">{showcaseLabel}</p>
+                        {showcaseDescription && (
+                          <p className="mt-0.5 text-xs leading-relaxed text-amber-700/80">
+                            {showcaseDescription}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <a
+                      href={showcaseUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${showcaseCta}: ${showcaseLabel}`}
+                      className="inline-flex flex-shrink-0 items-center justify-center gap-1.5 rounded-xl bg-amber-500 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-amber-600 hover:shadow-md"
+                    >
+                      {showcaseCta}
+                      <ArrowUpRight size={14} />
+                    </a>
+                  </div>
+                )}
               </div>
 
               {/* Right: Image (Overhanging) */}
@@ -571,4 +609,3 @@ export const TemplatePreview = React.memo(
 );
 
 TemplatePreview.displayName = 'TemplatePreview';
-

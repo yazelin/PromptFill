@@ -1,5 +1,5 @@
 // 合併策略函數
-// 必須用合併後的 initData（上上游+多奇+社群），直接 import templates/banks 會漏掉社群資料
+// 必須用合併後的 initData，直接 import templates/banks 會漏掉作者作品與社群資料
 import { INITIAL_TEMPLATES_CONFIG, INITIAL_BANKS, INITIAL_DEFAULTS } from '../data/initData';
 import { deepClone, makeUniqueKey } from './helpers';
 
@@ -106,4 +106,3 @@ export const mergeBanksWithSystem = (currentBanks, currentDefaults, { backupSuff
 
   return { banks: mergedBanks, defaults: mergedDefaults, notes };
 };
-
